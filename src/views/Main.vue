@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="page-container">
-      <md-app md-waterfall md-mode="reveal">
+      <md-app md-waterfall md-mode="fixed">
         <md-app-toolbar class="md-dense md-primary">
           <div class="md-toolbar-row">
             <div class="md-toolbar-section-start">
@@ -13,12 +13,18 @@
             </div>
 
             <div class="md-toolbar-section-end">
-              <md-button class="md-icon-button">
-                <md-avatar style="background: rgba(0,0,0,0.2)">{{"T"[0]?"T"[0]:"?"}}</md-avatar>
-              </md-button>
+              <md-menu>
+                <md-button class="md-icon-button" md-size="auto" md-menu-trigger>
+                  <md-avatar style="background: rgba(0,0,0,0.2)">{{"T"[0]?"T"[0]:"?"}}</md-avatar>
+                  <md-menu-content>
+                    <md-menu-item>You are logged in as test</md-menu-item>
+                    <md-menu-item to="/">Logout</md-menu-item>
+                  </md-menu-content>
+                </md-button>
+              </md-menu>
               <!-- <md-button class="md-icon-button">
                 <md-icon>more_vert</md-icon>
-              </md-button> -->
+              </md-button>-->
             </div>
           </div>
         </md-app-toolbar>
@@ -68,6 +74,13 @@ export default {
       this.$router.push("/app/" + e.currentTarget.dataset.where);
       this.menuVisible = false;
     },
+    navigateTo: function (location, params = {}, root = "/app/") {
+      var par = "";
+      for (var x in params) {
+        par = par + x + "=" + params[x] + "&";
+      }
+      this.$router.push(root + location + "");
+    },
   },
 };
 </script>
@@ -84,6 +97,6 @@ export default {
 }
 
 .lowercase {
- text-transform: none
+  text-transform: none;
 }
 </style>

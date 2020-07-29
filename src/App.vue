@@ -1,3 +1,5 @@
+<!-- TODO: Page params when switching pages; Vuex for global data storage; Upload documents after redirecting going back issues  -->
+
 <template>
   <div id="app">
     <div id="nav">
@@ -47,6 +49,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  
+
 }
 </style>

@@ -7,6 +7,7 @@ import AllDocuments from '../views/Main/AllDocuments.vue'
 import Dashboard from '../views/Main/Dashboard.vue'
 import SearchDocuments from '../views/Main/SearchDocuments.vue'
 import UploadDocument from '../views/Main/UploadDocument.vue'
+import DocumentDetail from '../views/DocumentDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,10 @@ Vue.use(VueRouter)
       {
         path:'upload',
         component: UploadDocument
+      },
+      {
+        path:'edit',
+        component: DocumentDetail
       }
     ]
   }

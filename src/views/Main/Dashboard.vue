@@ -5,13 +5,13 @@
         <b>Welcome to DocumentX.</b>
       </p>
       <!-- <p class="md-headline"></p> -->
-      <md-button class="lowercase md-icon-button" to="all">
+      <md-button class="lowercase md-icon-button" @click="navigate" data-where="all">
         <md-icon>book</md-icon>
       </md-button>
-      <md-button class="lowercase md-icon-button" to="search">
+      <md-button class="lowercase md-icon-button" @click="navigate" data-where="search">
         <md-icon>search</md-icon>
       </md-button>
-      <md-button class="lowercase md-icon-button" to="upload">
+      <md-button class="lowercase md-icon-button" @click="navigate" data-where="upload">
         <md-icon>cloud_upload</md-icon>
       </md-button>
     </div>
@@ -19,10 +19,14 @@
 </template>
 
 <script>
+import ex from "../Main"
+
 export default {
   name: "Dashboard",
   data: () => ({}),
-  methods: {},
+  methods: {
+      navigate: ex.methods.navigate
+  },
 };
 </script>
 <style scoped>
