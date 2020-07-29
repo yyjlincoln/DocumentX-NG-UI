@@ -42,4 +42,11 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
+.flex{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+}
 </style>
