@@ -1,10 +1,11 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      
     </div>
+    <div id="container">
     <router-view/>
+    </div>
   </div>
 </template>
 
@@ -18,7 +19,19 @@
 }
 
 #nav {
-  padding: 30px;
+  /* padding: 30px; */
+  /* margin-top: auto;
+  margin-bottom: auto; */
+}
+
+#container{
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+  justify-content: center;
+  position: absolute;
+  text-align: center;
 }
 
 #nav a {
