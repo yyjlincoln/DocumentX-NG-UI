@@ -57,6 +57,9 @@
                 :disabled="sending"
               />
             </md-field>
+            <md-field>
+              <md-file v-model="form.file" />
+            </md-field>
           </md-card-content>
 
           <md-progress-bar md-mode="indeterminate" v-if="sending" />
@@ -86,6 +89,7 @@ export default {
       subject: null,
       desc: null,
       comments: null,
+      file: null,
     },
     sending: false,
     showSnackBar: false,
@@ -121,14 +125,15 @@ export default {
       this.form.desc = null;
       this.form.comments = null;
     },
-    comfirmRequest: function () {
+    confirmRequest: function (e) {
       this.sending = true;
       var formData = new FormData();
-      formData.append("docID", this.form.docID);
+      formData.append("name", this.form.name);
       formData.append("subject", this.form.subject);
-      formData.append("desc", this.form.desc);
-      formData.append("comments", this.form.comments);
-      //   formData.append('file',)
+      formData.append("desc", this.form.desc?this.form.desc:"");
+      formData.append("comments", this.form.comments?this.form.comments:"");
+      formData.append("file", e.target[5].files[0], this.form.file);
+
       axios
         .post("https://apis.mcsrv.icu/uploadDocument", formData, {
           headers: {
@@ -139,6 +144,8 @@ export default {
           this.snackBarText =
             res.data.message + " (" + String(res.data.code) + ")";
           if (res.data.code == 0) {
+            this.snackBarText =
+              "Successfully uploaded file (#" + res.data.docID + ")";
             this.clearForm();
           }
         })
@@ -147,12 +154,13 @@ export default {
         })
         .then(() => {
           this.showSnackBar = true;
+          this.sending = false;
         });
     },
-    validateUser() {
+    validateUser: function (e) {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        this.confirmRequest();
+        this.confirmRequest(e);
       }
     },
   },
