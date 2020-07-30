@@ -7,8 +7,7 @@ import AllDocuments from '../views/Main/AllDocuments.vue'
 import Dashboard from '../views/Main/Dashboard.vue'
 import SearchDocuments from '../views/Main/SearchDocuments.vue'
 import UploadDocument from '../views/Main/UploadDocument.vue'
-import DocumentDetail from '../views/DocumentDetail.vue'
-
+import EditDocument from '../views/Main/EditDocument.vue'
 Vue.use(VueRouter)
 
   const routes = [
@@ -45,7 +44,7 @@ Vue.use(VueRouter)
       },
       {
         path:'edit',
-        component: DocumentDetail
+        component: EditDocument
       }
     ]
   }

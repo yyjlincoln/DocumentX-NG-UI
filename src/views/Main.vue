@@ -71,6 +71,18 @@ export default {
   methods: {
     navigate: function (e) {
       console.log(e.currentTarget.dataset);
+      let where = e.currentTarget.dataset.where
+      if(where=="all"){
+        this.title="All Documents"
+      } else if(where=="edit"){
+        this.title="Edit Document"
+      } else if(where=="upload"){
+        this.title="Upload..."
+      } else if (where=="search"){
+        this.title="Search"
+      } else if (where=="" || where=="/"){
+        this.title="Dashboard"
+      }
       this.$router.push("/app/" + e.currentTarget.dataset.where);
       this.menuVisible = false;
     },

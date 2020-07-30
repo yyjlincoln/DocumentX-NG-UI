@@ -94,8 +94,7 @@ export default {
     EditDoc: function (e) {
       var data = e.currentTarget.dataset;
       console.log(data);
-      this.snack="Under development"
-      this.showSnackbar=true
+      this.$router.push({ path: '/app/edit', query: { docID: data.docid }})
 
     },
     DeleteDoc: function (e) {

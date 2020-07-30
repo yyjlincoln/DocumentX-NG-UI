@@ -2,16 +2,38 @@
 
 <template>
   <div id="app">
-    <div id="nav">
-      
-    </div>
+    <div id="nav"></div>
     <div id="container">
-    <router-view/>
+      <!-- <transition :name="transitionName"> -->
+        <router-view />
+      <!-- </transition> -->
     </div>
   </div>
 </template>
 
+<script>
+export default {
+  data: () => ({
+    transitionName: "",
+  }),
+  watch: {
+    $route(to, from) {
+      const toDepth = to.path.split("/").length;
+      const fromDepth = from.path.split("/").length;
+      this.transitionName = toDepth < fromDepth ? "fade" : "fade";
+    },
+  },
+};
+</script>
+
 <style>
+.fade-enter-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -26,7 +48,7 @@
   margin-bottom: auto; */
 }
 
-#container{
+#container {
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -45,10 +67,9 @@
   color: #42b983;
 }
 
-.flex{
+.flex {
   display: flex;
   flex-direction: column;
   justify-content: center;
-
 }
 </style>
