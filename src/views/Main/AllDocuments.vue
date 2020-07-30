@@ -24,7 +24,7 @@
       @md-cancel="dialog.cancel"
       @md-confirm="dialog.confirm" /> -->
       <!-- Confirm Dialog End-->
-      <md-table v-if="!loading" v-model="documents" md-sort="dScanned" md-sort-order="asc" md-card md-fixed-header>
+      <md-table v-if="!loading" v-model="documents" md-sort="dScanned" md-sort-order="desc" md-card>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
           <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
           <md-table-cell md-label="Subject" md-sort-by="subject">{{ item.subject }}</md-table-cell>
