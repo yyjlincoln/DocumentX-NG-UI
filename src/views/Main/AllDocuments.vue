@@ -22,7 +22,7 @@
       md-confirm-text="Continue"
       md-cancel-text="Cancel"
       @md-cancel="dialog.cancel"
-      @md-confirm="dialog.confirm" /> -->
+      @md-confirm="dialog.confirm" />-->
       <!-- Confirm Dialog End-->
       <md-table v-if="!loading" v-model="documents" md-sort="dScanned" md-sort-order="desc" md-card>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
@@ -44,6 +44,7 @@
               <md-menu-content>
                 <md-menu-item @click="DownloadPopUp" :data-docid="item.docID">Download</md-menu-item>
                 <md-menu-item @click="EditDoc" :data-docid="item.docID">Edit</md-menu-item>
+                <md-menu-item @click="CopyLink" :data-docid="item.docID">Copy Link</md-menu-item>
                 <md-menu-item @click="DeleteDoc" :data-docid="item.docID">Delete</md-menu-item>
               </md-menu-content>
             </md-menu>
@@ -54,9 +55,14 @@
         </md-table-row>
       </md-table>
       <p>Showing {{documents.length}} results.</p>
+      <input
+        style="opacity: 0; pointer-events: none; cursor: normal; z-index: -10000; position: fixed; top: -1000px;"
+        id="CopyToClipboard"
+      />
     </div>
   </div>
 </template>
+
 <script>
 const axios = require("axios").default;
 
@@ -67,6 +73,7 @@ export default {
     loading: true,
     showSnackbar: false,
     snack: "",
+    CopyToClipboard: "",
     // dialog:{
     //     active:false,
     //     title:"Test",
@@ -84,18 +91,26 @@ export default {
     },
     DownloadPopUp: function (e) {
       var data = e.currentTarget.dataset;
-      window.open(
-          this.GetDownloadLink(data.docid)
-      );
+      window.open(this.GetDownloadLink(data.docid));
     },
-    GetDownloadLink:(docID)=>{
-        return "https://apis.mcsrv.icu/viewDocumentByID?docID=" + docID
+    GetDownloadLink: (docID) => {
+      return "https://apis.mcsrv.icu/viewDocumentByID?docID=" + docID;
     },
     EditDoc: function (e) {
       var data = e.currentTarget.dataset;
       console.log(data);
-      this.$router.push({ path: '/app/edit', query: { docID: data.docid }})
-
+      this.$router.push({ path: "/app/edit", query: { docID: data.docid } });
+    },
+    CopyLink: function (e) {
+      var c = document.getElementById("CopyToClipboard");
+      var docID = e.currentTarget.dataset.docid;
+      c.value = this.GetDownloadLink(docID);       
+      c.select();
+      c.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      // setTimeout(() => {        
+      //   document.execCommand("copy");
+      // }, 100);
     },
     DeleteDoc: function (e) {
       var data = e.currentTarget.dataset;
@@ -114,7 +129,7 @@ export default {
           }
         })
         .catch((err) => {
-          this.snack = "Error: "+String(err);
+          this.snack = "Error: " + String(err);
         })
         .then(() => {
           this.showSnackbar = true;

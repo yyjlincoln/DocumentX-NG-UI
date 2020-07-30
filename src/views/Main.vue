@@ -17,7 +17,7 @@
                 <md-button class="md-icon-button" md-size="auto" md-menu-trigger>
                   <md-avatar style="background: rgba(0,0,0,0.2)">{{"T"[0]?"T"[0]:"?"}}</md-avatar>
                   <md-menu-content>
-                    <md-menu-item>You are logged in as test</md-menu-item>
+                    <md-menu-item>You are logged in as TestAccount</md-menu-item>
                     <md-menu-item to="/">Logout</md-menu-item>
                   </md-menu-content>
                 </md-button>
