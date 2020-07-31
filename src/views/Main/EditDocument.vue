@@ -11,7 +11,7 @@
       </md-card-header>-->
 
       <md-card-content>
-          <p>Editing Document #{{this.docID}}</p>
+        <p>Editing Document #{{this.docID}}</p>
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-small-size-100">
             <md-field :class="getValidationClass('docID')">
@@ -25,6 +25,18 @@
               />
               <span class="md-error" v-if="!$v.form.docID.required">DocID is required</span>
               <span class="md-error" v-else-if="!$v.form.docID.minlength">This field is invalid.</span>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-small-size-100">
+            <md-field :class="getValidationClass('status')">
+              <label for="status">Status</label>
+              <md-input
+                name="status"
+                id="status"
+                autocomplete
+                v-model="form.status"
+                :disabled="sending"
+              />
             </md-field>
           </div>
         </div>
@@ -90,6 +102,7 @@ export default {
       comments: null,
       file: null,
       docID: null,
+      status: null,
     },
     sending: true,
     showSnackBar: false,
@@ -126,6 +139,7 @@ export default {
       this.form.subject = null;
       this.form.desc = null;
       this.form.comments = null;
+      this.form.status=null;
     },
     confirmRequest: function () {
       this.sending = true;
@@ -142,6 +156,7 @@ export default {
               subject: this.form.subject,
               desc: this.form.desc,
               comments: this.form.comments,
+              status: this.form.status
             }),
           },
         })
