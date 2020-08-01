@@ -89,7 +89,7 @@
 <script>
 import { validationMixin } from "vuelidate";
 import { required, minLength } from "vuelidate/lib/validators";
-const axios = require("axios");
+// const axios = require("axios");
 
 export default {
   mixins: [validationMixin],
@@ -139,15 +139,17 @@ export default {
       this.form.subject = null;
       this.form.desc = null;
       this.form.comments = null;
-      this.form.status=null;
+      this.form.status = null;
     },
     confirmRequest: function () {
       this.sending = true;
       var formData = new FormData();
       formData.append("docID", this.docID);
 
-      axios
-        .get("https://apis.mcsrv.icu/editDocumentByID", {
+      console.log(this.$Global)
+      // axios
+      this.$Global
+        .getURI("https://apis.mcsrv.icu/editDocumentByID", {
           params: {
             docID: this.docID,
             properties: JSON.stringify({
@@ -156,7 +158,7 @@ export default {
               subject: this.form.subject,
               desc: this.form.desc,
               comments: this.form.comments,
-              status: this.form.status
+              status: this.form.status,
             }),
           },
         })
@@ -192,8 +194,9 @@ export default {
         window.history.back();
         return;
       }
-      axios
-        .get("https://apis.mcsrv.icu/getDocumentByID", {
+      // axios
+      this.$Global
+        .getURI("https://apis.mcsrv.icu/getDocumentByID", {
           params: {
             docID: this.docID,
           },

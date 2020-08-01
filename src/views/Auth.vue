@@ -14,7 +14,6 @@
   </div>
 </template>
 <script>
-import Vue from "vue"
 
 export default {
   name: "Authentication",
@@ -24,7 +23,7 @@ export default {
   }),
   methods: {},
   mounted: function () {
-    Vue.$Global.user = {
+    this.$Global.user = {
       uID: "test",
       token: "test",
       name: "Test Account"

@@ -15,13 +15,16 @@ Vue.prototype.$Global = {
   getURI: function (...args) {
     const axios = require("axios")
 
-    if (args.params) {
-      args.params.uID = Vue.$Global.user.uID
-      args.params.token = Vue.$Global.user.token
+    if (args[1] && args[1].params) {
+      args[1].params.uID = this.user.uID
+      args[1].params.token = this.user.token
     } else {
-      args.params = {
-        uID: Vue.$Global.user.uID,
-        token: Vue.$Global.user.token
+      if(!args[1]){
+        args[1]={}
+      }      
+      args[1].params = {
+        uID: this.user.uID,
+        token: this.user.token
       }
     }
 
@@ -30,17 +33,17 @@ Vue.prototype.$Global = {
   postURI: function (...args) {
     const axios = require("axios")
 
-    if (args.params) {
-      args.params.uID = Vue.$Global.user.uID
-      args.params.token = Vue.$Global.user.token
+    if (args[2] && args[2].params) {
+      args[2].params.uID = this.user.uID
+      args[2].params.token = this.user.token
     } else {
-      args.params = {
-        uID: Vue.$Global.user.uID,
-        token: Vue.$Global.user.token
+      args[2].params = {
+        uID: this.user.uID,
+        token: this.user.token
       }
     }
 
-    return axios.get(...args)
+    return axios.post(...args)
   }
 }
 

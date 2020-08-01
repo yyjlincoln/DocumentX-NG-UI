@@ -5,7 +5,7 @@
     <div id="nav"></div>
     <div id="container">
       <!-- <transition :name="transitionName"> -->
-        <router-view />
+      <router-view />
       <!-- </transition> -->
     </div>
   </div>
@@ -23,12 +23,19 @@ export default {
       this.transitionName = toDepth < fromDepth ? "fade" : "fade";
     },
   },
+  mounted() {
+    if (this.$route.path != "/") {
+      if (!this.$Global.user.token) {
+        this.$router.push("/");
+      }
+    }
+  },
 };
 </script>
 
 <style>
 .fade-enter-active {
-  transition: opacity .5s;
+  transition: opacity 0.5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;

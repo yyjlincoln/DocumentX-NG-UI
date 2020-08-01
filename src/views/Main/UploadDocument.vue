@@ -79,7 +79,7 @@
 import ex from "../Main";
 import { validationMixin } from "vuelidate";
 import { required, minLength } from "vuelidate/lib/validators";
-const axios = require("axios");
+// const axios = require("axios");
 export default {
   name: "UploadDocument",
   mixins: [validationMixin],
@@ -138,8 +138,7 @@ export default {
       formData.append("comments", this.form.comments ? this.form.comments : "");
       formData.append("file", e.target[5].files[0], this.form.file);
 
-      axios
-        .post("https://apis.mcsrv.icu/uploadDocument", formData, {
+      this.$Global.postURI("https://apis.mcsrv.icu/uploadDocument", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

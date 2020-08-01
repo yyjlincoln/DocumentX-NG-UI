@@ -64,7 +64,7 @@
 </template>
 
 <script>
-const axios = require("axios").default;
+// const axios = require("axios").default;
 
 export default {
   name: "AllDocuments",
@@ -77,17 +77,31 @@ export default {
   }),
   methods: {
     updateData: function () {
-      axios.get("https://apis.mcsrv.icu/getDocuments").then((res) => {
+      this.$Global.getURI("https://apis.mcsrv.icu/getDocuments").then((res) => {
         this.documents = res.data.result;
         this.loading = false;
       });
     },
     DownloadPopUp: function (e) {
       var data = e.currentTarget.dataset;
-      window.open(this.GetDownloadLink(data.docid));
+      this.GetDownloadLink(data.docid).then((link) => {
+        window.open(link);
+      });
     },
-    GetDownloadLink: (docID) => {
-      return "https://apis.mcsrv.icu/viewDocumentByID?docID=" + docID;
+    GetDownloadLink: async function (docID) {
+      let res = await this.$Global.getURI(
+        "https://apis.mcsrv.icu/getDownloadLink",
+        {
+          params: {
+            docID: docID,
+          },
+        }
+      );
+      if (res.data.code == 0) {
+        return "https://apis.mcsrv.icu" + res.data.link;
+      } else {
+        return "about:blank";
+      }
     },
     EditDoc: function (e) {
       var data = e.currentTarget.dataset;
@@ -97,18 +111,23 @@ export default {
     CopyLink: function (e) {
       var c = document.getElementById("CopyToClipboard");
       var docID = e.currentTarget.dataset.docid;
-      c.value = this.GetDownloadLink(docID);       
-      c.select();
-      c.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-      // setTimeout(() => {        
+      this.GetDownloadLink(docID).then((link) => {
+        c.value = link;
+        c.select();
+        c.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        this.snack = "Link copied to clipboard.";
+        this.showSnackbar = true;
+      });
+
+      // setTimeout(() => {
       //   document.execCommand("copy");
       // }, 100);
     },
     DeleteDoc: function (e) {
       var data = e.currentTarget.dataset;
-      axios
-        .get("https://apis.mcsrv.icu/deleteDocumentByID?docID=" + data.docid)
+      this.$Global
+        .getURI("https://apis.mcsrv.icu/deleteDocumentByID?docID=" + data.docid)
         .then((res) => {
           if (res.data.code == 0) {
             this.snack = "Successfully deleted document.";
