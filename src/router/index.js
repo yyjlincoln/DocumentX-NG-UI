@@ -8,6 +8,8 @@ import Dashboard from '../views/Main/Dashboard.vue'
 import SearchDocuments from '../views/Main/SearchDocuments.vue'
 import UploadDocument from '../views/Main/UploadDocument.vue'
 import EditDocument from '../views/Main/EditDocument.vue'
+import NotFound from '../views/NotFound.vue'
+
 Vue.use(VueRouter)
 
   const routes = [
@@ -47,6 +49,10 @@ Vue.use(VueRouter)
         component: EditDocument
       }
     ]
+  },
+  {
+    path:'*',
+    component: NotFound
   }
 ]
 
