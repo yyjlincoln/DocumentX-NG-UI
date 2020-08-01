@@ -14,6 +14,8 @@
   </div>
 </template>
 <script>
+import Vue from "vue"
+
 export default {
   name: "Authentication",
   data: () => ({
@@ -22,6 +24,11 @@ export default {
   }),
   methods: {},
   mounted: function () {
+    Vue.$Global.user = {
+      uID: "test",
+      token: "test",
+      name: "Test Account"
+    }
     setTimeout(() => {
       this.$router.push("/app");
     }, 3000);

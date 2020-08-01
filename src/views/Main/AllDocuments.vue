@@ -74,13 +74,6 @@ export default {
     showSnackbar: false,
     snack: "",
     CopyToClipboard: "",
-    // dialog:{
-    //     active:false,
-    //     title:"Test",
-    //     content:"Test",
-    //     cancel:function(){this.dialog.active=false},
-    //     confirm:()=>{}
-    // }
   }),
   methods: {
     updateData: function () {
