@@ -14,7 +14,6 @@ Vue.prototype.$Global = {
   },
   getURI: function (...args) {
     const axios = require("axios")
-    import Vue from "vue"
 
     if (args.params) {
       args.params.uID = Vue.$Global.user.uID
@@ -30,7 +29,6 @@ Vue.prototype.$Global = {
   },
   postURI: function (...args) {
     const axios = require("axios")
-    import Vue from "vue"
 
     if (args.params) {
       args.params.uID = Vue.$Global.user.uID
