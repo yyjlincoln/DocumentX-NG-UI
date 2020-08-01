@@ -1,7 +1,5 @@
 <template>
   <div class="auth">
-    <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
-    <p>Redirecting...</p>
     <md-snackbar
       md-position="left"
       :md-duration="4000"
@@ -15,25 +13,30 @@
     <div class="centered-container">
       <md-content class="md-elevation-3">
         <div class="title">
-          <img src="https://vuematerial.io/assets/logo-color.png" />
-          <div class="md-title">Vue Material</div>
-          <div class="md-body-1">Build beautiful apps with Material Design and Vue.js</div>
+          <img src="../assets/logo.png" />
+          <div class="md-title">Login in to DocumentX</div>
+          <div class="md-body-1">&lt;Document Redefined/&gt;</div>
         </div>
 
         <div class="form">
           <md-field>
-            <label>E-mail</label>
-            <md-input v-model="login.email" autofocus></md-input>
+            <label>Username</label>
+            <md-input v-model="login.username" autofocus :disabled="loading"></md-input>
           </md-field>
 
           <md-field md-has-password>
             <label>Password</label>
-            <md-input v-model="login.password" type="password"></md-input>
+            <md-input
+              v-model="login.password"
+              type="password"
+              @keyup.enter="auth"
+              :disabled="loading"
+            ></md-input>
           </md-field>
         </div>
 
         <div class="actions md-layout md-alignment-center-space-between">
-          <a href="/resetpassword">Reset password</a>
+          <a @click="$router.go(-1)" href="#">Cancel</a>
           <md-button class="md-raised md-primary" @click="auth">Log in</md-button>
         </div>
 
@@ -45,36 +48,112 @@
     </div>
   </div>
 </template>
-<script>
 
+<style lang="scss">
+.centered-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100vh;
+  .title {
+    text-align: center;
+    margin-bottom: 30px;
+    img {
+      margin-bottom: 16px;
+      max-width: 80px;
+    }
+  }
+  .actions {
+    .md-button {
+      margin: 0;
+    }
+  }
+  .form {
+    margin-bottom: 60px;
+  }
+  .background {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 0;
+  }
+  .md-content {
+    z-index: 1;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+  }
+  .loading-overlay {
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+</style>
+
+
+<script>
 export default {
   name: "Authentication",
   data: () => ({
-    showSnackbar: true,
-    authResult: "Under development, no authentication is needed for now",
+    showSnackbar: false,
+    authResult: "",
     loading: false,
     login: {
-      email: "",
+      username: "",
       password: "",
     },
   }),
   methods: {
-    auth() {
+    async auth() {
       this.loading = true;
-      setTimeout(() => {
+      let res = await this.$Global.login(this.login.username, this.login.password);
+      this.login.password=""
+      if (res.code == 0) {
+        this.authResult = "Successfully logged in as " + res.name;
+        this.showSnackbar = true;
+        setTimeout(() => {
+          this.$router.push('/app')
+        }, 1000);
+      } else {
+        this.authResult =
+          "Authentication failed: " +
+          res.message +
+          " (" +
+          String(res.code) +
+          ")";
+        this.showSnackbar = true;
         this.loading = false;
-      }, 5000);
+      }
+      // setTimeout(() => {
+      //   this.loading = false;
+      //   }, 5000);
     },
   },
   mounted: function () {
-    this.$Global.user = {
-      uID: "test",
-      token: "test",
-      name: "Test Account",
-    };
-    setTimeout(() => {
-      this.$router.push("/app");
-    }, 3000);
+    this.$Global.pullUserFromLocalStorage()
+    if(this.$Global.getAuthStatus()){
+      this.showSnackbar=true
+      this.loading=true
+      this.authResult="Already logged in..."
+      setTimeout(() => {        
+        this.$router.push('/app')
+      }, 3000);
+    }
   },
 };
 </script>

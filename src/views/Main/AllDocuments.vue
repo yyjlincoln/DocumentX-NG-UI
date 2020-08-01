@@ -105,7 +105,6 @@ export default {
     },
     EditDoc: function (e) {
       var data = e.currentTarget.dataset;
-      console.log(data);
       this.$router.push({ path: "/app/edit", query: { docID: data.docid } });
     },
     CopyLink: function (e) {

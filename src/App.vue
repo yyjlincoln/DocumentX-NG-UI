@@ -23,10 +23,12 @@ export default {
       this.transitionName = toDepth < fromDepth ? "fade" : "fade";
     },
   },
-  mounted() {
-    if (this.$route.path != "/") {
-      if (!this.$Global.user.token) {
-        this.$router.push("/");
+  mounted() {    
+    this.$Global.pullUserFromLocalStorage()
+    let path = this.$route.path.split("/", 2);
+    if (path[1] === "app") {
+      if (!this.$Global.getAuthStatus()) {
+        this.$router.push("/auth");
       }
     }
   },

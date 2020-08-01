@@ -15,10 +15,11 @@
             <div class="md-toolbar-section-end">
               <md-menu>
                 <md-button class="md-icon-button" md-size="auto" md-menu-trigger>
-                  <md-avatar style="background: rgba(0,0,0,0.2)">{{"T"[0]?"T"[0]:"?"}}</md-avatar>
+                  <md-avatar style="background: rgba(0,0,0,0.2)">{{$Global.user.name?$Global.user.name[0].toUpperCase():"?"}}</md-avatar>
                   <md-menu-content>
-                    <md-menu-item>You are logged in as TestAccount</md-menu-item>
-                    <md-menu-item to="/">Logout</md-menu-item>
+                    <md-menu-item>You are logged in as {{$Global.user.name}}</md-menu-item>
+                    <md-menu-item to="/" @click="logout">Logout</md-menu-item>
+                    <!-- Can not directly call $Global.logout due to issues with "this" -->
                   </md-menu-content>
                 </md-button>
               </md-menu>
@@ -70,7 +71,6 @@ export default {
   }),
   methods: {
     navigate: function (e) {
-      console.log(e.currentTarget.dataset);
       let where = e.currentTarget.dataset.where
       if(where=="all"){
         this.title="All Documents"
@@ -93,6 +93,9 @@ export default {
       }
       this.$router.push(root + location + "");
     },
+    logout(){
+      this.$Global.logout()
+    }
   },
 };
 </script>

@@ -146,7 +146,6 @@ export default {
       var formData = new FormData();
       formData.append("docID", this.docID);
 
-      console.log(this.$Global)
       // axios
       this.$Global
         .getURI("https://apis.mcsrv.icu/editDocumentByID", {
