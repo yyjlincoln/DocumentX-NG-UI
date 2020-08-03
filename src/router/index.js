@@ -9,6 +9,7 @@ import SearchDocuments from '../views/Main/SearchDocuments.vue'
 import UploadDocument from '../views/Main/UploadDocument.vue'
 import EditDocument from '../views/Main/EditDocument.vue'
 import NotFound from '../views/NotFound.vue'
+import ViewDocument from '../views/ViewDocument.vue'
 
 Vue.use(VueRouter)
 
@@ -49,6 +50,9 @@ Vue.use(VueRouter)
         component: EditDocument
       }
     ]
+  },{
+    path:'/view',
+    component: ViewDocument
   },
   {
     path:'*',

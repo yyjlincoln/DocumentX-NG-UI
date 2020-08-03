@@ -145,14 +145,27 @@ export default {
     },
   },
   mounted: function () {
+    var next = this.$route.query.next
+
     this.$Global.pullUserFromLocalStorage()
     if(this.$Global.getAuthStatus()){
       this.showSnackbar=true
       this.loading=true
       this.authResult="Already logged in..."
+
       setTimeout(() => {        
+        if(next){
+          try{
+            next = atob(next)
+            this.$router.push(next)
+          } catch(e){
+            this.authResult="Can not redirect to app"
+            this.showSnackbar=true
+          }
+        }
         this.$router.push('/app')
       }, 3000);
+
     }
   },
 };
