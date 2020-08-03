@@ -39,7 +39,10 @@ export default {
             this.link = "https://apis.mcsrv.icu" + res.data.link;
             window.location = "https://apis.mcsrv.icu" + res.data.link;
           } else {
-            if (res.data.code == -400) {
+            if (res.data.code == -301) {
+              this.title = "Document not found!";
+              this.subtitle = "We could not find this document. (-301)";
+            } else if (res.data.code == -400) {
               this.title = "Access is denied.";
               this.subtitle =
                 "You do not have the permission to access this document.";
