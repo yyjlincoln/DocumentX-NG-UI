@@ -121,13 +121,16 @@ export default {
   methods: {
     async auth() {
       this.loading = true;
-      let res = await this.$Global.login(this.login.username, this.login.password);
-      this.login.password=""
+      let res = await this.$Global.login(
+        this.login.username,
+        this.login.password
+      );
+      this.login.password = "";
       if (res.code == 0) {
         this.authResult = "Successfully logged in as " + res.name;
         this.showSnackbar = true;
         setTimeout(() => {
-          this.$router.push('/app')
+          this.$router.push("/app");
         }, 1000);
       } else {
         this.authResult =
@@ -145,27 +148,29 @@ export default {
     },
   },
   mounted: function () {
-    var next = this.$route.query.next
+    var next = this.$route.query.next;
 
-    this.$Global.pullUserFromLocalStorage()
-    if(this.$Global.getAuthStatus()){
-      this.showSnackbar=true
-      this.loading=true
-      this.authResult="Already logged in..."
+    this.$Global.pullUserFromLocalStorage();
+    if (this.$Global.getAuthStatus()) {
+      this.showSnackbar = true;
+      this.loading = true;
+      this.authResult = "Already logged in...";
+      console.log(next);
 
-      setTimeout(() => {        
-        if(next){
-          try{
-            next = atob(next)
-            this.$router.push(next)
-          } catch(e){
-            this.authResult="Can not redirect to app"
-            this.showSnackbar=true
+      setTimeout(() => {
+        if (next) {
+          try {
+            next = atob(next);
+            console.log("Push to " + next);
+            this.$router.push(next);
+          } catch (e) {
+            this.authResult = "Can not redirect to app";
+            this.showSnackbar = true;
           }
+        } else {
+          this.$router.push("/app");
         }
-        this.$router.push('/app')
       }, 3000);
-
     }
   },
 };
