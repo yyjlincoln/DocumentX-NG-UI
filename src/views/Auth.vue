@@ -164,8 +164,9 @@ export default {
             console.log("Push to " + next);
             this.$router.push(next);
           } catch (e) {
+            this.showSnackbar = false;
             this.authResult = "Can not redirect to app";
-            this.showSnackbar = true;
+            this.showSnackbar = true;          
           }
         } else {
           this.$router.push("/app");
