@@ -55,6 +55,9 @@ export default {
                   next: btoa(this.$route.fullPath),
                 },
               });
+            } else if (res.data.code == -501 || res.data.code == -502) {
+              this.title="Action is required."
+                this.subtitle = res.data.message;
             } else {
               this.title = "An error occured";
               this.subtitle =
