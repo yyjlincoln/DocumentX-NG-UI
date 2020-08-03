@@ -89,8 +89,6 @@ export default {
       });
     }
     this.ready = true;
-
-    window.print()
   },
 };
 </script>
