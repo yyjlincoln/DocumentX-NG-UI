@@ -2,7 +2,7 @@
 
 <template>
   <div id="app">
-    <div id="nav"></div>
+    <!-- <div id="nav"></div> -->
     <div id="container">
       <!-- <transition :name="transitionName"> -->
       <router-view />
@@ -80,5 +80,14 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+html{
+  margin: 0;
+  padding: 0;
+}
+body{
+  margin: 0;
+  padding: 0;
 }
 </style>

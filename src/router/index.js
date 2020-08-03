@@ -10,10 +10,11 @@ import UploadDocument from '../views/Main/UploadDocument.vue'
 import EditDocument from '../views/Main/EditDocument.vue'
 import NotFound from '../views/NotFound.vue'
 import ViewDocument from '../views/ViewDocument.vue'
+import PrintDocuments from '../views/Main/PrintDocuments.vue'
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'Home',
@@ -25,37 +26,41 @@ Vue.use(VueRouter)
     component: Auth
   },
   {
-    path:'/app',
+    path: '/app',
     name: 'DocumentX',
     component: Main,
-    children:[
+    children: [
       {
-        path:'',
+        path: '',
         component: Dashboard
       },
       {
-        path:'all',
+        path: 'all',
         component: AllDocuments
       },
       {
-        path:'search',
+        path: 'search',
         component: SearchDocuments
       },
       {
-        path:'upload',
+        path: 'upload',
         component: UploadDocument
       },
       {
-        path:'edit',
+        path: 'edit',
         component: EditDocument
       }
     ]
-  },{
-    path:'/view',
+  },
+  {
+    path: '/app/print',
+    component: PrintDocuments
+  }, {
+    path: '/view',
     component: ViewDocument
   },
   {
-    path:'*',
+    path: '*',
     component: NotFound
   }
 ]

@@ -195,14 +195,10 @@ export default {
       }
       // axios
       this.$Global
-        .getURI("https://apis.mcsrv.icu/getDocumentByID", {
-          params: {
-            docID: this.docID,
-          },
-        })
+        .getDocumentByID(this.docID)
         .then((res) => {
-          if (res.data.code == 0) {
-            this.form = res.data.result;
+          if (res.code == 0) {
+            this.form = res.result;
             this.sending = false;
           }
         })

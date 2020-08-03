@@ -16,7 +16,6 @@ Vue.prototype.$Global = {
     name: null
   },
   getURI: function (...args) {
-
     if (args[1] && args[1].params) {
       args[1].params.uID = this.user.uID
       args[1].params.token = this.user.token
@@ -82,6 +81,14 @@ Vue.prototype.$Global = {
   },
   saveUserToLocalStorage() {
     localStorage.user = JSON.stringify(this.user)
+  },
+  async getDocumentByID(docID) {
+    let res = await this.getURI("https://apis.mcsrv.icu/getDocumentByID", {
+      params: {
+        docID: docID,
+      },
+    })
+    return res.data
   }
 }
 

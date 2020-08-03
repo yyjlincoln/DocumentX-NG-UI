@@ -45,12 +45,13 @@
                 <md-menu-item @click="DownloadPopUp" :data-docid="item.docID">Download</md-menu-item>
                 <md-menu-item @click="EditDoc" :data-docid="item.docID">Edit</md-menu-item>
                 <md-menu-item @click="CopyLink" :data-docid="item.docID">Copy Link</md-menu-item>
+                <md-menu-item @click="PrintAllSelected" :data-docid="item.docID">Print Selected Documents</md-menu-item>
                 <md-menu-item @click="DeleteDoc" :data-docid="item.docID">Delete</md-menu-item>
               </md-menu-content>
             </md-menu>
           </md-table-cell>
           <md-table-cell md-label="Select..." style="width: fit-content;">
-            <md-checkbox v-model="item.checked"></md-checkbox>
+            <md-checkbox v-model="checkList[item.docID]"></md-checkbox>
           </md-table-cell>
         </md-table-row>
       </md-table>
@@ -74,6 +75,7 @@ export default {
     showSnackbar: false,
     snack: "",
     CopyToClipboard: "",
+    checkList: {},
   }),
   methods: {
     updateData: function () {
@@ -102,6 +104,16 @@ export default {
       } else {
         return "about:blank";
       }
+    },
+    PrintAllSelected: function (e) {
+      var docID = e.currentTarget.dataset.docid
+      this.checkList[docID] = true;
+      this.$router.push({
+        path: "/app/print",
+        query: {
+          docIDs: JSON.stringify(Object.keys(this.checkList)),
+        },
+      });
     },
     EditDoc: function (e) {
       var data = e.currentTarget.dataset;
