@@ -28,7 +28,7 @@ export default {
           params: {
             docID: this.$route.query.docID,
             token: this.$route.query.token,
-            link: null
+            link: null,
           },
         })
         .then((res) => {
@@ -39,7 +39,11 @@ export default {
             this.link = "https://apis.mcsrv.icu" + res.data.link;
             window.location = "https://apis.mcsrv.icu" + res.data.link;
           } else {
-            if (res.data.code == -401) {
+            if (res.data.code == -400) {
+              this.title = "Access is denied.";
+              this.subtitle =
+                "You do not have the permission to access this document.";
+            } else if (res.data.code == -401) {
               this.subtitle = "Sign in is required.";
               this.title = "Redirecting...";
               this.$router.push({
