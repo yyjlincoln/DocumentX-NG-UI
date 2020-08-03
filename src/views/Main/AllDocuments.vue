@@ -110,18 +110,13 @@ export default {
     CopyLink: function (e) {
       var c = document.getElementById("CopyToClipboard");
       var docID = e.currentTarget.dataset.docid;
-      this.GetDownloadLink(docID).then((link) => {
-        c.value = link;
-        c.select();
-        c.setSelectionRange(0, 99999);
-        document.execCommand("copy");
-        this.snack = "Link copied to clipboard.";
-        this.showSnackbar = true;
-      });
-
-      // setTimeout(() => {
-      //   document.execCommand("copy");
-      // }, 100);
+      // Temporary - Need to integrate getDocumentAccess api.
+      c.value = "https://mcsrv.icu/view?docID=" + docID;
+      c.select();
+      c.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      this.snack = "Link copied to clipboard.";
+      this.showSnackbar = true;
     },
     DeleteDoc: function (e) {
       var data = e.currentTarget.dataset;
