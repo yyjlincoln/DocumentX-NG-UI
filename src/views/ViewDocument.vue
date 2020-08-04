@@ -56,7 +56,7 @@ export default {
                 },
               });
             } else if (res.data.code == -501 || res.data.code == -502) {
-              this.title="Action is required."
+              this.title="Please open thie page in the browser."
                 this.subtitle = res.data.message;
             } else {
               this.title = "An error occured";
