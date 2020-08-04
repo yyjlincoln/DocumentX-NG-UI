@@ -44,7 +44,7 @@
           </tr>
           <tr>
             <td class="tg-baqh">Retrieve File...</td>
-            <td class="tg-baqh" colspan="3" style="min-height: 40px; height: 100px;">
+            <td class="tg-baqh" colspan="3" style="">
               <img :src="doc.qr" style="height: 70px;" />
             </td>
           </tr>
