@@ -130,7 +130,7 @@ export default {
         this.authResult = "Successfully logged in as " + res.name;
         this.showSnackbar = true;
         setTimeout(() => {
-          this.$router.push("/app");
+          this.redirect();
         }, 1000);
       } else {
         this.authResult =
@@ -142,37 +142,34 @@ export default {
         this.showSnackbar = true;
         this.loading = false;
       }
-      // setTimeout(() => {
-      //   this.loading = false;
-      //   }, 5000);
+    },
+    redirect() {
+      // Check the next parameter
+      var next = this.$route.query.next;
+      try {
+        if (next) {
+          next = atob(next);
+        } else {
+          next = "/app";
+        }
+      } catch (e) {
+        this.authResult = "Invalid next parameter! Redirect to app...";
+        this.showSnackbar = true;
+        next = "/app";
+      }
+      // Now redirect
+      this.$router.push(next);
     },
   },
   mounted: function () {
-    var next = this.$route.query.next;
-
-    this.$Global.pullUserFromLocalStorage();
-    if (this.$Global.getAuthStatus()) {
+    // Retrieve user status
+    if (this.$Global.pullUserFromLocalStorage()) {
       this.showSnackbar = true;
       this.loading = true;
-      this.authResult = "Already logged in...";
-      console.log(next);
-
+      this.authResult = "You are logged in...";
       setTimeout(() => {
-        if (next) {
-          try {
-            next = atob(next);
-            console.log("Push to " + next);
-            this.$router.push(next);
-          } catch (e) {
-            this.showSnackbar = false;
-            this.authResult = "Can not redirect to app";
-            this.showSnackbar = true;
-            this.loading = false;
-          }
-        } else {
-          this.$router.push("/app");
-        }
-      }, 3000);
+        this.redirect();
+      }, 1000);
     }
   },
 };

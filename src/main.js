@@ -75,9 +75,15 @@ Vue.prototype.$Global = {
     return this.user.name && this.user.token && this.user.token
   },
   pullUserFromLocalStorage() {
-    if (localStorage.user) {
-      this.user = JSON.parse(localStorage.user)
+    try {
+      if (localStorage.user) {
+        this.user = JSON.parse(localStorage.user)
+        return this.getAuthStatus();
+      }
+    } catch (e) {
+      localStorage.user = ""
     }
+    return this.getAuthStatus();
   },
   saveUserToLocalStorage() {
     localStorage.user = JSON.stringify(this.user)
@@ -89,7 +95,7 @@ Vue.prototype.$Global = {
       },
     })
     return res.data
-  }
+  },
 }
 
 new Vue({

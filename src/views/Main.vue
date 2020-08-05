@@ -9,7 +9,7 @@
                 <md-icon>menu</md-icon>
               </md-button>
 
-              <span class="md-title" @click="menuVisible = !menuVisible">{{title}}</span>
+              <a class="md-title" @click="menuVisible = !menuVisible" href="#">{{title}}</a>
             </div>
 
             <div class="md-toolbar-section-end">
