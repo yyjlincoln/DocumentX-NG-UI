@@ -72,17 +72,17 @@ Vue.prototype.$Global = {
     this.saveUserToLocalStorage()
   },
   async getAuthStatus() {
-    this.getURI('https://apis.mcsrv.icu/getAuthStatus').then((res) => {
+    try {
+      var res = await this.getURI('https://apis.mcsrv.icu/getAuthStatus')
       if (res.data.code == 0) {
         return true
       } else {
         return false
       }
-    }).catch((e) => {
+    } catch (e) {
       console.error(e)
       return false
-    })
-
+    }
   },
   pullUserFromLocalStorage() {
     try {
@@ -107,7 +107,8 @@ Vue.prototype.$Global = {
   async init() {
     this.pullUserFromLocalStorage()
     let auth = await this.getAuthStatus()
-    if (auth) {
+    console.warn(auth)
+    if (auth == true) {
       return {
         'code': 0,
         'message': 'Initialization OK'
