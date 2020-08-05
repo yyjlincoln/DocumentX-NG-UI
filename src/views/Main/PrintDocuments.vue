@@ -4,52 +4,59 @@
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
       <p>{{loadMessage}}</p>
     </div>
-    <div v-for="doc in documents" :key="doc" class="printUI">
-      <table class="tg" style="table-layout: fixed; width: 661px">
-        <colgroup>
-          <col style="width: 160px" />
-          <col style="width: 171px" />
-          <col style="width: 159px" />
-          <col style="width: 171px" />
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="tg-baqh" colspan="4">
-              <span style="font-weight:bold">DocumentX Record</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="tg-baqh">Document Name</td>
-            <td class="tg-baqh">{{doc.name}}</td>
-            <td class="tg-c3ow">Document ID</td>
-            <td class="tg-c3ow">{{doc.docID}}</td>
-          </tr>
-          <tr>
-            <td class="tg-baqh">Subject</td>
-            <td class="tg-baqh">{{doc.subject}}</td>
-            <td class="tg-baqh">Document Status</td>
-            <td class="tg-baqh">{{doc.status}}</td>
-          </tr>
-          <tr>
-            <td class="tg-baqh">Date Scanned</td>
-            <td class="tg-baqh">{{new Date(doc.dScanned*1000)}}</td>
-            <td class="tg-baqh">Comments...</td>
-            <td class="tg-baqh">{{doc.comments}}</td>
-          </tr>
-          <tr>
-            <td class="tg-baqh">Description</td>
-            <td class="tg-baqh" colspan="3">{{doc.desc}}</td>
-          </tr>
-          <tr>
-            <td class="tg-baqh">Retrieve File...</td>
-            <td class="tg-baqh" colspan="3" style="">
-              <img :src="doc.qr" style="height: 70px;" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div v-if="simp">
+      <div v-for="doc in documents" :key="doc" class="printUI">
+        
+      </div>
+    </div>
+    <div v-else>
+      <div v-for="doc in documents" :key="doc" class="printUI">
+        <table class="tg" style="table-layout: fixed; width: 661px">
+          <colgroup>
+            <col style="width: 160px" />
+            <col style="width: 171px" />
+            <col style="width: 159px" />
+            <col style="width: 171px" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="tg-baqh" colspan="4">
+                <span style="font-weight:bold">DocumentX Record</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tg-baqh">Document Name</td>
+              <td class="tg-baqh">{{doc.name}}</td>
+              <td class="tg-c3ow">Document ID</td>
+              <td class="tg-c3ow">{{doc.docID}}</td>
+            </tr>
+            <tr>
+              <td class="tg-baqh">Subject</td>
+              <td class="tg-baqh">{{doc.subject}}</td>
+              <td class="tg-baqh">Document Status</td>
+              <td class="tg-baqh">{{doc.status}}</td>
+            </tr>
+            <tr>
+              <td class="tg-baqh">Date Scanned</td>
+              <td class="tg-baqh">{{new Date(doc.dScanned*1000)}}</td>
+              <td class="tg-baqh">Comments...</td>
+              <td class="tg-baqh">{{doc.comments}}</td>
+            </tr>
+            <tr>
+              <td class="tg-baqh">Description</td>
+              <td class="tg-baqh" colspan="3">{{doc.desc}}</td>
+            </tr>
+            <tr>
+              <td class="tg-baqh">Retrieve File...</td>
+              <td class="tg-baqh" colspan="3" style>
+                <img :src="doc.qr" style="height: 70px;" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -61,6 +68,7 @@ export default {
     documents: null,
     ready: false,
     loadMessage: null,
+    simp: false,
   }),
   methods: {},
   mounted() {
