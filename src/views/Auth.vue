@@ -163,14 +163,16 @@ export default {
   },
   mounted: function () {
     // Retrieve user status
-    if (this.$Global.pullUserFromLocalStorage()) {
-      this.showSnackbar = true;
-      this.loading = true;
-      this.authResult = "You are logged in...";
-      setTimeout(() => {
-        this.redirect();
-      }, 1000);
-    }
+    this.$Global.getAuthStatus().then((res) => {
+      if (res) {
+        this.showSnackbar = true;
+        this.loading = true;
+        this.authResult = "You are logged in...";
+        setTimeout(() => {
+          this.redirect();
+        }, 1000);
+      }
+    });
   },
 };
 </script>

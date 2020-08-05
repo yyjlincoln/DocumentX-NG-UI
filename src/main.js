@@ -71,19 +71,27 @@ Vue.prototype.$Global = {
     }
     this.saveUserToLocalStorage()
   },
-  getAuthStatus() {
-    return this.user.name && this.user.token && this.user.token
+  async getAuthStatus() {
+    this.getURI('https://apis.mcsrv.icu/getAuthStatus').then((res) => {
+      if (res.data.code == 0) {
+        return true
+      } else {
+        return false
+      }
+    }).catch((e) => {
+      console.error(e)
+      return false
+    })
+
   },
   pullUserFromLocalStorage() {
     try {
       if (localStorage.user) {
         this.user = JSON.parse(localStorage.user)
-        return this.getAuthStatus();
       }
     } catch (e) {
       localStorage.user = ""
     }
-    return this.getAuthStatus();
   },
   saveUserToLocalStorage() {
     localStorage.user = JSON.stringify(this.user)
@@ -96,6 +104,21 @@ Vue.prototype.$Global = {
     })
     return res.data
   },
+  async init() {
+    this.pullUserFromLocalStorage()
+    let auth = await this.getAuthStatus()
+    if (auth) {
+      return {
+        'code': 0,
+        'message': 'Initialization OK'
+      }
+    } else {
+      return {
+        'code': -1,
+        'message': 'Authentication failed'
+      }
+    }
+  }
 }
 
 new Vue({

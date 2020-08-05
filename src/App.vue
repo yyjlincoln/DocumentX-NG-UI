@@ -23,14 +23,21 @@ export default {
       this.transitionName = toDepth < fromDepth ? "fade" : "fade";
     },
   },
-  mounted() {    
-    this.$Global.pullUserFromLocalStorage()
-    let path = this.$route.path.split("/", 2);
-    if (path[1] === "app") {
-      if (!this.$Global.getAuthStatus()) {
-        this.$router.push("/auth");
+  created() {
+    console.log("mounted");
+    this.$Global.init().then((res) => {
+      if (res.code == 0) {
+        console.log("init ok");
+      } else if (res.code == -1) {
+        console.log("Not logged in");
+        let path = this.$route.path.split("/", 2);
+        if (path[1] === "app") {
+            this.$router.push("/auth");
+        }
+      } else {
+        console.log(res);
       }
-    }
+    });
   },
 };
 </script>
@@ -82,11 +89,11 @@ export default {
   justify-content: center;
 }
 
-html{
+html {
   margin: 0;
   padding: 0;
 }
-body{
+body {
   margin: 0;
   padding: 0;
 }
