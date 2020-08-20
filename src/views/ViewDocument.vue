@@ -47,6 +47,7 @@ export default {
         });
     },
     login: function () {
+      this.$Global.logout()
       this.$router.push({
         path: "auth",
         query: {
