@@ -5,6 +5,7 @@
       <h1>{{title}}</h1>
       <p>{{subtitle}}</p>
       <a @click="downloadManually" href="#" v-if="link">Download...</a>
+      <a @click="login" href="#" v-if="accessDenied">Try a different account...</a>
     </div>
   </div>
 </template>
@@ -18,11 +19,12 @@ export default {
   data: () => ({
     title: "Please wait...",
     subtitle: "Initiating download...",
-    link: null
+    link: null,
+    accessDenied: false,
   }),
   methods: {
     downloadManually: function () {
-      console.log("Download")
+      console.log("Download");
       this.$Global
         .getURI("https://apis.mcsrv.icu/getDownloadLink", {
           params: {
@@ -43,6 +45,14 @@ export default {
           this.subtitle = String(e);
           this.title = "An error occured.";
         });
+    },
+    login: function () {
+      this.$router.push({
+        path: "auth",
+        query: {
+          next: btoa(this.$route.fullPath),
+        },
+      });
     },
   },
   mounted() {
@@ -71,10 +81,11 @@ export default {
               this.title = "Access is denied.";
               this.subtitle =
                 "You do not have the permission to access this document.";
+              this.accessDenied = true;
             } else if (res.data.code == -401) {
               this.subtitle = "Sign in is required.";
               this.title = "Redirecting...";
-              setTimeout(() => {                
+              setTimeout(() => {
                 this.$router.push({
                   path: "auth",
                   query: {
@@ -82,17 +93,17 @@ export default {
                   },
                 });
               }, 3000);
-            } else if(res.data.code==-405 || res.data.code==-406){
+            } else if (res.data.code == -405 || res.data.code == -406) {
               this.subtitle = "Access has expired.";
               this.title = "Log in is required. Redirecting...";
-              setTimeout(() => {                
+              setTimeout(() => {
                 this.$router.push({
                   path: "auth",
                   query: {
                     next: btoa(this.$route.fullPath),
                   },
                 });
-              }, 3000);              
+              }, 3000);
             } else if (res.data.code == -501 || res.data.code == -502) {
               this.title = "Please open thie page in the browser.";
               this.subtitle = res.data.message;
