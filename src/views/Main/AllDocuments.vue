@@ -90,7 +90,9 @@ export default {
     DownloadPopUp: function (e) {
       var data = e.currentTarget.dataset;
       this.GetDownloadLink(data.docid).then((link) => {
-        window.open(link);
+        // window.open(link);
+        // This fixes the problem with Safari
+        window.location = link;
       });
     },
     GetDownloadLink: async function (docID) {
