@@ -24,7 +24,6 @@ export default {
     },
   },
   created() {
-    console.log("mounted");
     this.$Global.init().then((res) => {
       if (res.code == 0) {
         console.log("init ok");
@@ -32,7 +31,7 @@ export default {
         console.log("Not logged in");
         let path = this.$route.path.split("/", 2);
         if (path[1] === "app") {
-            this.$router.push("/auth");
+          this.$router.push("/auth");
         }
       } else {
         console.log(res);

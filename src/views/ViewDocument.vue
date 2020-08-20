@@ -74,12 +74,25 @@ export default {
             } else if (res.data.code == -401) {
               this.subtitle = "Sign in is required.";
               this.title = "Redirecting...";
-              this.$router.push({
-                path: "auth",
-                query: {
-                  next: btoa(this.$route.fullPath),
-                },
-              });
+              setTimeout(() => {                
+                this.$router.push({
+                  path: "auth",
+                  query: {
+                    next: btoa(this.$route.fullPath),
+                  },
+                });
+              }, 3000);
+            } else if(res.data.code==-405 || res.data.code==-406){
+              this.subtitle = "Access has expired.";
+              this.title = "Log in is required. Redirecting...";
+              setTimeout(() => {                
+                this.$router.push({
+                  path: "auth",
+                  query: {
+                    next: btoa(this.$route.fullPath),
+                  },
+                });
+              }, 3000);              
             } else if (res.data.code == -501 || res.data.code == -502) {
               this.title = "Please open thie page in the browser.";
               this.subtitle = res.data.message;

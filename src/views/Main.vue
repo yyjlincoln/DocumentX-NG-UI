@@ -15,7 +15,9 @@
             <div class="md-toolbar-section-end">
               <md-menu>
                 <md-button class="md-icon-button" md-size="auto" md-menu-trigger>
-                  <md-avatar style="background: rgba(0,0,0,0.2)">{{$Global.user.name?$Global.user.name[0].toUpperCase():"?"}}</md-avatar>
+                  <md-avatar
+                    style="background: rgba(0,0,0,0.2)"
+                  >{{$Global.user.name?$Global.user.name[0].toUpperCase():"?"}}</md-avatar>
                   <md-menu-content>
                     <md-menu-item>You are logged in as {{$Global.user.name}}</md-menu-item>
                     <md-menu-item to="/" @click="logout">Logout</md-menu-item>
@@ -71,17 +73,17 @@ export default {
   }),
   methods: {
     navigate: function (e) {
-      let where = e.currentTarget.dataset.where
-      if(where=="all"){
-        this.title="All Documents"
-      } else if(where=="edit"){
-        this.title="Edit Document"
-      } else if(where=="upload"){
-        this.title="Upload..."
-      } else if (where=="search"){
-        this.title="Search"
-      } else if (where=="" || where=="/"){
-        this.title="Dashboard"
+      let where = e.currentTarget.dataset.where;
+      if (where == "all") {
+        this.title = "All Documents";
+      } else if (where == "edit") {
+        this.title = "Edit Document";
+      } else if (where == "upload") {
+        this.title = "Upload...";
+      } else if (where == "search") {
+        this.title = "Search";
+      } else if (where == "" || where == "/") {
+        this.title = "Dashboard";
       }
       this.$router.push("/app/" + e.currentTarget.dataset.where);
       this.menuVisible = false;
@@ -93,9 +95,24 @@ export default {
       }
       this.$router.push(root + location + "");
     },
-    logout(){
-      this.$Global.logout()
-    }
+    logout() {
+      this.$Global.logout();
+    },
+  },
+  mounted() {
+    this.$Global.init().then((res) => {
+      if (res.code == 0) {
+        console.log("init ok");
+      } else if (res.code == -1) {
+        console.log("Not logged in");
+        let path = this.$route.path.split("/", 2);
+        if (path[1] === "app") {
+          this.$router.push("/auth");
+        }
+      } else {
+        console.log(res);
+      }
+    });
   },
 };
 </script>
