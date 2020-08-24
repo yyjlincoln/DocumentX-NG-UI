@@ -31,8 +31,14 @@ export default {
         console.log("Not logged in");
         let path = this.$route.path.split("/", 2);
         if (path[1] === "app") {
+          // console.log({
+          //   path: "/auth",
+          //   query: {
+          //     next: btoa(this.$route.fullPath),
+          //   },
+          // })
           this.$router.push({
-            path: "auth",
+            path: "/auth",
             query: {
               next: btoa(this.$route.fullPath),
             },
