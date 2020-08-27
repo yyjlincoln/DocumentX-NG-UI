@@ -14,6 +14,16 @@
         <p>Editing Document #{{this.docID}}</p>
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-small-size-100">
+            <md-field :class="getValidationClass('name')">
+              <label for="name">Name</label>
+              <md-input name="name" id="name" autocomplete v-model="form.name" :disabled="sending" />
+              <span class="md-error" v-if="!$v.form.name.required">Document Name is required</span>
+              <span class="md-error" v-else-if="!$v.form.name.minlength">This field is invalid.</span>
+            </md-field>
+          </div>
+        </div>
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-small-size-100">
             <md-field :class="getValidationClass('docID')">
               <label for="docID">DocID</label>
               <md-input
@@ -39,17 +49,6 @@
               />
             </md-field>
           </div>
-        </div>
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-small-size-100">
-            <md-field :class="getValidationClass('name')">
-              <label for="name">Name</label>
-              <md-input name="name" id="name" autocomplete v-model="form.name" :disabled="sending" />
-              <span class="md-error" v-if="!$v.form.name.required">Document Name is required</span>
-              <span class="md-error" v-else-if="!$v.form.name.minlength">This field is invalid.</span>
-            </md-field>
-          </div>
-
           <div class="md-layout-item md-small-size-100">
             <md-field :class="getValidationClass('subject')">
               <label for="subject">Subject</label>
@@ -65,7 +64,35 @@
             </md-field>
           </div>
         </div>
-
+        <div class="md-layout md-gutter">
+          <div class="md-layout-item md-small-size-100">
+            <md-field>
+              <label for="accessLevel">Access Level</label>
+              <md-select
+                v-model="form.accessLevel"
+                name="accessLevel"
+                id="accessLevel"
+                autocomplete
+                :disabled="sending"
+              >
+                <md-option value="public">Public</md-option>
+                <md-option value="private">Private</md-option>
+              </md-select>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-small-size-100">
+            <md-field>
+              <label for="owner">Owner</label>
+              <md-input
+                v-model="form.owner"
+                name="owner"
+                id="owner"
+                autocomplete
+                :disabled="sending"
+              />
+            </md-field>
+          </div>
+        </div>
         <md-field :class="getValidationClass('desc')">
           <label for="desc">Description</label>
           <md-textarea name="desc" id="desc" v-model="form.desc" :disabled="sending" />
@@ -103,6 +130,8 @@ export default {
       file: null,
       docID: null,
       status: null,
+      fileName: null,
+      owner:null,
     },
     sending: true,
     showSnackBar: false,
@@ -140,6 +169,9 @@ export default {
       this.form.desc = null;
       this.form.comments = null;
       this.form.status = null;
+      this.form.accessLevel = null;
+      this.form.owner=null;
+      this.form.fileName=null;
     },
     confirmRequest: function () {
       this.sending = true;
@@ -158,6 +190,8 @@ export default {
               desc: this.form.desc,
               comments: this.form.comments,
               status: this.form.status,
+              accessLevel: this.form.accessLevel,
+              owner: this.form.owner
             }),
           },
         })
