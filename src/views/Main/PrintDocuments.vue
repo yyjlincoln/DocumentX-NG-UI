@@ -5,9 +5,7 @@
       <p>{{loadMessage}}</p>
     </div>
     <div v-if="simp">
-      <div v-for="doc in documents" :key="doc" class="printUI">
-        
-      </div>
+      <div v-for="doc in documents" :key="doc" class="printUI"></div>
     </div>
     <div v-else>
       <div v-for="doc in documents" :key="doc" class="printUI">
@@ -93,10 +91,13 @@ export default {
             "https://apis.mcsrv.icu/qr?urlEncoded=" +
             btoa("https://mcsrv.icu/view?docID=" + res.result.docID);
           this.documents.push(r);
+          this.ready = true;
+        } else {
+          this.ready = false;
+          this.loadMessage = res.message + " (" + res.code + ")";
         }
       });
     }
-    this.ready = true;
   },
 };
 </script>
