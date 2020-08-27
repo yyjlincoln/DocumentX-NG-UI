@@ -5,7 +5,7 @@
       <div style="padding-top: 20px;">
         <h1>Welcome to DocumentX.</h1>
         <p>A Powerful Document Management System</p>
-        <md-button class="" @click="getStarted">Get started</md-button>
+        <md-button class="" @click="getStarted">Login</md-button>
       </div>
     </div>
 

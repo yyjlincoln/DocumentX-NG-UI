@@ -1,9 +1,10 @@
 <template>
   <div class="dashboard full">
     <div id="wrapper">
-      <p class="md-display-3">
-        <b>Welcome to DocumentX.</b>
-      </p>
+      <!-- <img src="../../assets/logo.png" style="margin-bottom: 40px;"/> -->
+      <h1>
+        <b>You are logged in as {{$Global.user.name}}.</b>
+      </h1>
       <!-- <p class="md-headline"></p> -->
       <md-button class="lowercase md-icon-button" @click="navigate" data-where="all">
         <md-icon>book</md-icon>
