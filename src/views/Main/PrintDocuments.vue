@@ -56,7 +56,7 @@
             </tr>
             <tr>
               <td class="tg-baqh">Date Scanned</td>
-              <td class="tg-baqh">{{new Date(doc.dScanned*1000)}}</td>
+              <td class="tg-baqh">{{new Date(doc.dScanned*1000).getDate()+"/"+new Date(doc.dScanned*1000).getMonth()+'/'+new Date(doc.dScanned*1000).getFullYear()}}</td>
               <td class="tg-baqh">Comments...</td>
               <td class="tg-baqh">{{doc.comments}}</td>
             </tr>
