@@ -48,7 +48,13 @@
                 <md-menu-item
                   @click="PrintAllSelected"
                   :data-docid="item.docID"
-                >Print Selected Documents</md-menu-item>
+                  :data-simple="true"
+                >Print Selected Documents (Simple)</md-menu-item>
+                <md-menu-item
+                  @click="PrintAllSelected"
+                  :data-docid="item.docID"
+                  :data-simple="false"
+                >Print Selected Documents (Full)</md-menu-item>
                 <md-menu-item @click="DeleteDoc" :data-docid="item.docID">Delete</md-menu-item>
               </md-menu-content>
             </md-menu>
@@ -112,11 +118,13 @@ export default {
     },
     PrintAllSelected: function (e) {
       var docID = e.currentTarget.dataset.docid;
+      var simple = e.currentTarget.dataset.simple
       this.checkList[docID] = true;
       this.$router.push({
         path: "/app/print",
         query: {
           docIDs: JSON.stringify(Object.keys(this.checkList)),
+          mode: simple?"simple":"full"
         },
       });
     },

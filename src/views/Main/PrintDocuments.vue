@@ -1,12 +1,30 @@
 <template>
-  <div>
+  <div id="printFriendly">
     <div v-if="!ready">
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
       <p>{{loadMessage}}</p>
     </div>
-    <div v-if="simp">
-      <div v-for="doc in documents" :key="doc" class="printUI"></div>
+
+    <div v-if="simp" style="position: relative; page-break-inside: avoid;page-break-after: avoid;">
+      <div id="simplePrintStyle">
+        <div id="simplePrintInner">
+          <div v-for="doc in documents" :key="doc" class="simpleElement">
+            <div class="simpleQR">
+              <div class="simpleQRInner">
+                <img :src="doc.qr" style="width: 90px;" />
+              </div>
+            </div>
+            <div class="simpleInfo">
+              <div class="simpleInfoInner">
+                <p>{{doc.name}}</p>
+                <p>{{doc.docID}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
     <div v-else>
       <div v-for="doc in documents" :key="doc" class="printUI">
         <table class="tg" style="table-layout: fixed; width: 661px">
@@ -70,6 +88,8 @@ export default {
   }),
   methods: {},
   mounted() {
+    this.simp = this.$route.query.mode == "simple" ? true : false;
+
     try {
       var DocumentIDs = JSON.parse(
         this.$route.query.docIDs ? this.$route.query.docIDs : "[]"
@@ -149,15 +169,93 @@ export default {
   page-break-inside: avoid;
 }
 
-.printUI {
-  margin-top: 30px;
-  margin-bottom: 30px;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
+#printFriendly {
+  position: relative;
+  top: 0px;
+  min-height: 100vh;
+  min-width: 100vw;
+  width: fit-content;
+  height: fit-content;
+  background: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
-.vert_cent {
+
+#simplePrintStyle {
+  display: flex;
+  min-width: 100vw;
+  min-height: 100vh;
+  width: fit-content;
+  height: fit-content;
+  flex-direction: column;
+  page-break-inside: avoid;
+  page-break-after: auto;
+  position: relative;
+}
+
+#simplePrintInner {
+  page-break-inside: avoid;
+  page-break-before: avoid;
+  page-break-after: auto;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.simpleElement {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  page-break-before: avoid;
+  page-break-after: auto;
+  margin-bottom: 10px;
+  margin-left: 5px;
+  position: relative;
+  width: 45%;
+  border: 1px grey dotted;
+  height: fit-content;
+  padding: 2.5%;
+  /* margin: 0.1%; */
+  display: flex;
+  flex-direction: row;
+}
+
+.simpleInfo {
+  margin-left: 15px;
+  width: 100%;
+  position: relative;
+}
+
+.simpleInfoInner {
+  width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+}
+/* .simpleElement img {
+  object-fit: contain;
+} */
+
+.printUI {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.simpleQR {
+  flex-shrink: 0;
+  width: fit-content;
+}
+.simpleQRInner {
+  page-break-inside: avoid;
+  display: flex;
+  height: 100%;
+  height: 100%;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 1.5%;
 }
 </style>
