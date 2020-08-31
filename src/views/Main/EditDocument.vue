@@ -80,6 +80,7 @@
               </md-select>
             </md-field>
           </div>
+
           <div class="md-layout-item md-small-size-100">
             <md-field>
               <label for="owner">Owner</label>
@@ -90,6 +91,12 @@
                 autocomplete
                 :disabled="sending"
               />
+            </md-field>
+          </div>
+          <div class="md-layout-item md-small-size-100">
+            <md-field>
+              <md-checkbox v-model="form.archived"></md-checkbox>
+              <p>Archived?</p>
             </md-field>
           </div>
         </div>
@@ -131,7 +138,8 @@ export default {
       docID: null,
       status: null,
       fileName: null,
-      owner:null,
+      owner: null,
+      archived: null
     },
     sending: true,
     showSnackBar: false,
@@ -170,8 +178,9 @@ export default {
       this.form.comments = null;
       this.form.status = null;
       this.form.accessLevel = null;
-      this.form.owner=null;
-      this.form.fileName=null;
+      this.form.owner = null;
+      this.form.fileName = null;
+      this.form.archived=null;
     },
     confirmRequest: function () {
       this.sending = true;
@@ -191,7 +200,8 @@ export default {
               comments: this.form.comments,
               status: this.form.status,
               accessLevel: this.form.accessLevel,
-              owner: this.form.owner
+              owner: this.form.owner,
+              archived: this.form.archived
             }),
           },
         })

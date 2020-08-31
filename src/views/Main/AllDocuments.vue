@@ -1,6 +1,8 @@
 <template>
   <div class="full">
     <p class="md-display-2">Documents Library</p>
+    <md-switch v-model="documentStatus" value="all" @change="updateData">Show Archived</md-switch>
+
     <div>
       <md-progress-spinner v-if="loading" md-mode="indeterminate"></md-progress-spinner>
       <!-- Snack Bar -->
@@ -29,7 +31,7 @@
           <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
           <md-table-cell md-label="Subject" md-sort-by="subject">{{ item.subject }}</md-table-cell>
           <md-table-cell md-label="Description" md-sort-by="desc">{{ item.desc }}</md-table-cell>
-          <md-table-cell md-label="Status" md-sort-by="status">{{ item.status }}</md-table-cell>
+          <md-table-cell md-label="Archived?">{{ item.archived }}</md-table-cell>
           <md-table-cell
             md-label="Time Scanned"
             md-sort-by="dScanned"
@@ -45,6 +47,11 @@
                 <md-menu-item @click="DownloadPopUp" :data-docid="item.docID">Download</md-menu-item>
                 <md-menu-item @click="EditDoc" :data-docid="item.docID">Edit</md-menu-item>
                 <md-menu-item @click="CopyLink" :data-docid="item.docID">Copy Link</md-menu-item>
+                <md-menu-item
+                  @click="ArchiveAllSelected"
+                  :data-docid="item.docID"
+                  :data-simple="true"
+                >Archive Selected Documents</md-menu-item>
                 <md-menu-item
                   @click="PrintAllSelected"
                   :data-docid="item.docID"
@@ -85,13 +92,21 @@ export default {
     snack: "",
     CopyToClipboard: "",
     checkList: {},
+    documentStatus: "active",
   }),
   methods: {
     updateData: function () {
-      this.$Global.getURI("https://apis.mcsrv.icu/getDocuments").then((res) => {
-        this.documents = res.data.result;
-        this.loading = false;
-      });
+      console.log('UpdateData')
+      this.$Global
+        .getURI("https://apis.mcsrv.icu/getDocuments", {
+          params: {
+            status: this.documentStatus,
+          },
+        })
+        .then((res) => {
+          this.documents = res.data.result;
+          this.loading = false;
+        });
     },
     DownloadPopUp: function (e) {
       var data = e.currentTarget.dataset;
@@ -118,15 +133,43 @@ export default {
     },
     PrintAllSelected: function (e) {
       var docID = e.currentTarget.dataset.docid;
-      var simple = e.currentTarget.dataset.simple
+      var simple = e.currentTarget.dataset.simple;
       this.checkList[docID] = true;
       this.$router.push({
         path: "/app/print",
         query: {
           docIDs: JSON.stringify(Object.keys(this.checkList)),
-          mode: simple?"simple":"full"
+          mode: simple ? "simple" : "full",
         },
       });
+    },
+    ArchiveAllSelected: function (e) {
+      var docID = e.currentTarget.dataset.docid;
+      this.checkList[docID] = true;
+      let counter = 0;
+      for (var x in Object.keys(this.checkList)) {
+        this.$Global
+          .getURI("https://apis.mcsrv.icu/editDocumentByID", {
+            params: {
+              docID: Object.keys(this.checkList)[x],
+              properties: JSON.stringify({
+                archived: true,
+              }),
+            },
+          })
+          .then((res) => {
+            counter = counter + 1;
+            console.log(res.data);
+            if (counter == Object.keys(this.checkList).length) {
+              this.showSnackbar = true;
+              this.snack = "Successfully archived " + counter + " documents.";
+              this.showSnackbar = true;
+              this.loading = true;
+              this.checkList = [];
+              this.updateData();
+            }
+          });
+      }
     },
     EditDoc: function (e) {
       var data = e.currentTarget.dataset;
