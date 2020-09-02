@@ -72,6 +72,7 @@
         </md-table-row>
       </md-table>
       <p>Showing {{documents==null?0:documents.length}} results.</p>
+      <a v-if="!allLoaded" href="#" @click="loadMore">Show more</a>
       <input
         style="opacity: 0; pointer-events: none; cursor: normal; z-index: -10000; position: fixed; top: -1000px;"
         id="CopyToClipboard"
@@ -93,20 +94,48 @@ export default {
     CopyToClipboard: "",
     checkList: {},
     documentStatus: "active",
+    limit: [0,50],
+    allLoaded: false
   }),
   methods: {
     updateData: function () {
-      console.log('UpdateData')
+      this.limit=[0,50]
+      this.allLoaded=false
       this.$Global
         .getURI("https://apis.mcsrv.icu/getDocuments", {
           params: {
             status: this.documentStatus,
+            start: this.limit[0],
+            end: this.limit[1]
           },
         })
         .then((res) => {
           this.documents = res.data.result;
           this.loading = false;
         });
+    },
+    getData: function (callback) {
+      this.$Global
+        .getURI("https://apis.mcsrv.icu/getDocuments", {
+          params: {
+            status: this.documentStatus,
+            start: this.limit[0],
+            end: this.limit[1]
+          },
+        })
+        .then(callback);
+    },
+    loadMore: function(){
+      this.limit = [this.limit[1],this.limit[1]+50]
+      this.getData((res)=>{
+        console.log(res)
+        if(res.data.result){
+          if(res.data.result.length<50){
+            this.allLoaded=true
+          }
+        }
+        this.documents = [...this.documents, ...res.data.result]
+      })
     },
     DownloadPopUp: function (e) {
       var data = e.currentTarget.dataset;
