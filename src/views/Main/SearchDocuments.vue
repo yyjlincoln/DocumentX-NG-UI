@@ -11,7 +11,19 @@
       <md-button class="md-primary" @click="showSnackbar = false">Close</md-button>
     </md-snackbar>
     <!-- Snack Bar End -->
-    Search
+
+    <!-- Added because I urgently need them. This is a temporary solution and will not stay here for too long. -->
+    <p>Go to a document</p>
+    <form @submit.prevent="go">
+      <p>Enter a docID:</p>
+      <md-input id="goto" name="docID" v-model="docID"/>
+      <md-input type="submit"/>
+    </form>
+    <form @submit.prevent="download">
+      <p>Download a document:</p>
+      <md-input id="download" name="docID" v-model="docID"/>
+      <md-input type="submit"/>
+    </form>
   </div>
 </template>
 <script>
@@ -20,7 +32,18 @@ export default {
   data: () => ({
     snack: "Under development",
     showSnackbar: true,
+    docID:null
   }),
-  methods: {},
+  methods: {
+    go: function(){
+      this.$router.push({ path: "/app/edit", query: { docID: this.docID } });
+      this.docID=null
+    },
+    download: function(){
+      this.$router.push({ path: "/view", query: { docID: this.docID } });
+      this.docID=null
+    },
+    
+  },
 };
 </script>
