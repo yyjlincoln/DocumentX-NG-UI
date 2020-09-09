@@ -28,7 +28,9 @@
       <!-- Confirm Dialog End-->
       <md-table v-if="!loading" v-model="documents" md-sort="dScanned" md-sort-order="desc" md-card>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
-          <md-table-cell md-label="Name" md-sort-by="name"><a @click="DownloadPopUp" :data-docid="item.docID" href="#">{{ item.name }}</a></md-table-cell>
+          <md-table-cell md-label="Name" md-sort-by="name">
+            <a @click="DownloadPopUp" :data-docid="item.docID" href="#">{{ item.name }}</a>
+          </md-table-cell>
           <md-table-cell md-label="Subject" md-sort-by="subject">{{ item.subject }}</md-table-cell>
           <md-table-cell md-label="Description" md-sort-by="desc">{{ item.desc }}</md-table-cell>
           <md-table-cell md-label="Archived?">{{ item.archived }}</md-table-cell>
@@ -94,19 +96,19 @@ export default {
     CopyToClipboard: "",
     checkList: {},
     documentStatus: "active",
-    limit: [0,50],
-    allLoaded: false
+    limit: [0, 50],
+    allLoaded: false,
   }),
   methods: {
     updateData: function () {
-      this.limit=[0,50]
-      this.allLoaded=false
+      this.limit = [0, 50];
+      this.allLoaded = false;
       this.$Global
         .getURI("https://apis.mcsrv.icu/getDocuments", {
           params: {
             status: this.documentStatus,
             start: this.limit[0],
-            end: this.limit[1]
+            end: this.limit[1],
           },
         })
         .then((res) => {
@@ -120,22 +122,22 @@ export default {
           params: {
             status: this.documentStatus,
             start: this.limit[0],
-            end: this.limit[1]
+            end: this.limit[1],
           },
         })
         .then(callback);
     },
-    loadMore: function(){
-      this.limit = [this.limit[1],this.limit[1]+50]
-      this.getData((res)=>{
-        console.log(res)
-        if(res.data.result){
-          if(res.data.result.length<50){
-            this.allLoaded=true
+    loadMore: function () {
+      this.limit = [this.limit[1], this.limit[1] + 50];
+      this.getData((res) => {
+        console.log(res);
+        if (res.data.result) {
+          if (res.data.result.length < 50) {
+            this.allLoaded = true;
           }
         }
-        this.documents = [...this.documents, ...res.data.result]
-      })
+        this.documents = [...this.documents, ...res.data.result];
+      });
     },
     DownloadPopUp: function (e) {
       var data = e.currentTarget.dataset;
@@ -191,7 +193,11 @@ export default {
             console.log(res.data);
             if (counter == Object.keys(this.checkList).length) {
               this.showSnackbar = true;
-              this.snack = "Successfully archived " + counter + " documents.";
+              if(res.data.code==0){
+                this.snack = "Successfully archived " + counter + " documents.";
+              } else {
+                this.snack = "Failed to archive some of the documents.";
+              }
               this.showSnackbar = true;
               this.loading = true;
               this.checkList = [];
@@ -225,7 +231,7 @@ export default {
           } else {
             this.snack =
               "Failed to complete the operation: " +
-              res.data.result +
+              res.data.message +
               " (" +
               String(res.data.code) +
               ")";
