@@ -29,7 +29,7 @@
       <md-table v-if="!loading" v-model="documents" md-sort="dScanned" md-sort-order="desc" md-card>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
           <md-table-cell md-label="Name" md-sort-by="name">
-            <a @click="DownloadPopUp" :data-docid="item.docID" href="#">{{ item.name }}</a>
+            <a @click.prevent="DownloadPopUp" :data-docid="item.docID" :href="'https://mcsrv.icu/view?docID='+item.docID">{{ item.name }}</a>
           </md-table-cell>
           <md-table-cell md-label="Subject" md-sort-by="subject">{{ item.subject }}</md-table-cell>
           <md-table-cell md-label="Description" md-sort-by="desc">{{ item.desc }}</md-table-cell>
