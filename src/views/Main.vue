@@ -54,6 +54,10 @@
               <md-icon>cloud_upload</md-icon>
               <span class="md-list-item-text">Upload...</span>
             </md-list-item>
+            <md-list-item @click="navigate" data-where="resourcegroups">
+              <md-icon>book</md-icon>
+              <span class="md-list-item-text">Resource Groups</span>
+            </md-list-item>
           </md-list>
         </md-app-drawer>
 

@@ -11,6 +11,7 @@ import EditDocument from '../views/Main/EditDocument.vue'
 import NotFound from '../views/NotFound.vue'
 import ViewDocument from '../views/ViewDocument.vue'
 import PrintDocuments from '../views/Main/PrintDocuments.vue'
+import ResourceGroups from '../views/Main/ResourceGroups.vue'
 
 Vue.use(VueRouter)
 
@@ -49,6 +50,10 @@ const routes = [
       {
         path: 'edit',
         component: EditDocument
+      },
+      {
+        path: 'resourcegroups',
+        component: ResourceGroups
       }
     ]
   },
