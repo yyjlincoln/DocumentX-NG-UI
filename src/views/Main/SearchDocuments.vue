@@ -7,43 +7,84 @@
       :md-active.sync="showSnackbar"
       :md-persistent="true"
     >
-      <span>{{snack}}</span>
-      <md-button class="md-primary" @click="showSnackbar = false">Close</md-button>
+      <span>{{ snack }}</span>
+      <md-button class="md-primary" @click="showSnackbar = false"
+        >Close</md-button
+      >
     </md-snackbar>
     <!-- Snack Bar End -->
 
-    <!-- Added because I urgently need them. This is a temporary solution and will not stay here for too long. -->
-    <p>Go to a document</p>
-    <form @submit.prevent="go">
-      <p>Enter a docID:</p>
-      <md-input id="goto" name="docID" v-model="docID"/>
-      <md-input type="submit"/>
-    </form>
-    <form @submit.prevent="download">
-      <p>Download a document:</p>
-      <md-input id="download" name="docID" v-model="docID"/>
-      <md-input type="submit"/>
-    </form>
+    <md-card style="padding: 10px">
+      <md-field>
+        <label>Search</label>
+        <md-input v-model="searchContent" @change="updateSearch" @submit="updateSearch"></md-input>
+      </md-field>
+    </md-card>
+    <document-list
+      :details="details"
+      :loadMore="loadMore"
+      :reloadData="reloadData"
+      :documents="[]"
+      :allLoaded="allLoaded"
+    ></document-list>
   </div>
 </template>
 <script>
+import DocumentList from "./DocumentList.vue";
+
 export default {
   name: "SearchDocuments",
   data: () => ({
     snack: "Under development",
     showSnackbar: true,
-    docID:null
+    docID: null,
+    details: [],
+    searchContent: "",
+    allLoaded: false,
+    limit: [0, 50],
   }),
   methods: {
-    go: function(){
-      this.$router.push({ path: "/app/edit", query: { docID: this.docID } });
-      this.docID=null
+    updateSearch() {
+      this.limit = [0, 50];
+      this.allLoaded = false;
+      this.$Global
+        .getURI("https://apis.mcsrv.icu/searchDocumentsByName", {
+          params: {
+            name: this.searchContent,
+            start: this.limit[0],
+            end: this.limit[1],
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          this.details = res.data.result;
+        });
     },
-    download: function(){
-      this.$router.push({ path: "/view", query: { docID: this.docID } });
-      this.docID=null
+    loadMore() {
+      this.limit = [this.limit[1], this.limit[1] + 50];
+      this.$Global
+        .getURI("https://apis.mcsrv.icu/searchDocumentsByName", {
+          params: {
+            name: this.searchContent,
+            start: this.limit[0],
+            end: this.limit[1],
+          },
+        })
+        .then((res) => {
+          if (res.data.result) {
+            if (res.data.result.length < 50) {
+              this.allLoaded = true;
+            }
+          }
+          this.details = [...this.details, ...res.data.result];
+        });
     },
-    
+    reloadData() {
+      this.updateSearch();
+    },
+  },
+  components: {
+    DocumentList,
   },
 };
 </script>
