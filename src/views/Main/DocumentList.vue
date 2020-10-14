@@ -102,7 +102,9 @@ documents: Param, only effective when details is null.
       Showing
       {{ document_details == null ? 0 : document_details.length }} results.
     </p>
-    <!-- <a v-if="!allLoaded" href="#" @click="loadMore">Show more</a> -->
+    <a v-if="!allLoaded_internal" href="#" @click="loadMore_internal"
+      >Show more</a
+    >
     <input
       style="
         opacity: 0;
@@ -128,6 +130,8 @@ export default {
     CopyToClipboard: "",
     checkList: {},
     warning: null,
+    allLoaded_internal: false,
+    limits: [0, 50],
   }),
   created() {
     if (this.checkValidity()) {
@@ -147,11 +151,15 @@ export default {
     },
   },
   methods: {
+    loadMore_internal() {
+
+    },
     checkValidity() {
       // Check stuff
-      if (this.details && this.documents) {
+      if (this.documents == undefined || this.documents == null) {
         this.warning =
-          "Warning: this.details and this.documents are supplied at the same time. this.documents will be ignored.";
+          "Fatal: this.documents must be supplied, even as an empty array [] to avoid error.";
+        return;
       }
       if (this.details && !this.loadMore) {
         this.warning =
@@ -165,16 +173,27 @@ export default {
         );
         return false;
       }
+
+      // Bind external functions
+      if (this.details && this.loadMore) {
+        this.loadMore_internal = this.loadMore;
+      }
+      if (this.allLoaded != undefined && this.allLoaded != null) {
+        this.allLoaded_internal = this.allLoaded;
+      }
+
       return true;
     },
     fullReload: async function () {
-      if(!this.checkValidity()){
-        return
+      if (!this.checkValidity()) {
+        return;
       }
       if (!this.details) {
         this.loading = true;
         this.document_details = [];
         console.log("Start");
+        // TODO: Implement limit & loadMore here, with the aid of loadMore_internal.
+        
         for (var x = 0; x < this.documents.length; x++) {
           try {
             let r = await this.$Global.getURI(
@@ -301,7 +320,7 @@ export default {
         });
     },
   },
-  props: ["documents", "details", "loadMore", "reloadData"],
+  props: ["documents", "details", "loadMore", "reloadData", "allLoaded"],
 };
 </script>
 

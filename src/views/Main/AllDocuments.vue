@@ -4,8 +4,8 @@
     <md-switch v-model="documentStatus" value="all" @change="updateData"
       >Show Archived</md-switch
     >
-    <document-list :documents="[]" :details="details" :reloadData="updateData"></document-list>
-    <a v-if="!allLoaded" href="#" @click="loadMore">Show more</a>
+    <document-list :documents="[]" :details="details" :reloadData="updateData" :allLoaded="allLoaded" :loadMore="loadMore"></document-list>
+    <!-- <a v-if="!allLoaded" href="#" @click="loadMore">Show more</a> -->
   </div>
 </template>
 
