@@ -2,6 +2,7 @@
   <div class="full">
     <h1 class="align-left">Resource Groups</h1>
     <div v-if="!ready">Loading...</div>
+    <div v-if="resourceGroups.length==0">You don't have any resource group.</div>
     <div v-if="ready">
       <div v-for="resG in resourceGroups" :key="resG.resID">
         <h2 class="align-left">{{resG.name}}</h2>
