@@ -5,7 +5,6 @@
     <div v-if="resourceGroups.length==0">You don't have any resource group.</div>
     <div v-if="ready">
       <div v-for="resG in resourceGroups" :key="resG.resID">
-        <h2 class="align-left">{{resG.name}}</h2>
         <resource-group-body :resG="resG"></resource-group-body>
       </div>
     </div>

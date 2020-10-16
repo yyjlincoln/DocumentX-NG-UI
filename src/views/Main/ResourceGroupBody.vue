@@ -1,10 +1,11 @@
 <template>
   <div>
-    <document-list :documents="resG.documents"></document-list>
-    <!-- 
-    <div v-for="docID in resG.documents" :key="docID">
-      {{ docID }}
-    </div> -->
+    <h2 class="align-left">
+      <a href="#" @click="show = !show">{{ resG.name }}</a>
+    </h2>
+    <div v-if="show">
+      <document-list :documents="resG.documents"></document-list>
+    </div>
   </div>
 </template>
 
@@ -16,8 +17,14 @@ export default {
   components: {
     DocumentList,
   },
+  data: () => ({
+    show: false,
+  }),
 };
 </script>
 
-<style>
+<style scoped>
+.align-left {
+  text-align: left;
+}
 </style>
