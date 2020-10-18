@@ -5,21 +5,36 @@
         <md-app-toolbar class="md-dense md-primary">
           <div class="md-toolbar-row">
             <div class="md-toolbar-section-start">
-              <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
+              <md-button
+                class="md-icon-button"
+                @click="menuVisible = !menuVisible"
+              >
                 <md-icon>menu</md-icon>
               </md-button>
 
-              <a class="md-title" @click="menuVisible = !menuVisible" href="#">{{title}}</a>
+              <a
+                class="md-title"
+                @click="menuVisible = !menuVisible"
+                href="#"
+                >{{ title }}</a
+              >
             </div>
 
             <div class="md-toolbar-section-end">
               <md-menu>
-                <md-button class="md-icon-button" md-size="auto" md-menu-trigger>
-                  <md-avatar
-                    style="background: rgba(0,0,0,0.2)"
-                  >{{$Global.user.name?$Global.user.name[0].toUpperCase():"?"}}</md-avatar>
+                <md-button
+                  class="md-icon-button"
+                  md-size="auto"
+                  md-menu-trigger
+                >
+                  <md-avatar style="background: rgba(0, 0, 0, 0.2)">{{
+                    $Global.user.name ? $Global.user.name[0].toUpperCase() : "?"
+                  }}</md-avatar>
                   <md-menu-content>
-                    <md-menu-item>You are logged in as {{$Global.user.name}}</md-menu-item>
+                    <md-menu-item
+                      >You are logged in as
+                      {{ $Global.user.name }}</md-menu-item
+                    >
                     <md-menu-item to="/" @click="logout">Logout</md-menu-item>
                     <!-- Can not directly call $Global.logout due to issues with "this" -->
                   </md-menu-content>
@@ -34,7 +49,11 @@
 
         <md-app-drawer :md-active.sync="menuVisible">
           <md-list>
-            <md-list-item class md-elevation="1" @click="menuVisible = !menuVisible">
+            <md-list-item
+              class
+              md-elevation="1"
+              @click="menuVisible = !menuVisible"
+            >
               <md-icon>keyboard_arrow_left</md-icon>
               <span class="md-list-item-text">Hide</span>
             </md-list-item>
@@ -61,10 +80,18 @@
           </md-list>
         </md-app-drawer>
 
-        <md-app-content style="display: flex;">
+        <md-app-content style="display: flex">
           <router-view />
         </md-app-content>
       </md-app>
+    </div>
+    <div v-if="$Global.config.debug" id="debug">
+      <div>DocumentX {{ $Global.config.version }}</div>
+      <div>Debug mode is {{ $Global.config.debug ? "on" : "off" }}</div>
+      <div>uID: {{$Global.user.uID}}</div>
+      <div>Token: {{ $Global.user.token }}</div>
+      <div><a :href="'https://apis.mcsrv.icu/getAuthStatus?uID='+$Global.user.uID+'&token='+$Global.user.token" target="_blank">Request as this user</a></div>
+      <a href="#" @click="toggleDebug">Toggle Development Mode</a>
     </div>
   </div>
 </template>
@@ -102,21 +129,24 @@ export default {
     logout() {
       this.$Global.logout();
     },
+    toggleDebug: function () {
+      this.$Global.toggleDebug();
+    },
   },
   mounted() {
-    this.$Global.init().then((res) => {
-      if (res.code == 0) {
-        console.log("init ok");
-      } else if (res.code == -1) {
-        console.log("Not logged in");
-        let path = this.$route.path.split("/", 2);
-        if (path[1] === "app") {
-          this.$router.push("/auth");
-        }
-      } else {
-        console.log(res);
-      }
-    });
+    // this.$Global.init().then((res) => {
+    //   if (res.code == 0) {
+    //     console.log("init ok");
+    //   } else if (res.code == -1) {
+    //     console.log("Not logged in");
+    //     let path = this.$route.path.split("/", 2);
+    //     if (path[1] === "app") {
+    //       this.$router.push("/auth");
+    //     }
+    //   } else {
+    //     console.log(res);
+    //   }
+    // });
   },
 };
 </script>

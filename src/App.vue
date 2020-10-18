@@ -24,19 +24,20 @@ export default {
     },
   },
   created() {
+    if (this.$Global.config.debug) {
+      console.log("Initiating...");
+    }
     this.$Global.init().then((res) => {
       if (res.code == 0) {
-        console.log("init ok");
+        if (this.$Global.config.debug) {
+          console.log("Successfully initiated.", res);
+        }
       } else if (res.code == -1) {
-        console.log("Not logged in");
+        if (this.$Global.config.debug) {
+          console.log("User status expired.", res);
+        }
         let path = this.$route.path.split("/", 2);
         if (path[1] === "app") {
-          // console.log({
-          //   path: "/auth",
-          //   query: {
-          //     next: btoa(this.$route.fullPath),
-          //   },
-          // })
           this.$router.push({
             path: "/auth",
             query: {

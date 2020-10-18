@@ -6,22 +6,29 @@
       :md-active.sync="showSnackbar"
       :md-persistent="true"
     >
-      <span>{{authResult}}</span>
-      <md-button class="md-primary" @click="showSnackbar = false">Close</md-button>
+      <span>{{ authResult }}</span>
+      <md-button class="md-primary" @click="showSnackbar = false"
+        >Close</md-button
+      >
     </md-snackbar>
 
     <div class="centered-container">
       <md-content class="md-elevation-3">
         <div class="title">
           <img src="../assets/logo.png" />
-          <div class="md-title">Login in to DocumentX</div>
-          <div class="md-body-1">&lt;Document Redefined/&gt;</div>
+          <div class="md-title">Login to DocumentX</div>
+          <div class="md-body-1">A new way to management your documents.</div>
         </div>
 
         <div class="form">
           <md-field>
             <label>Username</label>
-            <md-input v-model="login.username" autofocus :disabled="loading"></md-input>
+            <md-input
+              v-model="login.username"
+              autofocus
+              @keyup.enter="auth"
+              :disabled="loading"
+            ></md-input>
           </md-field>
 
           <md-field md-has-password>
@@ -37,11 +44,16 @@
 
         <div class="actions md-layout md-alignment-center-space-between">
           <a @click="$router.go(-1)" href="#">Cancel</a>
-          <md-button class="md-raised md-primary" @click="auth">Log in</md-button>
+          <md-button class="md-raised md-primary" @click="auth"
+            >Log in</md-button
+          >
         </div>
 
         <div class="loading-overlay" v-if="loading">
-          <md-progress-spinner md-mode="indeterminate" :md-stroke="2"></md-progress-spinner>
+          <md-progress-spinner
+            md-mode="indeterminate"
+            :md-stroke="2"
+          ></md-progress-spinner>
         </div>
       </md-content>
       <div class="background" />

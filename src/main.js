@@ -10,12 +10,23 @@ const axios = require("axios")
 
 
 Vue.prototype.$Global = {
+  config: {
+    version: 'build 20201018-1',
+    debug: false,
+  },
+  toggleDebug: function () {
+    this.config.debug = !this.config.debug
+    localStorage.debugFlag = this.config.debug ? "1" : ""
+  },
   user: {
     uID: null,
     token: null,
     name: null
   },
   getURI: function (...args) {
+    if (this.config.debug) {
+      console.log('GetURI: Load API', args[0])
+    }
     if (args[1] && args[1].params) {
       args[1].params.uID = this.user.uID
       args[1].params.token = this.user.token
@@ -32,6 +43,10 @@ Vue.prototype.$Global = {
     return axios.get(...args)
   },
   postURI: function (...args) {
+    if (this.config.debug) {
+      console.log('PostURI: Load API', args[0])
+    }
+
     if (args[2] && args[2].params) {
       args[2].params.uID = this.user.uID
       args[2].params.token = this.user.token
@@ -74,6 +89,9 @@ Vue.prototype.$Global = {
   async getAuthStatus() {
     try {
       var res = await this.getURI('https://apis.mcsrv.icu/getAuthStatus')
+      if (this.config.debug) {
+        console.log('GetAuthStatus:', res.data)
+      }
       if (res.data.code == 0) {
         return true
       } else {
@@ -105,9 +123,11 @@ Vue.prototype.$Global = {
     return res.data
   },
   async init() {
+    // Init - retrieve debug stat
+    this.config.debug = Boolean(localStorage.debugFlag)
     this.pullUserFromLocalStorage()
     let auth = await this.getAuthStatus()
-    console.warn(auth)
+    // console.warn(auth)
     if (auth == true) {
       return {
         'code': 0,

@@ -145,7 +145,8 @@ export default {
     },
     documents: function (before, after) {
       if (!this.details) {
-        console.log(before, after);
+        before // We don't care about the value here, just to use those variables to avoid error.
+        after
         this.fullReload();
       }
     },
@@ -191,7 +192,7 @@ export default {
       if (!this.details) {
         this.loading = true;
         this.document_details = [];
-        console.log("Start");
+        // console.log("Start");
         // TODO: Implement limit & loadMore here, with the aid of loadMore_internal.
         
         for (var x = 0; x < this.documents.length; x++) {
@@ -267,7 +268,9 @@ export default {
           })
           .then((res) => {
             counter = counter + 1;
-            console.log(res.data);
+            if(this.$Global.config.debug){
+              console.log("ArchiveAllSelected: ",res.data);
+            }
             if (counter == Object.keys(this.checkList).length) {
               this.showSnackbar = true;
               this.snack = "Successfully archived " + counter + " documents.";

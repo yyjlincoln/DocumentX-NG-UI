@@ -17,7 +17,11 @@
     <md-card style="padding: 10px">
       <md-field>
         <label>Search</label>
-        <md-input v-model="searchContent" @change="updateSearch" @submit="updateSearch"></md-input>
+        <md-input
+          v-model="searchContent"
+          @change="updateSearch"
+          @submit="updateSearch"
+        ></md-input>
       </md-field>
     </md-card>
     <document-list
@@ -56,7 +60,9 @@ export default {
           },
         })
         .then((res) => {
-          console.log(res.data);
+          if (this.$Global.config.debug) {
+            console.log("UpdateSearch: ",res.data);
+          }
           this.details = res.data.result;
         });
     },
