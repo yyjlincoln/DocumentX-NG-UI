@@ -18,9 +18,25 @@ export default {
   }),
   watch: {
     $route(to, from) {
-      const toDepth = to.path.split("/").length;
-      const fromDepth = from.path.split("/").length;
-      this.transitionName = toDepth < fromDepth ? "fade" : "fade";
+      // const toDepth = to.path.split("/").length;
+      // const fromDepth = from.path.split("/").length;
+      // this.transitionName = toDepth < fromDepth ? "fade" : "fade";
+      to;
+      from;
+
+      let path = this.$route.path.split("/", 2);
+      this.$Global.init().then((res) => {
+        if (res.code == -1) {
+          if (path[1] === "app") {
+            this.$router.push({
+              path: "/auth",
+              query: {
+                next: btoa(this.$route.fullPath),
+              },
+            });
+          }
+        }
+      });
     },
   },
   created() {
@@ -36,6 +52,8 @@ export default {
         if (this.$Global.config.debug) {
           console.log("User status expired.", res);
         }
+
+        // The user status has expired, so redirect to login.
         let path = this.$route.path.split("/", 2);
         if (path[1] === "app") {
           this.$router.push({
@@ -68,12 +86,6 @@ export default {
   text-align: center;
   /* color: #2c3e50; */
   background: white;
-}
-
-#nav {
-  /* padding: 30px; */
-  /* margin-top: auto;
-  margin-bottom: auto; */
 }
 
 #container {
