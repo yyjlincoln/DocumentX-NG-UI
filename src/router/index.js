@@ -12,6 +12,7 @@ import NotFound from '../views/NotFound.vue'
 import ViewDocument from '../views/ViewDocument.vue'
 import PrintDocuments from '../views/Main/PrintDocuments.vue'
 import ResourceGroups from '../views/Main/ResourceGroups.vue'
+import LongTermAccessToken from '../views/LongTermAccessToken.vue'
 
 Vue.use(VueRouter)
 
@@ -63,6 +64,10 @@ const routes = [
   }, {
     path: '/view',
     component: ViewDocument
+  },
+  {
+    path:'/ltat',
+    component: LongTermAccessToken
   },
   {
     path: '*',
