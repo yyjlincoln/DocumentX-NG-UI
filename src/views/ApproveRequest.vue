@@ -55,7 +55,7 @@ export default {
     },
   },
   mounted() {
-    this.rID = this.$route.query.rid;
+    this.rID = this.$route.query.rID;
     console.log(this.rID);
     if (!this.rID) {
       this.status = "Invalid request!";
