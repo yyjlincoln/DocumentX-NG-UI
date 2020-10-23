@@ -12,6 +12,7 @@
             This will share your login cridentials with that computer. This can
             be dangerous.
           </div>
+          <md-checkbox v-model="tempToken">Issue a temporary token (valid for 15s)</md-checkbox>
           <p v-if="status">{{ status }}</p>
           <div v-if="!status" style="margin-top: 30px">
             <md-button class="md-raised" @click="cancel">Cancel</md-button>
@@ -32,6 +33,7 @@ export default {
   data: () => ({
     rID: "",
     status: "",
+    tempToken: true
   }),
   methods: {
     cancel() {
@@ -44,6 +46,7 @@ export default {
         {
           params: {
             rID: this.rID,
+            tempToken: this.tempToken?'true':null
           },
         }
       );
