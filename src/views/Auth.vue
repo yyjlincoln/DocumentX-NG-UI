@@ -294,7 +294,7 @@ export default {
             this.$Global.saveUserToLocalStorage();
             setTimeout(() => {
               this.redirect();
-            }, 3000);
+            }, 1000);
           } else if (r.data.code < 0) {
             clearInterval(interv);
             this.authResult = r.data.message;
