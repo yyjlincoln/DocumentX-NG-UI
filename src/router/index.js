@@ -14,6 +14,7 @@ import PrintDocuments from '../views/Main/PrintDocuments.vue'
 import ResourceGroups from '../views/Main/ResourceGroups.vue'
 import LongTermAccessToken from '../views/LongTermAccessToken.vue'
 import Debug from '../views/Debug.vue'
+import ApproveRequest from '../views/ApproveRequest.vue'
 
 Vue.use(VueRouter)
 
@@ -32,6 +33,10 @@ const routes = [
     path: '/debug',
     name: 'Debug',
     component: Debug
+  },
+  {
+    path: '/approve_request',
+    component: ApproveRequest
   },
   {
     path: '/app',

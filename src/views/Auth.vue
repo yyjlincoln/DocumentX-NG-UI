@@ -11,52 +11,77 @@
         >Close</md-button
       >
     </md-snackbar>
+    <div v-if="remote">
+      <div class="centered-container">
+        <md-content class="md-elevation-3">
+          <div class="title">
+            <img src="../assets/logo.png" />
+            <div class="md-title">Remote Login</div>
+          </div>
+          <img
+            :src="qrcode"
+            style="width: 150px; height: 150px"
+            v-if="qrcode"
+          />
+          <div v-if="!qrcode">
+            <md-progress-spinner
+              md-mode="indeterminate"
+              :md-stroke="2"
+            ></md-progress-spinner>
+          </div>
+          <div class="md-body-2" style="margin-top: 10px">{{ qrstatus }}</div>
+        </md-content>
+      </div>
+    </div>
 
-    <div class="centered-container">
-      <md-content class="md-elevation-3">
-        <div class="title">
-          <img src="../assets/logo.png" />
-          <div class="md-title">Login to DocumentX</div>
-          <div class="md-body-1">A new way to management your documents.</div>
-        </div>
+    <div v-if="!remote">
+      <div class="centered-container">
+        <md-content class="md-elevation-3">
+          <div class="title">
+            <img src="../assets/logo.png" />
+            <div class="md-title">Login to DocumentX</div>
+            <div class="md-body-1">A new way to management your documents.</div>
+          </div>
 
-        <div class="form">
-          <md-field>
-            <label>Username</label>
-            <md-input
-              v-model="login.username"
-              autofocus
-              @keyup.enter="auth"
-              :disabled="loading"
-            ></md-input>
-          </md-field>
+          <div class="form">
+            <md-field>
+              <label>Username</label>
+              <md-input
+                v-model="login.username"
+                autofocus
+                @keyup.enter="auth"
+                :disabled="loading"
+              ></md-input>
+            </md-field>
 
-          <md-field md-has-password>
-            <label>Password</label>
-            <md-input
-              v-model="login.password"
-              type="password"
-              @keyup.enter="auth"
-              :disabled="loading"
-            ></md-input>
-          </md-field>
-        </div>
+            <md-field md-has-password>
+              <label>Password</label>
+              <md-input
+                v-model="login.password"
+                type="password"
+                @keyup.enter="auth"
+                :disabled="loading"
+              ></md-input>
+            </md-field>
+          </div>
 
-        <div class="actions md-layout md-alignment-center-space-between">
-          <a @click="$router.go(-1)" href="#">Cancel</a>
-          <md-button class="md-raised md-primary" @click="auth"
-            >Log in</md-button
-          >
-        </div>
+          <a @click="goRemote" href="#">Remote Login</a>
+          <div class="actions md-layout md-alignment-center-space-between">
+            <a @click="$router.go(-1)" href="#">Cancel</a>
+            <md-button class="md-raised md-primary" @click="auth"
+              >Log in</md-button
+            >
+          </div>
 
-        <div class="loading-overlay" v-if="loading">
-          <md-progress-spinner
-            md-mode="indeterminate"
-            :md-stroke="2"
-          ></md-progress-spinner>
-        </div>
-      </md-content>
-      <div class="background" />
+          <div class="loading-overlay" v-if="loading">
+            <md-progress-spinner
+              md-mode="indeterminate"
+              :md-stroke="2"
+            ></md-progress-spinner>
+          </div>
+        </md-content>
+        <div class="background" />
+      </div>
     </div>
   </div>
 </template>
@@ -129,6 +154,9 @@ export default {
       username: "",
       password: "",
     },
+    remote: false,
+    qrcode: "",
+    qrstatus: "Loading...",
   }),
   methods: {
     async auth() {
@@ -172,8 +200,54 @@ export default {
       // Now redirect
       this.$router.push(next);
     },
+    async goRemote(){
+      this.remote=true;
+            var res = await this.$Global.getURI(
+        "https://apis.mcsrv.icu/remoteLogin",
+        {}
+      );
+      // console.log(res)
+      if (res.data.code == 0) {
+        this.qrcode =
+          "https://apis.mcsrv.icu/qr?urlEncoded=" +
+          btoa("https://mcsrv.icu/approve_request?rID=" + res.data.rID);
+        this.qrstatus="Please scan this code above to log in."
+        var interv = setInterval(async () => {
+          if (this.$Global.debug) {
+            console.log("RemoteLogin: rID = ", res.data.rID);
+          }
+          let r = await this.$Global.getURI(
+            "https://apis.mcsrv.icu/refreshRemoteLogin",
+            {
+              params: {
+                rID: res.data.rID,
+              },
+            }
+          );
+          if (r.data.code == 0) {
+            this.authResult = "Successfully logged in.";
+            this.showSnackbar = true;
+            this.qrstatus = "Successfully logged in.";
+            this.qr = "";
+            clearInterval(interv);
+            this.$Global.user.token = r.data.token;
+            this.$Global.user.uID = r.data.uID;
+            this.$Global.user.name = r.data.name;
+            this.$Global.saveUserToLocalStorage();
+            setTimeout(() => {
+              this.redirect();
+            }, 3000);
+          } else if (r.data.code < 0) {
+            clearInterval(interv);
+            this.authResult = r.data.message;
+            this.showSnackbar = true;
+          }
+        }, 1000);
+      }
+    }
   },
-  mounted: function () {
+  mounted: async function () {
+    this.remote = this.$route.query.remote == "true" ? true : false;
     // Retrieve user status
     this.$Global.getAuthStatus().then((res) => {
       if (res) {
@@ -185,6 +259,50 @@ export default {
         }, 1000);
       }
     });
+    if (this.remote) {
+      var res = await this.$Global.getURI(
+        "https://apis.mcsrv.icu/remoteLogin",
+        {}
+      );
+      // console.log(res)
+      if (res.data.code == 0) {
+        this.qrcode =
+          "https://apis.mcsrv.icu/qr?urlEncoded=" +
+          btoa("https://mcsrv.icu/approve_request?rID=" + res.data.rID);
+        this.qrstatus="Please scan this code above to log in."
+        var interv = setInterval(async () => {
+          if (this.$Global.debug) {
+            console.log("RemoteLogin: rID = ", res.data.rID);
+          }
+          let r = await this.$Global.getURI(
+            "https://apis.mcsrv.icu/refreshRemoteLogin",
+            {
+              params: {
+                rID: res.data.rID,
+              },
+            }
+          );
+          if (r.data.code == 0) {
+            this.authResult = "Successfully logged in.";
+            this.showSnackbar = true;
+            this.qrstatus = "Successfully logged in.";
+            this.qr = "";
+            clearInterval(interv);
+            this.$Global.user.token = r.data.token;
+            this.$Global.user.uID = r.data.uID;
+            this.$Global.user.name = r.data.name;
+            this.$Global.saveUserToLocalStorage();
+            setTimeout(() => {
+              this.redirect();
+            }, 3000);
+          } else if (r.data.code < 0) {
+            clearInterval(interv);
+            this.authResult = r.data.message;
+            this.showSnackbar = true;
+          }
+        }, 1000);
+      }
+    }
   },
 };
 </script>
