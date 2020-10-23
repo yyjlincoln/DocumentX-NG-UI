@@ -85,13 +85,26 @@
         </md-app-content>
       </md-app>
     </div>
-    <div v-if="$Global.config.debug" id="debug">
-      <div>DocumentX {{ $Global.config.version }}</div>
-      <div>Debug mode is {{ $Global.config.debug ? "on" : "off" }}</div>
-      <div>uID: {{$Global.user.uID}}</div>
-      <div>Token: {{ $Global.user.token }}</div>
-      <div><a :href="'https://apis.mcsrv.icu/getAuthStatus?uID='+$Global.user.uID+'&token='+$Global.user.token" target="_blank">Request as this user</a></div>
-      <a href="#" @click="toggleDebug">Toggle Development Mode</a>
+    <div v-if="rerender || !rerender">
+      <div v-if="$Global.config.debug" id="debug">
+        <div>DocumentX {{ $Global.config.version }}</div>
+        <div>Debug mode is {{ $Global.config.debug ? "on" : "off" }}</div>
+        <div>uID: {{ $Global.user.uID }}</div>
+        <div>Token: {{ $Global.user.token }}</div>
+        <div>
+          <a
+            :href="
+              'https://apis.mcsrv.icu/getAuthStatus?uID=' +
+              $Global.user.uID +
+              '&token=' +
+              $Global.user.token
+            "
+            target="_blank"
+            >Request as this user</a
+          >
+        </div>
+        <a href="#" @click="toggleDebug">Toggle Development Mode</a>
+      </div>
     </div>
   </div>
 </template>
@@ -101,6 +114,7 @@ export default {
   data: () => ({
     menuVisible: false,
     title: "Dashboard",
+    rerender: true,
   }),
   methods: {
     navigate: function (e) {
@@ -131,6 +145,7 @@ export default {
     },
     toggleDebug: function () {
       this.$Global.toggleDebug();
+      this.rerender = !this.rerender;
     },
   },
   mounted() {

@@ -13,6 +13,7 @@ import ViewDocument from '../views/ViewDocument.vue'
 import PrintDocuments from '../views/Main/PrintDocuments.vue'
 import ResourceGroups from '../views/Main/ResourceGroups.vue'
 import LongTermAccessToken from '../views/LongTermAccessToken.vue'
+import Debug from '../views/Debug.vue'
 
 Vue.use(VueRouter)
 
@@ -26,6 +27,11 @@ const routes = [
     path: '/auth',
     name: 'Authentiation',
     component: Auth
+  },
+  {
+    path: '/debug',
+    name: 'Debug',
+    component: Debug
   },
   {
     path: '/app',
@@ -66,7 +72,7 @@ const routes = [
     component: ViewDocument
   },
   {
-    path:'/ltat',
+    path: '/ltat',
     component: LongTermAccessToken
   },
   {

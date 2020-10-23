@@ -8,13 +8,6 @@
         <md-button class="" @click="getStarted">Login</md-button>
       </div>
     </div>
-    <div id="debug">
-      <a href="#" @click="toggleDebug">Development Mode</a>
-      <div v-if="$Global.config.debug">
-        <div>DocumentX {{ $Global.config.version }}</div>
-        <div>Debug mode is {{ $Global.config.debug ? "on" : "off" }}</div>
-      </div>
-    </div>
   </div>
 </template>
 
