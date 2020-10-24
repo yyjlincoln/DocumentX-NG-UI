@@ -100,6 +100,7 @@ export default {
           path: "/auth",
           query: {
             next: btoa(this.$route.fullPath),
+            remote:'false'
           },
         });
       }
