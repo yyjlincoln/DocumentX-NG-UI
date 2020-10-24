@@ -299,6 +299,12 @@ export default {
             clearInterval(interv);
             this.authResult = r.data.message;
             this.showSnackbar = true;
+            this.qrcode=""
+            this.qrstatus="The login request has expired or been rejected. Please try again."
+          } else if(r.data.code==2){
+            // Scanned
+            this.qrcode=""
+            this.qrstatus="Scanned. Please press confirm."
           }
         }, 1000);
       }

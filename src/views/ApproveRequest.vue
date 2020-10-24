@@ -12,7 +12,9 @@
             This will share your login cridentials with that computer. This can
             be dangerous.
           </div>
-          <md-checkbox v-model="tempToken">Issue a temporary token (valid for 15s)</md-checkbox>
+          <md-checkbox v-model="tempToken"
+            >Issue a temporary token (valid for 15s)</md-checkbox
+          >
           <p v-if="status">{{ status }}</p>
           <div v-if="!status" style="margin-top: 30px">
             <md-button class="md-raised" @click="cancel">Cancel</md-button>
@@ -33,11 +35,23 @@ export default {
   data: () => ({
     rID: "",
     status: "",
-    tempToken: true
+    tempToken: true,
   }),
   methods: {
-    cancel() {
-      this.status = "Cancelled.";
+    async cancel() {
+      let res = await this.$Global.getURI(
+        "https://apis.mcsrv.icu/rejectRemoteLogin",
+        {
+          params: {
+            rID: this.rID,
+          },
+        }
+      );
+      if(res.data.code==0){
+        this.status = "Cancelled.";
+      } else {
+        this.status = "Could not reject the login request, but since you have not authenticated, your login is still safe."
+      }
       //   this.$router.go(-1);
     },
     async approve() {
@@ -46,7 +60,7 @@ export default {
         {
           params: {
             rID: this.rID,
-            tempToken: this.tempToken?'true':null
+            tempToken: this.tempToken ? "true" : null,
           },
         }
       );
@@ -57,12 +71,28 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     this.rID = this.$route.query.rID;
     console.log(this.rID);
     if (!this.rID) {
       this.status = "Invalid request!";
+      return;
     }
+    this.status = "Validating request...";
+    // Validate Request
+    let res = this.$Global.getURI(
+      "https://apis.mcsrv.icu/validateRemoteLogin",
+      {
+        params: {
+          rID: this.rID,
+        },
+      }
+    );
+    if (res.data.code != 0) {
+      this.status = "Invalid request!";
+      return;
+    }
+
     this.$Global.init().then((res) => {
       if (res.code == -1) {
         this.$router.push({
