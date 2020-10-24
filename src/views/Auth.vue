@@ -23,7 +23,7 @@
             style="width: 150px; height: 150px"
             v-if="qrcode"
           />
-          <div v-if="!qrcode">
+          <div v-if="qrcode==''">
             <md-progress-spinner
               md-mode="indeterminate"
               :md-stroke="2"
@@ -202,6 +202,7 @@ export default {
     },
     async goRemote(){
       this.remote=true;
+
             var res = await this.$Global.getURI(
         "https://apis.mcsrv.icu/remoteLogin",
         {}
@@ -228,7 +229,6 @@ export default {
             this.authResult = "Successfully logged in.";
             this.showSnackbar = true;
             this.qrstatus = "Successfully logged in.";
-            this.qr = "";
             clearInterval(interv);
             this.$Global.user.token = r.data.token;
             this.$Global.user.uID = r.data.uID;
@@ -236,14 +236,23 @@ export default {
             this.$Global.saveUserToLocalStorage();
             setTimeout(() => {
               this.redirect();
-            }, 3000);
+            }, 1000);
           } else if (r.data.code < 0) {
             clearInterval(interv);
+            // This will hide the qrcode but not show the progress bar
+            this.qrcode=null
+            this.qrstatus="The login request has expired or been rejected. Please try again."
             this.authResult = r.data.message;
             this.showSnackbar = true;
+          } else if(r.data.code==2){
+            // Scanned
+            this.qrcode=""
+            this.qrstatus="Scanned. Please press confirm."
           }
         }, 1000);
       }
+
+      
     }
   },
   mounted: async function () {
@@ -286,7 +295,6 @@ export default {
             this.authResult = "Successfully logged in.";
             this.showSnackbar = true;
             this.qrstatus = "Successfully logged in.";
-            this.qr = "";
             clearInterval(interv);
             this.$Global.user.token = r.data.token;
             this.$Global.user.uID = r.data.uID;
@@ -297,10 +305,10 @@ export default {
             }, 1000);
           } else if (r.data.code < 0) {
             clearInterval(interv);
+            this.qrcode=null
+            this.qrstatus="The login request has expired or been rejected. Please try again."
             this.authResult = r.data.message;
             this.showSnackbar = true;
-            this.qrcode=""
-            this.qrstatus="The login request has expired or been rejected. Please try again."
           } else if(r.data.code==2){
             // Scanned
             this.qrcode=""

@@ -80,7 +80,7 @@ export default {
     }
     this.status = "Validating request...";
     // Validate Request
-    let res = this.$Global.getURI(
+    let res = await this.$Global.getURI(
       "https://apis.mcsrv.icu/validateRemoteLogin",
       {
         params: {
@@ -92,6 +92,7 @@ export default {
       this.status = "Invalid request!";
       return;
     }
+    this.status=""
 
     this.$Global.init().then((res) => {
       if (res.code == -1) {
