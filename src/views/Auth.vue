@@ -30,6 +30,7 @@
             ></md-progress-spinner>
           </div>
           <div class="md-body-2" style="margin-top: 10px">{{ qrstatus }}</div>
+          <a href="/auth?remote=false">Use Password...</a>
         </md-content>
       </div>
     </div>
@@ -65,7 +66,8 @@
             </md-field>
           </div>
 
-          <a @click="goRemote" href="#">Remote Login</a>
+          <!-- <a @click="goRemote" href="#">Remote Login</a> -->
+          <a href="/auth?remote=true">Remote Login...</a>
           <div class="actions md-layout md-alignment-center-space-between">
             <a @click="$router.go(-1)" href="#">Cancel</a>
             <md-button class="md-raised md-primary" @click="auth"
@@ -200,63 +202,9 @@ export default {
       // Now redirect
       this.$router.push(next);
     },
-    async goRemote(){
-      this.remote=true;
-
-            var res = await this.$Global.getURI(
-        "https://apis.mcsrv.icu/remoteLogin",
-        {}
-      );
-      // console.log(res)
-      if (res.data.code == 0) {
-        this.qrcode =
-          "https://apis.mcsrv.icu/qr?urlEncoded=" +
-          btoa("https://mcsrv.icu/approve_request?rID=" + res.data.rID);
-        this.qrstatus="Please scan this code above to log in."
-        var interv = setInterval(async () => {
-          if (this.$Global.debug) {
-            console.log("RemoteLogin: rID = ", res.data.rID);
-          }
-          let r = await this.$Global.getURI(
-            "https://apis.mcsrv.icu/refreshRemoteLogin",
-            {
-              params: {
-                rID: res.data.rID,
-              },
-            }
-          );
-          if (r.data.code == 0) {
-            this.authResult = "Successfully logged in.";
-            this.showSnackbar = true;
-            this.qrstatus = "Successfully logged in.";
-            clearInterval(interv);
-            this.$Global.user.token = r.data.token;
-            this.$Global.user.uID = r.data.uID;
-            this.$Global.user.name = r.data.name;
-            this.$Global.saveUserToLocalStorage();
-            setTimeout(() => {
-              this.redirect();
-            }, 1000);
-          } else if (r.data.code < 0) {
-            clearInterval(interv);
-            // This will hide the qrcode but not show the progress bar
-            this.qrcode=null
-            this.qrstatus="The login request has expired or been rejected. Please try again."
-            this.authResult = r.data.message;
-            this.showSnackbar = true;
-          } else if(r.data.code==2){
-            // Scanned
-            this.qrcode=""
-            this.qrstatus="Scanned. Please press confirm."
-          }
-        }, 2000);
-      }
-
-      
-    }
   },
   mounted: async function () {
-    this.remote = this.$route.query.remote == "true" ? true : false;
+    this.remote = this.$route.query.remote == "false" ? false : true;
     // Retrieve user status
     this.$Global.getAuthStatus().then((res) => {
       if (res) {
