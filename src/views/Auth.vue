@@ -23,7 +23,7 @@
             style="width: 150px; height: 150px"
             v-if="qrcode"
           />
-          <div v-if="qrcode==''">
+          <div v-if="qrcode == ''">
             <md-progress-spinner
               md-mode="indeterminate"
               :md-stroke="2"
@@ -204,18 +204,21 @@ export default {
     },
   },
   mounted: async function () {
+    this.loading = true;
     this.remote = this.$route.query.remote == "false" ? false : true;
     // Retrieve user status
-    this.$Global.getAuthStatus().then((res) => {
-      if (res) {
-        this.showSnackbar = true;
-        this.loading = true;
-        this.authResult = "You are logged in...";
-        setTimeout(() => {
-          this.redirect();
-        }, 1000);
-      }
-    });
+    res = await this.$Global.getAuthStatus();
+    if (res) {
+      this.showSnackbar = true;
+      this.loading = true;
+      this.authResult = "You are logged in...";
+      setTimeout(() => {
+        this.redirect();
+      }, 1000);
+      return;
+    }
+    this.loading=false;
+
     if (this.remote) {
       var res = await this.$Global.getURI(
         "https://apis.mcsrv.icu/remoteLogin",
@@ -226,7 +229,7 @@ export default {
         this.qrcode =
           "https://apis.mcsrv.icu/qr?urlEncoded=" +
           btoa("https://mcsrv.icu/approve_request?rID=" + res.data.rID);
-        this.qrstatus="Please scan this code above to log in."
+        this.qrstatus = "Please scan this code above to log in.";
         var interv = setInterval(async () => {
           if (this.$Global.debug) {
             console.log("RemoteLogin: rID = ", res.data.rID);
@@ -253,14 +256,15 @@ export default {
             }, 1000);
           } else if (r.data.code < 0) {
             clearInterval(interv);
-            this.qrcode=null
-            this.qrstatus="The login request has expired or been rejected. Please try again."
+            this.qrcode = null;
+            this.qrstatus =
+              "The login request has expired or been rejected. Please try again.";
             this.authResult = r.data.message;
             this.showSnackbar = true;
-          } else if(r.data.code==2){
+          } else if (r.data.code == 2) {
             // Scanned
-            this.qrcode=""
-            this.qrstatus="Scanned. Please press confirm."
+            this.qrcode = "";
+            this.qrstatus = "Scanned. Please press confirm.";
           }
         }, 1000);
       }
