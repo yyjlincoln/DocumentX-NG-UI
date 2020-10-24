@@ -249,7 +249,7 @@ export default {
             this.qrcode=""
             this.qrstatus="Scanned. Please press confirm."
           }
-        }, 1000);
+        }, 2000);
       }
 
       
