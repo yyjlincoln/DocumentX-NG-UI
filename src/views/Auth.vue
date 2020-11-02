@@ -205,7 +205,7 @@ export default {
   },
   mounted: async function () {
     this.loading = true;
-    this.remote = this.$route.query.remote == "false" ? false : true;
+    this.remote = this.$route.query.remote == "true" ? true : false;
     // Retrieve user status
     res = await this.$Global.getAuthStatus();
     if (res) {
