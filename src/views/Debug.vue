@@ -7,7 +7,7 @@
       <h1>DocumentX {{ $Global.config.version }}</h1>
 
       <h2>
-        <a href="#" @click="toggleDebug">
+        <a href="#" @click.prevent="toggleDebug">
           Debug mode is {{ $Global.config.debug ? "on" : "off" }}</a
         >
       </h2>

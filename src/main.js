@@ -2,7 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import md5 from 'md5'
+// import md5 from 'md5'
+
+const sha256 = require("js-sha256").sha256
 
 Vue.config.productionTip = false
 
@@ -61,7 +63,7 @@ Vue.prototype.$Global = {
   },
   login: async function (uID, password) {
     // [TODO] Request for a salt from the server and do sha256.
-    let _password = md5(password)
+    let _password = sha256(password)
     let Formdata = new FormData()
     Formdata.append('uID', uID)
     Formdata.append('password', password === "" ? "" : _password)
