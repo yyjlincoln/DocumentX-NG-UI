@@ -193,13 +193,15 @@ export default {
         // console.log("Start");
         // TODO: Implement limit & loadMore here, with the aid of loadMore_internal.
 
-        var request = {};
+        var request = [];
 
         for (var x = 0; x < this.documents.length; x++) {
           request.push({
             route: "/getDocumentByID",
             data: {
               docID: this.documents[x],
+              token: this.$Global.user.token,
+              uID: this.$Global.user.uID,
             },
           });
 
@@ -218,11 +220,13 @@ export default {
           //   //   Do nothing
           // }
         }
-        let r = await this.$Global.getURI("https://apis.mcsrv.icu/batch", {
-          params: {
-            batch: request,
-          },
-        });
+        let f = new FormData();
+        f.append("batch", JSON.stringify(request));
+        let r = await this.$Global.postURI(
+          "https://apis.mcsrv.icu/batch",
+          f,
+          {}
+        );
 
         for (var i = 0; i < r.data.batch.length; i++) {
           this.document_details.push(r.data.batch[i].result);
