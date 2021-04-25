@@ -145,16 +145,14 @@ export default {
     },
     documents: function (before, after) {
       if (!this.details) {
-        before // We don't care about the value here, just to use those variables to avoid error.
-        after
+        before; // We don't care about the value here, just to use those variables to avoid error.
+        after;
         this.fullReload();
       }
     },
   },
   methods: {
-    loadMore_internal() {
-
-    },
+    loadMore_internal() {},
     checkValidity() {
       // Check stuff
       if (this.documents == undefined || this.documents == null) {
@@ -194,23 +192,42 @@ export default {
         this.document_details = [];
         // console.log("Start");
         // TODO: Implement limit & loadMore here, with the aid of loadMore_internal.
-        
+
+        var request = {};
+
         for (var x = 0; x < this.documents.length; x++) {
-          try {
-            let r = await this.$Global.getURI(
-              "https://apis.mcsrv.icu/getDocumentByID",
-              {
-                params: {
-                  docID: this.documents[x],
-                },
-              }
-            );
-            this.document_details.push(r.data.result);
-          } catch (error) {
-            console.log(error);
-            //   Do nothing
-          }
+          request.push({
+            route: "/getDocumentByID",
+            data: {
+              docID: this.documents[x],
+            },
+          });
+
+          // try {
+          //   let r = await this.$Global.getURI(
+          //     "https://apis.mcsrv.icu/getDocumentByID",
+          //     {
+          //       params: {
+          //         docID: this.documents[x],
+          //       },
+          //     }
+          //   );
+          //   this.document_details.push(r.data.result);
+          // } catch (error) {
+          //   console.log(error);
+          //   //   Do nothing
+          // }
         }
+        let r = await this.$Global.getURI("https://apis.mcsrv.icu/batch", {
+          params: {
+            batch: request,
+          },
+        });
+
+        for (var i = 0; i < r.data.batch.length; i++) {
+          this.document_details.push(r.data.batch[i].result);
+        }
+
         this.loading = false;
       } else {
         this.document_details = this.details;
@@ -268,8 +285,8 @@ export default {
           })
           .then((res) => {
             counter = counter + 1;
-            if(this.$Global.config.debug){
-              console.log("ArchiveAllSelected: ",res.data);
+            if (this.$Global.config.debug) {
+              console.log("ArchiveAllSelected: ", res.data);
             }
             if (counter == Object.keys(this.checkList).length) {
               this.showSnackbar = true;
