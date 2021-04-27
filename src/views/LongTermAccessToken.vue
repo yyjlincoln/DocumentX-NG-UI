@@ -138,7 +138,7 @@
 
 
 <script>
-import md5 from "md5";
+const sha256 = require("js-sha256").sha256
 
 export default {
   name: "Authentication",
@@ -166,7 +166,7 @@ export default {
           "https://apis.mcsrv.icu/newToken",
           {
             params: {
-              password: md5(this.login.password),
+              password: sha256(this.login.password),
             },
           }
         );
