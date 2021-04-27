@@ -76,6 +76,12 @@ documents: Param, only effective when details is null.
                 >Archive Selected Documents</md-menu-item
               >
               <md-menu-item
+                @click="UnarchiveAllSelected"
+                :data-docid="item.docID"
+                :data-simple="true"
+                >Unarchive Selected Documents</md-menu-item
+              >
+              <md-menu-item
                 @click="PrintAllSelected"
                 :data-docid="item.docID"
                 :data-simple="true"
@@ -145,16 +151,14 @@ export default {
     },
     documents: function (before, after) {
       if (!this.details) {
-        before // We don't care about the value here, just to use those variables to avoid error.
-        after
+        before; // We don't care about the value here, just to use those variables to avoid error.
+        after;
         this.fullReload();
       }
     },
   },
   methods: {
-    loadMore_internal() {
-
-    },
+    loadMore_internal() {},
     checkValidity() {
       // Check stuff
       if (this.documents == undefined || this.documents == null) {
@@ -194,23 +198,46 @@ export default {
         this.document_details = [];
         // console.log("Start");
         // TODO: Implement limit & loadMore here, with the aid of loadMore_internal.
-        
+
+        var request = [];
+
         for (var x = 0; x < this.documents.length; x++) {
-          try {
-            let r = await this.$Global.getURI(
-              "https://apis.mcsrv.icu/getDocumentByID",
-              {
-                params: {
-                  docID: this.documents[x],
-                },
-              }
-            );
-            this.document_details.push(r.data.result);
-          } catch (error) {
-            console.log(error);
-            //   Do nothing
-          }
+          request.push({
+            route: "/getDocumentByID",
+            data: {
+              docID: this.documents[x],
+              token: this.$Global.user.token,
+              uID: this.$Global.user.uID,
+            },
+          });
+
+          // try {
+          //   let r = await this.$Global.getURI(
+          //     "https://apis.mcsrv.icu/getDocumentByID",
+          //     {
+          //       params: {
+          //         docID: this.documents[x],
+          //       },
+          //     }
+          //   );
+          //   this.document_details.push(r.data.result);
+          // } catch (error) {
+          //   console.log(error);
+          //   //   Do nothing
+          // }
         }
+        let f = new FormData();
+        f.append("batch", JSON.stringify(request));
+        let r = await this.$Global.postURI(
+          "https://apis.mcsrv.icu/batch",
+          f,
+          {}
+        );
+
+        for (var i = 0; i < r.data.batch.length; i++) {
+          this.document_details.push(r.data.batch[i].result);
+        }
+
         this.loading = false;
       } else {
         this.document_details = this.details;
@@ -255,32 +282,96 @@ export default {
     ArchiveAllSelected: function (e) {
       var docID = e.currentTarget.dataset.docid;
       this.checkList[docID] = true;
-      let counter = 0;
+
+      var Request = [];
+
       for (var x in Object.keys(this.checkList)) {
-        this.$Global
-          .getURI("https://apis.mcsrv.icu/editDocumentByID", {
-            params: {
-              docID: Object.keys(this.checkList)[x],
-              properties: JSON.stringify({
-                archived: true,
-              }),
-            },
-          })
-          .then((res) => {
-            counter = counter + 1;
-            if(this.$Global.config.debug){
-              console.log("ArchiveAllSelected: ",res.data);
-            }
-            if (counter == Object.keys(this.checkList).length) {
-              this.showSnackbar = true;
-              this.snack = "Successfully archived " + counter + " documents.";
-              this.showSnackbar = true;
-              this.loading = true;
-              this.checkList = [];
-              this.reloadData();
-            }
-          });
+        Request.push({
+          route: "/editDocumentByID",
+          data: {
+            docID: Object.keys(this.checkList)[x],
+            properties: JSON.stringify({
+              archived: true,
+            }),
+            uID: this.$Global.user.uID,
+            token: this.$Global.user.token,
+          },
+        });
       }
+      var Form = new FormData();
+      Form.append("batch", JSON.stringify(Request));
+
+      this.$Global
+        .postURI("https://apis.mcsrv.icu/batch", Form, {})
+        .then((res) => {
+          var success = 0;
+          var failed = 0;
+          for (var x = 0; x < res.data.batch.length; x++) {
+            console.log(res.data.batch[x]);
+            if (res.data.batch[x].code >= 0) {
+              success += 1;
+            } else {
+              failed += 1;
+              console.log("Error from API: " + res.data.batch[x].message);
+            }
+          }
+          this.snack =
+            "Successfully archived " +
+            success +
+            " documents, failed: " +
+            failed;
+          this.showSnackbar = true;
+          this.loading = true;
+          this.checkList = [];
+          this.reloadData();
+        });
+    },
+    UnarchiveAllSelected: function (e) {
+      var docID = e.currentTarget.dataset.docid;
+      this.checkList[docID] = true;
+
+      var Request = [];
+
+      for (var x in Object.keys(this.checkList)) {
+        Request.push({
+          route: "/editDocumentByID",
+          data: {
+            docID: Object.keys(this.checkList)[x],
+            properties: JSON.stringify({
+              archived: false,
+            }),
+            uID: this.$Global.user.uID,
+            token: this.$Global.user.token,
+          },
+        });
+      }
+      var Form = new FormData();
+      Form.append("batch", JSON.stringify(Request));
+
+      this.$Global
+        .postURI("https://apis.mcsrv.icu/batch", Form, {})
+        .then((res) => {
+          var success = 0;
+          var failed = 0;
+          for (var x = 0; x < res.data.batch.length; x++) {
+            console.log(res.data.batch[x]);
+            if (res.data.batch[x].code >= 0) {
+              success += 1;
+            } else {
+              failed += 1;
+              console.log("Error from API: " + res.data.batch[x].message);
+            }
+          }
+          this.snack =
+            "Successfully unarchived " +
+            success +
+            " documents, failed: " +
+            failed;
+          this.showSnackbar = true;
+          this.loading = true;
+          this.checkList = [];
+          this.reloadData();
+         });
     },
     EditDoc: function (e) {
       var data = e.currentTarget.dataset;
