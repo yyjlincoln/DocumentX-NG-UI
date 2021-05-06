@@ -1,10 +1,19 @@
 <template>
   <div class="full">
     <p class="md-display-2">Documents Library</p>
-    <md-switch v-model="documentStatus" value="all" @change="updateData"
-      >Show Archived</md-switch
-    >
-    <document-list :documents="[]" :details="details" :reloadData="updateData" :allLoaded="allLoaded" :loadMore="loadMore"></document-list>
+    <div style="display: flex; flex-direction: column; justify-content: center;">
+      <a @click.prevent="updateData" href="#">Refresh...</a>
+      <md-switch style="margin-left: auto; margin-right: auto;" v-model="documentStatus" value="all" @change="updateData"
+        >Show Archived</md-switch
+      >
+    </div>
+    <document-list
+      :documents="[]"
+      :details="details"
+      :reloadData="updateData"
+      :allLoaded="allLoaded"
+      :loadMore="loadMore"
+    ></document-list>
     <!-- <a v-if="!allLoaded" href="#" @click="loadMore">Show more</a> -->
   </div>
 </template>
