@@ -67,7 +67,10 @@
           </div>
 
           <!-- <a @click="goRemote" href="#">Remote Login</a> -->
+          <div style="display: flex; flex-direction: column; margin-top: 3px; margin-bottom: 3px;">
           <a href="/auth?remote=true">Remote Login...</a>
+          <a href="/ltat">LTAT...</a>
+          </div>
           <div class="actions md-layout md-alignment-center-space-between">
             <a @click="$router.go(-1)" href="#">Cancel</a>
             <md-button class="md-raised md-primary" @click="auth"
@@ -217,7 +220,7 @@ export default {
       }, 1000);
       return;
     }
-    this.loading=false;
+    this.loading = false;
 
     if (this.remote) {
       var res = await this.$Global.getURI(
