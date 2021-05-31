@@ -32,7 +32,7 @@ documents: Param, only effective when details is null.
       <md-table-row slot="md-table-row" slot-scope="{ item }">
         <md-table-cell md-label="Name" md-sort-by="name">
           <a
-            @click.prevent="DownloadPopUp"
+            @click.prevent="PreviewDocument"
             :data-docid="item.docID"
             :href="'https://mcsrv.icu/view?docID=' + item.docID"
             >{{ item.name }}</a
@@ -252,9 +252,32 @@ export default {
         window.location = link;
       });
     },
+    PreviewDocument: function (e) {
+      var data = e.currentTarget.dataset;
+      this.GetPreviewLink(data.docid).then((link) => {
+        // window.open(link);
+        // This fixes the problem with Safari
+        window.location = link;
+      });
+    },
     GetDownloadLink: async function (docID) {
       let res = await this.$Global.getURI(
         "https://apis.mcsrv.icu/getDownloadLink",
+        {
+          params: {
+            docID: docID,
+          },
+        }
+      );
+      if (res.data.code == 0) {
+        return "https://apis.mcsrv.icu" + res.data.link;
+      } else {
+        return "about:blank";
+      }
+    },
+    GetPreviewLink: async function (docID) {
+      let res = await this.$Global.getURI(
+        "https://apis.mcsrv.icu/getPreviewLink",
         {
           params: {
             docID: docID,
