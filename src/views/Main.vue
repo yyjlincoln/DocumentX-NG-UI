@@ -14,7 +14,7 @@
 
               <a
                 class="md-title"
-                @click="menuVisible = !menuVisible"
+                @click.prevent="menuVisible = !menuVisible"
                 href="#"
                 >{{ title }}</a
               >
@@ -130,7 +130,7 @@ export default {
       } else if (where == "" || where == "/") {
         this.title = "Dashboard";
       }
-      this.$router.replace("/app/" + e.currentTarget.dataset.where);
+      this.$router.push("/app/" + e.currentTarget.dataset.where);
       this.menuVisible = false;
     },
     navigateTo: function (location, params = {}, root = "/app/") {
@@ -138,7 +138,7 @@ export default {
       for (var x in params) {
         par = par + x + "=" + params[x] + "&";
       }
-      this.$router.replace(root + location + "");
+      this.$router.push(root + location + "");
     },
     logout() {
       this.$Global.logout();
