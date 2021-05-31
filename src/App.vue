@@ -3,6 +3,37 @@
 <template>
   <div id="app">
     <!-- <div id="nav"></div> -->
+    <div
+      v-if="!loaded"
+      style="
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        z-index: 10000000;
+        background: white;
+      "
+    >
+      <div>
+        <div style="animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite">
+          <img
+            alt="DocumentX Logo"
+            style="margin-left: auto; margin-right: auto"
+            src="@/assets/logo.png"
+          />
+          <div style="padding-top: 20px">
+            <!-- <h1>DocumentX</h1> -->
+          </div>
+        </div>
+        <md-progress-spinner
+          md-mode="indeterminate"
+          style="margin-top: 20px"
+          :md-stroke="2"
+        ></md-progress-spinner>
+      </div>
+    </div>
     <div id="container">
       <!-- <transition :name="transitionName"> -->
       <router-view />
@@ -15,6 +46,7 @@
 export default {
   data: () => ({
     transitionName: "",
+    loaded: false,
   }),
   watch: {
     $route(to, from) {
@@ -43,6 +75,12 @@ export default {
     if (this.$Global.config.debug) {
       console.log("Initiating...");
     }
+    // let path = this.$route.path.split("/", 2);
+    // if (path[1] === "app") {
+    //   this.loaded = false;
+    // } else {
+    //   this.loaded = true;
+    // }
     this.$Global.init().then((res) => {
       if (res.code == 0) {
         if (this.$Global.config.debug) {
@@ -66,6 +104,9 @@ export default {
       } else {
         console.log(res);
       }
+      setTimeout(() => {
+        this.loaded = true;
+      }, 1000);
     });
   },
 };
@@ -120,5 +161,15 @@ html {
 body {
   margin: 0;
   padding: 0;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 </style>

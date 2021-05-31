@@ -35,7 +35,7 @@
                       >You are logged in as
                       {{ $Global.user.name }}</md-menu-item
                     >
-                    <md-menu-item to="/" @click="logout">Logout</md-menu-item>
+                    <md-menu-item @click="logout">Logout</md-menu-item>
                     <!-- Can not directly call $Global.logout due to issues with "this" -->
                   </md-menu-content>
                 </md-button>
@@ -140,8 +140,9 @@ export default {
       }
       this.$router.push(root + location + "");
     },
-    logout() {
-      this.$Global.logout();
+    async logout() {
+      await this.$Global.logout();
+      this.$router.replace('/')
     },
     toggleDebug: function () {
       this.$Global.toggleDebug();

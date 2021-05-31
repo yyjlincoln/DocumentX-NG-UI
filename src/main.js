@@ -80,13 +80,14 @@ Vue.prototype.$Global = {
       name: res.data.name
     }
   },
-  logout: function () {
+  logout: async function () {
     this.user = {
       uID: null,
       token: null,
       name: null
     }
     this.saveUserToLocalStorage()
+    return true
   },
   async getAuthStatus() {
     try {

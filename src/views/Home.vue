@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div>
-      <img alt="DocumentX Logo" src="../assets/logo.png" />
+      <img alt="DocumentX Logo" src="@/assets/logo.png" />
       <div style="padding-top: 20px">
         <h1>Welcome to DocumentX.</h1>
         <p>A Powerful Document Management System</p>
@@ -51,7 +51,7 @@ export default {
   async mounted() {
     let res = await this.$Global.getAuthStatus();
     if (res) {
-      this.$router.replace("/app/all");
+      this.$router.replace("/app");
     }
   },
 };
