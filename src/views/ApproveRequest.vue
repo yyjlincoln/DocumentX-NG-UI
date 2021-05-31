@@ -96,7 +96,7 @@ export default {
 
     this.$Global.init().then((res) => {
       if (res.code == -1) {
-        this.$router.push({
+        this.$router.replace({
           path: "/auth",
           query: {
             next: btoa(this.$route.fullPath),

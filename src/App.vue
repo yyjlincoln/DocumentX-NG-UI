@@ -28,7 +28,7 @@ export default {
       this.$Global.init().then((res) => {
         if (res.code == -1) {
           if (path[1] === "app") {
-            this.$router.push({
+            this.$router.replace({
               path: "/auth",
               query: {
                 next: btoa(this.$route.fullPath),
@@ -56,7 +56,7 @@ export default {
         // The user status has expired, so redirect to login.
         let path = this.$route.path.split("/", 2);
         if (path[1] === "app") {
-          this.$router.push({
+          this.$router.replace({
             path: "/auth",
             query: {
               next: btoa(this.$route.fullPath),

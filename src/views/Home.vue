@@ -42,11 +42,17 @@ export default {
   }),
   methods: {
     getStarted: function () {
-      this.$router.push("/auth");
+      this.$router.replace("/auth");
     },
     toggleDebug: function () {
       this.$Global.toggleDebug();
     },
+  },
+  async mounted() {
+    let res = await this.$Global.getAuthStatus();
+    if (res) {
+      this.$router.replace("/app/all");
+    }
   },
 };
 </script>

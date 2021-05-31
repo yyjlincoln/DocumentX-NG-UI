@@ -215,7 +215,7 @@ export default {
         next = "/app";
       }
       // Now redirect
-      this.$router.push(next);
+      this.$router.replace(next);
     },
     useLtat() {
       this.used = true;

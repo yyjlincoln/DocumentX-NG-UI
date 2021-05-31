@@ -130,7 +130,7 @@ export default {
       } else if (where == "" || where == "/") {
         this.title = "Dashboard";
       }
-      this.$router.push("/app/" + e.currentTarget.dataset.where);
+      this.$router.replace("/app/" + e.currentTarget.dataset.where);
       this.menuVisible = false;
     },
     navigateTo: function (location, params = {}, root = "/app/") {
@@ -138,7 +138,7 @@ export default {
       for (var x in params) {
         par = par + x + "=" + params[x] + "&";
       }
-      this.$router.push(root + location + "");
+      this.$router.replace(root + location + "");
     },
     logout() {
       this.$Global.logout();

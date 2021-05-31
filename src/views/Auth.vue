@@ -203,7 +203,7 @@ export default {
         next = "/app";
       }
       // Now redirect
-      this.$router.push(next);
+      this.$router.replace(next);
     },
   },
   mounted: async function () {

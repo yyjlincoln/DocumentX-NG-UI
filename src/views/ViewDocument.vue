@@ -48,7 +48,7 @@ export default {
     },
     login: function () {
       this.$Global.logout()
-      this.$router.push({
+      this.$router.replace({
         path: "auth",
         query: {
           next: btoa(this.$route.fullPath),
@@ -87,7 +87,7 @@ export default {
               this.subtitle = "Sign in is required.";
               this.title = "Redirecting...";
               setTimeout(() => {
-                this.$router.push({
+                this.$router.replace({
                   path: "auth",
                   query: {
                     next: btoa(this.$route.fullPath),
@@ -98,7 +98,7 @@ export default {
               this.subtitle = "Access has expired.";
               this.title = "Log in is required. Redirecting...";
               setTimeout(() => {
-                this.$router.push({
+                this.$router.replace({
                   path: "auth",
                   query: {
                     next: btoa(this.$route.fullPath),
