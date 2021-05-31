@@ -174,9 +174,9 @@ export default {
       if (res.code == 0) {
         this.authResult = "Successfully logged in as " + res.name;
         this.showSnackbar = true;
-        setTimeout(() => {
+        // setTimeout(() => {
           this.redirect();
-        }, 1000);
+        // }, 1000);
       } else {
         this.authResult =
           "Authentication failed: " +
@@ -215,9 +215,9 @@ export default {
       this.showSnackbar = true;
       this.loading = true;
       this.authResult = "You are logged in...";
-      setTimeout(() => {
+      // setTimeout(() => {
         this.redirect();
-      }, 1000);
+      // }, 1000);
       return;
     }
     this.loading = false;
@@ -254,9 +254,9 @@ export default {
             this.$Global.user.uID = r.data.uID;
             this.$Global.user.name = r.data.name;
             this.$Global.saveUserToLocalStorage();
-            setTimeout(() => {
+            // setTimeout(() => {
               this.redirect();
-            }, 1000);
+            // }, 1000);
           } else if (r.data.code < 0) {
             clearInterval(interv);
             this.qrcode = null;
