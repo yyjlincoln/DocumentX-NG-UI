@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import './registerServiceWorker'
 // import md5 from 'md5'
 
 const sha256 = require("js-sha256").sha256
