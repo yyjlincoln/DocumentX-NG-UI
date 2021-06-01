@@ -58,9 +58,10 @@ export default {
   },
   mounted() {
     this.subtitle = "Loading document info...";
+    // Preview document
     try {
       this.$Global
-        .getURI("https://apis.mcsrv.icu/getDownloadLink", {
+        .getURI("https://apis.mcsrv.icu/getPreviewLink", {
           params: {
             docID: this.$route.query.docID,
             token: this.$route.query.token,
