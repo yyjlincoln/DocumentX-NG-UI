@@ -77,6 +77,8 @@
               >
                 <md-option value="public">Public</md-option>
                 <md-option value="private">Private</md-option>
+                <md-option value="publicAppOnly">PublicAppOnly</md-option>
+                <md-option value="privateAppOnly">PrivateAppOnly</md-option>
               </md-select>
             </md-field>
           </div>

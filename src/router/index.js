@@ -15,6 +15,7 @@ import ResourceGroups from '../views/Main/ResourceGroups.vue'
 import LongTermAccessToken from '../views/LongTermAccessToken.vue'
 import Debug from '../views/Debug.vue'
 import ApproveRequest from '../views/ApproveRequest.vue'
+import ErrorPage from '../views/error.vue'
 
 Vue.use(VueRouter)
 
@@ -37,6 +38,12 @@ const routes = [
   {
     path: '/approve_request',
     component: ApproveRequest
+  },
+  {
+    path: '/error',
+    name: 'error',
+    component: ErrorPage,
+    props: true
   },
   {
     path: '/app',

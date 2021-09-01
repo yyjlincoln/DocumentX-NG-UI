@@ -63,11 +63,17 @@ documents: Param, only effective when details is null.
               <md-menu-item @click="DownloadPopUp" :data-docid="item.docID"
                 >Download</md-menu-item
               >
+              <md-menu-item @click="openInApp" :data-docid="item.docID"
+                >Open in App</md-menu-item
+              >
               <md-menu-item @click="EditDoc" :data-docid="item.docID"
                 >Edit</md-menu-item
               >
               <md-menu-item @click="CopyLink" :data-docid="item.docID"
                 >Copy Link</md-menu-item
+              >
+              <md-menu-item @click="CopyAppLink" :data-docid="item.docID"
+                >Copy App Link</md-menu-item
               >
               <md-menu-item
                 @click="ArchiveAllSelected"
@@ -249,15 +255,23 @@ export default {
       this.GetDownloadLink(data.docid).then((link) => {
         // window.open(link);
         // This fixes the problem with Safari
-        window.location = link;
+        if (link) {
+          window.location = link;
+        }
       });
+    },
+    openInApp: function (e) {
+      var data = e.currentTarget.dataset;
+      window.location = "documentx://view/" + data.docid
     },
     PreviewDocument: function (e) {
       var data = e.currentTarget.dataset;
       this.GetPreviewLink(data.docid).then((link) => {
         // window.open(link);
         // This fixes the problem with Safari
-        window.location = link;
+        if (link) {
+          window.location = link;
+        }
       });
     },
     GetDownloadLink: async function (docID) {
@@ -272,7 +286,13 @@ export default {
       if (res.data.code == 0) {
         return "https://apis.mcsrv.icu" + res.data.link;
       } else {
-        return "about:blank";
+        this.$router.push({
+          name: "error",
+          params: {
+            message: res.data.message,
+            code: res.data.code,
+          },
+        });
       }
     },
     GetPreviewLink: async function (docID) {
@@ -287,7 +307,13 @@ export default {
       if (res.data.code == 0) {
         return "https://apis.mcsrv.icu" + res.data.link;
       } else {
-        return "about:blank";
+        this.$router.push({
+          name: "error",
+          params: {
+            message: res.data.message,
+            code: res.data.code,
+          },
+        });
       }
     },
     PrintAllSelected: function (e) {
@@ -394,7 +420,7 @@ export default {
           this.loading = true;
           this.checkList = [];
           this.reloadData();
-         });
+        });
     },
     EditDoc: function (e) {
       var data = e.currentTarget.dataset;
@@ -405,6 +431,17 @@ export default {
       var docID = e.currentTarget.dataset.docid;
       // Temporary - Need to integrate getDocumentAccess api.
       c.value = "https://mcsrv.icu/view?docID=" + docID;
+      c.select();
+      c.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      this.snack = "Link copied to clipboard.";
+      this.showSnackbar = true;
+    },
+    CopyAppLink: function (e) {
+      var c = document.getElementById("CopyToClipboard");
+      var docID = e.currentTarget.dataset.docid;
+      // Temporary - Need to integrate getDocumentAccess api.
+      c.value = "documentx://view/" + docID;
       c.select();
       c.setSelectionRange(0, 99999);
       document.execCommand("copy");
