@@ -257,12 +257,14 @@ export default {
         // This fixes the problem with Safari
         if (link) {
           window.location = link;
+        } else {
+          window.location = "documentx://view/" + data.docid;
         }
       });
     },
     openInApp: function (e) {
       var data = e.currentTarget.dataset;
-      window.location = "documentx://view/" + data.docid
+      window.location = "documentx://view/" + data.docid;
     },
     PreviewDocument: function (e) {
       var data = e.currentTarget.dataset;
@@ -271,6 +273,8 @@ export default {
         // This fixes the problem with Safari
         if (link) {
           window.location = link;
+        } else {
+          window.location = "documentx://view/" + data.docid;
         }
       });
     },
