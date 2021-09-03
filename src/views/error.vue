@@ -87,6 +87,11 @@ export default {
             default: -1
         }
 
+    },
+    mounted(){
+      setTimeout(() => {
+        this.$router.go(-1)
+      }, 5000);
     }
 };
 </script>
