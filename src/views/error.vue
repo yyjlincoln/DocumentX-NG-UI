@@ -2,9 +2,7 @@
   <div>
     <div class="centered-container">
       <md-content class="md-elevation-3">
-        <div class="md-title">
-          Something went wrong.
-        </div>
+        <div class="md-title">Something went wrong.</div>
         <p>
           {{ message + " (" + String(code) + ")" }}
         </p>
@@ -77,22 +75,27 @@
 
 <script>
 export default {
-    props:{
-        message: {
-            type: String,
-            default: 'Unknown Error'
-        },
-        code: {
-            type: Number,
-            default: -1
-        }
-
+  props: {
+    message: {
+      type: String,
+      default: "Unknown Error",
     },
-    mounted(){
-      setTimeout(() => {
-        this.$router.go(-1)
-      }, 5000);
-    }
+    code: {
+      type: Number,
+      default: -1,
+    },
+  },
+  data: () => ({
+    t: null,
+  }),
+  mounted() {
+    this.t = setTimeout(() => {
+      this.$router.go(-1);
+    }, 5000);
+  },
+  beforeDestroy(){
+    clearTimeout(this.t)
+  }
 };
 </script>
 
