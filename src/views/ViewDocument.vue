@@ -34,7 +34,7 @@ export default {
           },
         })
         .then((res) => {
-          if (res.data.code == 0) {
+          if (res.data.code >= 0) {
             window.location = "https://apis.mcsrv.icu" + res.data.link;
           } else {
             this.subtitle = res.data.message;
@@ -70,7 +70,7 @@ export default {
         })
         .then((res) => {
           console.log(res);
-          if (res.data.code == 0) {
+          if (res.data.code >= 0) {
             this.title = "Starting download...";
             this.subtitle = "If the download did not start, try below:";
             this.link = "https://apis.mcsrv.icu" + res.data.link;

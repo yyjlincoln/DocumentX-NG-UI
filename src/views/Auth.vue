@@ -228,7 +228,7 @@ export default {
         {}
       );
       // console.log(res)
-      if (res.data.code == 0) {
+      if (res.data.code >= 0) {
         this.qrcode =
           "https://apis.mcsrv.icu/qr?urlEncoded=" +
           btoa("https://mcsrv.icu/approve_request?rID=" + res.data.rID);

@@ -13,7 +13,7 @@ const axios = require("axios")
 
 Vue.prototype.$Global = {
   config: {
-    version: 'build 2020102402',
+    version: 'build 20210918 - APIVersion=1',
     debug: false,
   },
   toggleDebug: function () {
@@ -68,7 +68,7 @@ Vue.prototype.$Global = {
     Formdata.append('uID', uID)
     Formdata.append('password', password === "" ? "" : _password)
     let res = await axios.post('https://apis.mcsrv.icu/login', Formdata)
-    if (res.data.code == 0) {
+    if (res.data.code >= 0) {
       this.user.name = res.data.name
       this.user.token = res.data.token
       this.user.uID = res.data.uID
@@ -95,7 +95,7 @@ Vue.prototype.$Global = {
       if (this.config.debug) {
         console.log('GetAuthStatus:', res.data)
       }
-      if (res.data.code == 0) {
+      if (res.data.code >= 0) {
         return true
       } else {
         return false

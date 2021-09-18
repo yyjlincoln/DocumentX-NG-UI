@@ -287,7 +287,7 @@ export default {
           },
         }
       );
-      if (res.data.code == 0) {
+      if (res.data.code >= 0) {
         return "https://apis.mcsrv.icu" + res.data.link;
       } else {
         this.$router.push({
@@ -308,7 +308,7 @@ export default {
           },
         }
       );
-      if (res.data.code == 0) {
+      if (res.data.code >= 0) {
         return "https://apis.mcsrv.icu" + res.data.link;
       } else {
         this.$router.push({
@@ -457,7 +457,7 @@ export default {
       this.$Global
         .getURI("https://apis.mcsrv.icu/deleteDocumentByID?docID=" + data.docid)
         .then((res) => {
-          if (res.data.code == 0) {
+          if (res.data.code >= 0) {
             this.snack = "Successfully deleted document.";
           } else {
             this.snack =

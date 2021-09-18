@@ -45,7 +45,7 @@ export default {
           },
         })
         .then((res) => {
-          if (res.data.code == 0) {
+          if (res.data.code >= 0) {
             this.details = res.data.result;
           }
         });

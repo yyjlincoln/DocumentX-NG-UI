@@ -64,7 +64,7 @@ export default {
           },
         }
       );
-      if (res.data.code == 0) {
+      if (res.data.code >= 0) {
         this.status = "Approved.";
       } else {
         this.status = "Error: " + res.data.message;

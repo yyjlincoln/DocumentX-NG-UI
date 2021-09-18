@@ -146,7 +146,7 @@ export default {
         .then((res) => {
           this.snackBarText =
             res.data.message + " (" + String(res.data.code) + ")";
-          if (res.data.code == 0) {
+          if (res.data.code >= 0) {
             this.snackBarText =
               "Successfully uploaded file (#" + res.data.docID + ")";
             this.clearForm();
