@@ -13,7 +13,7 @@ const axios = require("axios")
 
 Vue.prototype.$Global = {
   config: {
-    version: 'build 20210918 - APIVersion=1',
+    version: 'build 20211118 web',
     debug: false,
   },
   toggleDebug: function () {
