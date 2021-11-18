@@ -80,7 +80,8 @@ export default {
           } else {
             if (res.data.code == -301) {
               this.title = "Document not found.";
-              this.subtitle = "We could not find this document, or you do not have the access to this private document. (-301)";
+              this.subtitle =
+                "We could not find this document, or you do not have the access to this private document. (-301)";
             } else if (res.data.code == -400) {
               this.title = "Access is denied.";
               this.subtitle =
@@ -112,6 +113,10 @@ export default {
             } else if (res.data.code == -501 || res.data.code == -502) {
               this.title = "Please open thie page in the browser.";
               this.subtitle = res.data.message;
+            } else if (res.data.code == -600) {
+              this.title = "Access method is not allowed.";
+              this.subtitle = res.data.message;
+              window.location = "documentx://view/" + this.$route.query.docid;
             } else {
               this.title = "An error occured";
               this.subtitle =
