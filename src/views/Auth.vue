@@ -30,7 +30,7 @@
             ></md-progress-spinner>
           </div>
           <div class="md-body-2" style="margin-top: 10px">{{ qrstatus }}</div>
-          <a href="/auth?remote=false">Use Password...</a>
+          <a :href="'/auth?remote=false&next='+$route.query.next">Use Password...</a>
         </md-content>
       </div>
     </div>
@@ -68,7 +68,7 @@
 
           <!-- <a @click="goRemote" href="#">Remote Login</a> -->
           <div style="display: flex; flex-direction: column; margin-top: 3px; margin-bottom: 3px;">
-          <a href="/auth?remote=true">Remote Login...</a>
+          <a :href="'/auth?remote=true&next='+$route.query.next">Remote Login...</a>
           <a href="/ltat">LTAT...</a>
           </div>
           <div class="actions md-layout md-alignment-center-space-between">

@@ -104,9 +104,9 @@ export default {
       } else {
         console.log(res);
       }
-      setTimeout(() => {
+      // setTimeout(() => {
         this.loaded = true;
-      }, 1000);
+      // }, 1000);
     });
   },
 };

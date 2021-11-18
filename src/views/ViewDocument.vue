@@ -1,11 +1,13 @@
 <template>
   <div class="home">
     <img alt="DocumentX Logo" src="../assets/logo.png" />
-    <div style="padding-top: 20px;">
-      <h1>{{title}}</h1>
-      <p>{{subtitle}}</p>
+    <div style="padding-top: 20px">
+      <h1>{{ title }}</h1>
+      <p>{{ subtitle }}</p>
       <a @click="downloadManually" href="#" v-if="link">Download...</a>
-      <a @click="login" href="#" v-if="accessDenied">Try a different account...</a>
+      <a @click="login" href="#" v-if="accessDenied"
+        >Try a different account...</a
+      >
     </div>
   </div>
 </template>
@@ -47,7 +49,7 @@ export default {
         });
     },
     login: function () {
-      this.$Global.logout()
+      this.$Global.logout();
       this.$router.replace({
         path: "auth",
         query: {
@@ -85,27 +87,23 @@ export default {
                 "You do not have the permission to access this document.";
               this.accessDenied = true;
             } else if (res.data.code == -401) {
-              this.subtitle = "Sign in is required.";
-              this.title = "Redirecting...";
-              setTimeout(() => {
-                this.$router.replace({
-                  path: "auth",
-                  query: {
-                    next: btoa(this.$route.fullPath),
-                  },
-                });
-              }, 3000);
+              this.subtitle = "This document is protected.";
+              this.title = "Please sign in.";
+              this.$router.replace({
+                path: "auth",
+                query: {
+                  next: btoa(this.$route.fullPath),
+                },
+              });
             } else if (res.data.code == -405 || res.data.code == -406) {
               this.subtitle = "Access has expired.";
               this.title = "Log in is required. Redirecting...";
-              setTimeout(() => {
-                this.$router.replace({
-                  path: "auth",
-                  query: {
-                    next: btoa(this.$route.fullPath),
-                  },
-                });
-              }, 3000);
+              this.$router.replace({
+                path: "auth",
+                query: {
+                  next: btoa(this.$route.fullPath),
+                },
+              });
             } else if (res.data.code == -501 || res.data.code == -502) {
               this.title = "Please open thie page in the browser.";
               this.subtitle = res.data.message;
