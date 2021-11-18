@@ -23,6 +23,7 @@ export default {
     subtitle: "Initiating download...",
     link: null,
     accessDenied: false,
+    docID: ""
   }),
   methods: {
     downloadManually: function () {
@@ -60,6 +61,7 @@ export default {
   },
   mounted() {
     this.subtitle = "Loading document info...";
+    this.docID = this.$route.query.docID
     // Preview document
     try {
       this.$Global
@@ -116,7 +118,7 @@ export default {
             } else if (res.data.code == -600) {
               this.title = "Access method is not allowed.";
               this.subtitle = res.data.message;
-              window.location = "documentx://view/" + this.$route.query.docid;
+              window.location = "documentx://view/" + this.docID;
             } else {
               this.title = "An error occured";
               this.subtitle =
