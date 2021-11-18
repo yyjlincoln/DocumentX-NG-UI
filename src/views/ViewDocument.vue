@@ -79,12 +79,17 @@ export default {
             window.location = "https://apis.mcsrv.icu" + res.data.link;
           } else {
             if (res.data.code == -301) {
-              this.title = "Document not found!";
-              this.subtitle = "We could not find this document. (-301)";
+              this.title = "Document not found.";
+              this.subtitle = "We could not find this document, or you do not have the access to this private document. (-301)";
             } else if (res.data.code == -400) {
               this.title = "Access is denied.";
               this.subtitle =
-                "You do not have the permission to access this document.";
+                "You do not have the permission to access this document. You are currently logged in as: " +
+                this.$Global.user.name +
+                " (" +
+                this.$Global.user.uID +
+                ")";
+
               this.accessDenied = true;
             } else if (res.data.code == -401) {
               this.subtitle = "This document is protected.";
