@@ -4,6 +4,61 @@
   <div id="app">
     <!-- <div id="nav"></div> -->
     <div
+      v-for="(alert, identifier) in alerts"
+      :key="identifier"
+      :style="
+        'position: fixed; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; z-index: ' +
+        String(100000000 + (alert.stackLevel ? alert.stackLevel : 0)) +
+        '; background: transparent; background-color: rgba(0, 0, 0, 0.3); backdrop-filter: saturate(180%) blur(20px);'
+      "
+      :ref="'alert_' + identifier"
+      @keyup.enter="popAlertInline(identifier)"
+    >
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          background-color: white;
+          width: fit-content;
+          margin-left: auto;
+          margin-right: auto;
+          text-align: center;
+          width: 350px;
+          border-radius: 1em;
+          filter: drop-shadow(0px 0px 5em gray);
+          font-size: 1.3em;
+        "
+      >
+        <div style="padding: 1.5em 1.5em 0em 1.5em">
+          <div style="font-weight: bold">
+            <!-- Title -->
+            {{ alert.title }}
+          </div>
+          <div style="font-weight: plain; margin-top: 0.5em">
+            <!-- Title -->
+            {{ alert.message }}
+          </div>
+        </div>
+        <div>
+          <div
+            style="
+              margin: 1em 0em 0em 0em;
+              padding: 0.7em 0em 0.7em 0em;
+              border-top: 0.1px solid rgba(0, 0, 0, 0.1);
+              border-radius: 0em 0em 1em 1em;
+              font-weight: bold;
+              cursor: pointer;
+              color: #2364aa;
+            "
+            @click="popAlertInline(identifier)"
+            @keyup.enter="popAlertInline(identifier)"
+          >
+            Done
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
       v-if="!loaded"
       style="
         position: fixed;
@@ -43,11 +98,45 @@
 </template>
 
 <script>
+import Vue from "vue";
 export default {
   data: () => ({
     transitionName: "",
     loaded: false,
+    _alert_template: {
+      title: "",
+      message: "",
+      identifier: 0,
+      stackLevel: 0,
+    },
+    alerts: {},
+    alertStack: [],
   }),
+  methods: {
+    pushAlert(title, message) {
+      let identifier = Math.floor(Math.random() * 10000000);
+      Vue.set(this.alerts, identifier, {
+        identifier: identifier,
+        title: title,
+        message: message,
+        stackLevel: this.alertStack.length,
+      });
+      this.alertStack.push(identifier);
+      Vue.nextTick(function () {
+        this.$refs["alert_" + identifier][0].focus();
+      }, this);
+    },
+    popAlert(identifier) {
+      Vue.delete(this.alerts, identifier);
+      // delete this.alerts[identifier];
+      this.alertStack.splice(this.alertStack.indexOf(identifier), 1);
+    },
+    popAlertInline(identifier) {
+      // return function () {
+      this.popAlert(identifier);
+      // };
+    },
+  },
   watch: {
     $route(to, from) {
       // const toDepth = to.path.split("/").length;
@@ -72,6 +161,7 @@ export default {
     },
   },
   created() {
+    this.$Global.that = this;
     if (this.$Global.config.debug) {
       console.log("Initiating...");
     }
@@ -105,7 +195,7 @@ export default {
         console.log(res);
       }
       // setTimeout(() => {
-        this.loaded = true;
+      this.loaded = true;
       // }, 1000);
     });
   },

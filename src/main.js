@@ -12,8 +12,10 @@ const axios = require("axios")
 
 
 Vue.prototype.$Global = {
+  that: null,
   config: {
-    version: 'build 20211118 web',
+    version: 'build 20211123-web',
+    apiversion: 'web',
     debug: false,
   },
   toggleDebug: function () {
@@ -25,7 +27,26 @@ Vue.prototype.$Global = {
     token: null,
     name: null
   },
-  getURI: function (...args) {
+  processResponse: function (response) {
+    let data = response.data
+    let code = data.code
+    let message = data.message
+    if (code < 0) {
+      if (this.config.debug) {
+        console.error("[processResponse] API returned an error: " + message + " (" + String(code) + ").")
+      }
+    } else {
+      switch (code) {
+        case 1200:
+          this.pushAlert(data.title, data.message)
+      }
+    }
+    return response
+  },
+  pushAlert: function (title, message) {
+    this.that.pushAlert(title, message)
+  },
+  getURI: async function (...args) {
     if (this.config.debug) {
       console.log('GetURI: Load API', args[0])
     }
@@ -41,10 +62,14 @@ Vue.prototype.$Global = {
         token: this.user.token
       }
     }
-
-    return axios.get(...args)
+    try {
+      let response = await axios.get(...args)
+      return this.processResponse(response)
+    } catch (err) {
+      this.pushAlert('Network Error', "Please check your connection and try again.")
+    }
   },
-  postURI: function (...args) {
+  postURI: async function (...args) {
     if (this.config.debug) {
       console.log('PostURI: Load API', args[0])
     }
@@ -58,8 +83,15 @@ Vue.prototype.$Global = {
         token: this.user.token
       }
     }
+    try {
+      let response = await axios.post(...args)
+      return this.processResponse(response)
+    } catch (err) {
+      this.pushAlert('Network Error', "Please check your connection and try again.")
+    }
 
-    return axios.post(...args)
+
+
   },
   login: async function (uID, password) {
     // [TODO] Request for a salt from the server and do sha256.
@@ -67,17 +99,25 @@ Vue.prototype.$Global = {
     let Formdata = new FormData()
     Formdata.append('uID', uID)
     Formdata.append('password', password === "" ? "" : _password)
-    let res = await axios.post('https://apis.mcsrv.icu/login', Formdata)
-    if (res.data.code >= 0) {
-      this.user.name = res.data.name
-      this.user.token = res.data.token
-      this.user.uID = res.data.uID
-    }
-    this.saveUserToLocalStorage()
-    return {
-      code: res.data.code,
-      message: res.data.message,
-      name: res.data.name
+    try {
+      let res = await axios.post('https://apis.mcsrv.icu/login', Formdata)
+      if (res.data.code >= 0) {
+        this.user.name = res.data.name
+        this.user.token = res.data.token
+        this.user.uID = res.data.uID
+      }
+      this.saveUserToLocalStorage()
+      return {
+        code: res.data.code,
+        message: res.data.message,
+        name: res.data.name
+      }
+    } catch {
+      // this.pushAlert("Could not authenticate", "Network Error")
+      return {
+        code: -1,
+        message: "Network Error"
+      }
     }
   },
   logout: async function () {
@@ -144,6 +184,7 @@ Vue.prototype.$Global = {
     }
   }
 }
+window.$Global = Vue.prototype.$Global
 
 new Vue({
   router,

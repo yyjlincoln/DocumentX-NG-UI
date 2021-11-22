@@ -290,13 +290,10 @@ export default {
       if (res.data.code >= 0) {
         return "https://apis.mcsrv.icu" + res.data.link;
       } else {
-        this.$router.push({
-          name: "error",
-          params: {
-            message: res.data.message,
-            code: res.data.code,
-          },
-        });
+        this.$Global.pushAlert(
+          "An error occured.",
+          res.data.message + " (" + String(res.data.code) + ")"
+        );
       }
     },
     GetPreviewLink: async function (docID) {
@@ -311,13 +308,11 @@ export default {
       if (res.data.code >= 0) {
         return "https://apis.mcsrv.icu" + res.data.link;
       } else {
-        this.$router.push({
-          name: "error",
-          params: {
-            message: res.data.message,
-            code: res.data.code,
-          },
-        });
+        console.log(this.$Global);
+        this.$Global.pushAlert(
+          "An error occured.",
+          res.data.message + " (" + String(res.data.code) + ")"
+        );
       }
     },
     PrintAllSelected: function (e) {
@@ -460,16 +455,15 @@ export default {
           if (res.data.code >= 0) {
             this.snack = "Successfully deleted document.";
           } else {
-            this.snack =
-              "Failed to complete the operation: " +
-              res.data.result +
-              " (" +
-              String(res.data.code) +
-              ")";
+            this.$Global.pushAlert(
+              "Could not delete the document",
+              res.data.result + " (" + String(res.data.code) + ")"
+            );
           }
         })
         .catch((err) => {
-          this.snack = "Error: " + String(err);
+          this.$Global.pushAlert("Could not delete the document", String(err));
+          // this.snack = "Error: " + String(err);
         })
         .then(() => {
           this.showSnackbar = true;

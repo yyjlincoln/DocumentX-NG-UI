@@ -219,7 +219,8 @@ export default {
           }
         })
         .catch(() => {
-          this.snackBarText = "Failed to complete the request.";
+          this.$Global.pushAlert("Failed to complete the request.", "Please check your connection and try again.")
+          // this.snackBarText = "Failed to complete the request.";
         })
         .then(() => {
           this.showSnackBar = true;
@@ -234,8 +235,9 @@ export default {
     },
     loadData: function () {
       if (this.docID == null) {
-        this.snackBarText = "No DocID is provided!";
-        this.showSnackBar = true;
+        // this.snackBarText = "No DocID is provided!";
+        this.$Global.pushAlert("An error occured", "No DocID was provided.")
+        // this.showSnackBar = true;
         window.history.back();
         return;
       }

@@ -30,7 +30,9 @@
             ></md-progress-spinner>
           </div>
           <div class="md-body-2" style="margin-top: 10px">{{ qrstatus }}</div>
-          <a :href="'/auth?remote=false&next='+$route.query.next">Use Password...</a>
+          <a :href="'/auth?remote=false&next=' + $route.query.next"
+            >Use Password...</a
+          >
         </md-content>
       </div>
     </div>
@@ -67,9 +69,18 @@
           </div>
 
           <!-- <a @click="goRemote" href="#">Remote Login</a> -->
-          <div style="display: flex; flex-direction: column; margin-top: 3px; margin-bottom: 3px;">
-          <a :href="'/auth?remote=true&next='+$route.query.next">Remote Login...</a>
-          <a href="/ltat">LTAT...</a>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              margin-top: 3px;
+              margin-bottom: 3px;
+            "
+          >
+            <a :href="'/auth?remote=true&next=' + $route.query.next"
+              >Remote Login...</a
+            >
+            <a href="/ltat">LTAT...</a>
           </div>
           <div class="actions md-layout md-alignment-center-space-between">
             <a @click="$router.go(-1)" href="#">Cancel</a>
@@ -175,16 +186,13 @@ export default {
         this.authResult = "Successfully logged in as " + res.name;
         this.showSnackbar = true;
         // setTimeout(() => {
-          this.redirect();
+        this.redirect();
         // }, 1000);
       } else {
-        this.authResult =
-          "Authentication failed: " +
-          res.message +
-          " (" +
-          String(res.code) +
-          ")";
-        this.showSnackbar = true;
+        this.$Global.pushAlert(
+          "Unable to authenticate",
+          res.message + " (" + String(res.code) + ")"
+        );
         this.loading = false;
       }
     },
@@ -216,7 +224,7 @@ export default {
       this.loading = true;
       this.authResult = "You are logged in...";
       // setTimeout(() => {
-        this.redirect();
+      this.redirect();
       // }, 1000);
       return;
     }
@@ -255,7 +263,7 @@ export default {
             this.$Global.user.name = r.data.name;
             this.$Global.saveUserToLocalStorage();
             // setTimeout(() => {
-              this.redirect();
+            this.redirect();
             // }, 1000);
           } else if (r.data.code < 0) {
             clearInterval(interv);
