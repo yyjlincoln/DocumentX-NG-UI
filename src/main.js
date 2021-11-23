@@ -43,8 +43,11 @@ Vue.prototype.$Global = {
     }
     return response
   },
-  pushAlert: function (title, message) {
-    this.that.pushAlert(title, message)
+  pushAlert: async function (...args) {
+    return this.that.pushAlert(...args)
+  },
+  popAlert: async function (...args) {
+    return this.that.popAlert(...args)
   },
   getURI: async function (...args) {
     if (this.config.debug) {

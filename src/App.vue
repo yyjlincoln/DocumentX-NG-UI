@@ -52,7 +52,7 @@
               <div
                 v-for="(action, index) in alert.actions"
                 :key="index"
-                style="position: relative; flex-grow: 1; max-width: 100%;"
+                style="position: relative; flex-grow: 1; max-width: 100%"
                 class="alertAction"
               >
                 <div v-if="action.type == 'cancel'">
@@ -84,6 +84,27 @@
                       font-weight: bold;
                       cursor: pointer;
                       color: #2364aa;
+                      overflow-wrap: break-word;
+                      text-align: center;
+                    "
+                    :style="
+                      alert.actions.length == 2
+                        ? 'border-left: 0.1px solid rgba(0, 0, 0, 0.1);'
+                        : ''
+                    "
+                    @click="handlerProxy(identifier, index)"
+                  >
+                    {{ action.title }}
+                  </div>
+                </div>
+                <div v-if="action.type == 'destructive'">
+                  <div
+                    style="
+                      padding: 0.7em 0.7em 0.7em 0.7em;
+                      border-top: 0.1px solid rgba(0, 0, 0, 0.1);
+                      font-weight: bold;
+                      cursor: pointer;
+                      color: #f34213;
                       overflow-wrap: break-word;
                       text-align: center;
                     "
@@ -145,6 +166,7 @@
 
 <script>
 import Vue from "vue";
+import "@/Queue.js";
 export default {
   data: () => ({
     transitionName: "",
@@ -157,45 +179,74 @@ export default {
     },
     alerts: {},
     alertStack: [],
+    alertQueue: new window.Queue(),
+    alertWait: false,
   }),
   methods: {
-    pushAlert(
+    async pushAlert(
       title,
       message,
+      // type supports destructive, normal and cancel
       actions = [
         {
-          title: "Cancel",
+          title: "OK",
           handler: null, // This is useless for type cancel.
           type: "cancel",
         },
-        {
-          title: "An action",
-          handler: () => {
-            alert("test");
-          }, // This is useless for type cancel.
-          type: "normal",
-        },
-        
       ]
     ) {
-      let identifier = Math.floor(Math.random() * 10000000);
-      Vue.set(this.alerts, identifier, {
-        identifier: identifier,
-        title: title,
-        message: message,
-        stackLevel: this.alertStack.length,
-        actions: actions,
+      let prom = new Promise((resolve) => {
+        let identifier = Math.floor(Math.random() * 10000000);
+        this.alertQueue.queue(
+          ((that) => {
+            return () => {
+              Vue.set(that.alerts, identifier, {
+                identifier: identifier,
+                title: title,
+                message: message,
+                stackLevel: this.alertStack.length,
+                actions: actions,
+              });
+              that.alertStack.push(identifier);
+              Vue.nextTick(function () {
+                that.$refs["alert_" + identifier][0].focus();
+              }, that);
+              that.alertQueue.dequeue();
+
+              resolve(identifier);
+            };
+          })(this)
+        );
       });
-      this.alertStack.push(identifier);
-      Vue.nextTick(function () {
-        this.$refs["alert_" + identifier][0].focus();
-      }, this);
-      return identifier;
+      return prom;
     },
-    popAlert(identifier) {
-      Vue.delete(this.alerts, identifier);
-      // delete this.alerts[identifier];
-      this.alertStack.splice(this.alertStack.indexOf(identifier), 1);
+    async popAlert(identifier = null) {
+      if (identifier == null) {
+        identifier = this.alertStack[this.alertStack.length - 1];
+      }
+      let prom = new Promise((resolve) => {
+        this.alertQueue.queue(
+          ((that) => {
+            return () => {
+              if(that.alerts[identifier] == undefined){
+                that.alertQueue.dequeue();
+                resolve(false)
+                return
+              }
+              Vue.delete(that.alerts, identifier);
+              // delete this.alerts[identifier];
+              that.alertStack.splice(that.alertStack.indexOf(identifier), 1);
+              setTimeout(() => {
+                // if (this.alertQueue[0] == alertProgressIdentifier) {
+                that.alertQueue.dequeue();
+                resolve(true);
+                // }
+              }, 300);
+            };
+          })(this)
+        );
+      });
+      return prom;
     },
     popAlertInline(identifier) {
       // return function () {
@@ -338,7 +389,8 @@ body {
 .alertAction:active {
   background-color: rgba(0, 0, 0, 0.2);
 }
-.alertTransition-enter-active, .alertTransition-leave-active {
+.alertTransition-enter-active,
+.alertTransition-leave-active {
   transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .alertTransition-enter
