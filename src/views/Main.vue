@@ -148,7 +148,7 @@ export default {
         },
         {
           title: "Logout",
-          type: "normal",
+          type: "destructive",
           handler: async () => {
             await this.$Global.logout();
             this.$router.replace("/");

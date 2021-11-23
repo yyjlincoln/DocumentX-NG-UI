@@ -272,6 +272,23 @@ export default {
               "The login request has expired or been rejected. Please try again.";
             this.authResult = r.data.message;
             this.showSnackbar = true;
+            this.$Global.alert.pushAlert(
+              "Login failed.",
+              "The login request has either expired or been rejected.",
+              [
+                {
+                  title:"Cancel",
+                  type:"cancel",
+                },
+                {
+                  title: "Retry",
+                  type: "normal",
+                  handler: ()=>{
+                    location.reload()
+                  }
+                }
+              ]
+            );
           } else if (r.data.code == 2) {
             // Scanned
             this.qrcode = "";

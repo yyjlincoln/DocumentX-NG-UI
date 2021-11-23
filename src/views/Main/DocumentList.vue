@@ -276,6 +276,18 @@ export default {
         // This fixes the problem with Safari
         this.$Global.alert.popAlert(identifier);
         if (link) {
+          this.$Global.alert
+            .pushAlert("Downloading...", "Please check your browser.", [
+              {
+                title: "Done",
+                type: "cancel",
+              },
+            ])
+            .then((identifier) => {
+              setTimeout(() => {
+                this.$Global.alert.popAlert(identifier);
+              }, 3000);
+            });
           window.location = link;
         }
       });

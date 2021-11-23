@@ -7,7 +7,7 @@
         :style="
           'position: fixed; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; z-index: ' +
           String(100000000 + (alert.stackLevel ? alert.stackLevel : 0)) +
-          '; background: transparent; background-color: rgba(0, 0, 0, 0.3); backdrop-filter: saturate(180%) blur(20px);'
+          '; background: transparent; background-color: rgba(0, 0, 0, 0.3);'
         "
         :ref="'alert_' + identifier"
       >
