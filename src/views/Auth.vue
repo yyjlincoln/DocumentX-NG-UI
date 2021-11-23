@@ -189,7 +189,7 @@ export default {
         this.redirect();
         // }, 1000);
       } else {
-        this.$Global.pushAlert(
+        this.$Global.alert.pushAlert(
           "Unable to authenticate",
           res.message + " (" + String(res.code) + ")"
         );

@@ -141,8 +141,20 @@ export default {
       this.$router.push(root + location + "");
     },
     async logout() {
-      await this.$Global.logout();
-      this.$router.replace('/')
+      this.$Global.alert.pushAlert("Do you want to log out?", "", [
+        {
+          title: "Cancel",
+          type: "cancel",
+        },
+        {
+          title: "Logout",
+          type: "normal",
+          handler: async () => {
+            await this.$Global.logout();
+            this.$router.replace("/");
+          },
+        },
+      ]);
     },
     toggleDebug: function () {
       this.$Global.toggleDebug();

@@ -31,23 +31,19 @@ Vue.prototype.$Global = {
     let data = response.data
     let code = data.code
     let message = data.message
+  
     if (code < 0) {
       if (this.config.debug) {
         console.error("[processResponse] API returned an error: " + message + " (" + String(code) + ").")
+        this.that.$Global.alert.pushAlert("[Developer] API Error", "API returned an error: " + message + " (" + String(code) + ").")
       }
     } else {
       switch (code) {
         case 1200:
-          this.pushAlert(data.title, data.message)
+          this.that.$Global.alert.pushAlert(data.title, data.message)
       }
     }
     return response
-  },
-  pushAlert: async function (...args) {
-    return this.that.pushAlert(...args)
-  },
-  popAlert: async function (...args) {
-    return this.that.popAlert(...args)
   },
   getURI: async function (...args) {
     if (this.config.debug) {
@@ -69,7 +65,7 @@ Vue.prototype.$Global = {
       let response = await axios.get(...args)
       return this.processResponse(response)
     } catch (err) {
-      this.pushAlert('Network Error', "Please check your connection and try again.")
+      this.that.$Global.alert.pushAlert('Network Error', "Please check your connection and try again.")
     }
   },
   postURI: async function (...args) {
@@ -90,7 +86,7 @@ Vue.prototype.$Global = {
       let response = await axios.post(...args)
       return this.processResponse(response)
     } catch (err) {
-      this.pushAlert('Network Error', "Please check your connection and try again.")
+      this.that.$Global.alert.pushAlert('Network Error', "Please check your connection and try again.")
     }
 
 
@@ -116,7 +112,7 @@ Vue.prototype.$Global = {
         name: res.data.name
       }
     } catch {
-      // this.pushAlert("Could not authenticate", "Network Error")
+      // this.that.$Global.alert.pushAlert("Could not authenticate", "Network Error")
       return {
         code: -1,
         message: "Network Error"

@@ -257,8 +257,6 @@ export default {
         // This fixes the problem with Safari
         if (link) {
           window.location = link;
-        } else {
-          window.location = "documentx://view/" + data.docid;
         }
       });
     },
@@ -266,15 +264,19 @@ export default {
       var data = e.currentTarget.dataset;
       window.location = "documentx://view/" + data.docid;
     },
-    PreviewDocument: function (e) {
+    PreviewDocument: async function (e) {
       var data = e.currentTarget.dataset;
+      let identifier = await this.$Global.alert.pushAlert(
+        "Loading document information...",
+        "Please wait.",
+        []
+      );
       this.GetPreviewLink(data.docid).then((link) => {
         // window.open(link);
         // This fixes the problem with Safari
+        this.$Global.alert.popAlert(identifier);
         if (link) {
           window.location = link;
-        } else {
-          window.location = "documentx://view/" + data.docid;
         }
       });
     },
@@ -290,9 +292,31 @@ export default {
       if (res.data.code >= 0) {
         return "https://apis.mcsrv.icu" + res.data.link;
       } else {
-        this.$Global.pushAlert(
+        let action = [
+          {
+            type: "cancel",
+            title: "OK",
+          },
+        ];
+        if (res.data.code == -600) {
+          action = [
+            {
+              type: "cancel",
+              title: "Cancel",
+            },
+            {
+              type: "normal",
+              title: "Open in App",
+              handler: () => {
+                window.location = "documentx://view/" + docID;
+              },
+            },
+          ];
+        }
+        this.$Global.alert.pushAlert(
           "An error occured.",
-          res.data.message + " (" + String(res.data.code) + ")"
+          res.data.message + " (" + String(res.data.code) + ")",
+          action
         );
       }
     },
@@ -308,10 +332,22 @@ export default {
       if (res.data.code >= 0) {
         return "https://apis.mcsrv.icu" + res.data.link;
       } else {
-        console.log(this.$Global);
-        this.$Global.pushAlert(
+        this.$Global.alert.pushAlert(
           "An error occured.",
-          res.data.message + " (" + String(res.data.code) + ")"
+          res.data.message + " (" + String(res.data.code) + ")",
+          [
+            {
+              type: "cancel",
+              title: "Cancel",
+            },
+            {
+              type: "normal",
+              title: "Open in App",
+              handler: () => {
+                window.location = "documentx://view/" + docID;
+              },
+            },
+          ]
         );
       }
     },
@@ -454,21 +490,22 @@ export default {
         .then((res) => {
           if (res.data.code >= 0) {
             this.snack = "Successfully deleted document.";
+            this.loading = true;
+            this.reloadData();
+            this.showSnackbar = true;
           } else {
-            this.$Global.pushAlert(
+            this.$Global.alert.pushAlert(
               "Could not delete the document",
-              res.data.result + " (" + String(res.data.code) + ")"
+              res.data.message + " (" + String(res.data.code) + ")"
             );
           }
         })
         .catch((err) => {
-          this.$Global.pushAlert("Could not delete the document", String(err));
+          this.$Global.alert.pushAlert(
+            "Could not delete the document",
+            String(err)
+          );
           // this.snack = "Error: " + String(err);
-        })
-        .then(() => {
-          this.showSnackbar = true;
-          this.loading = true;
-          this.reloadData();
         });
     },
   },

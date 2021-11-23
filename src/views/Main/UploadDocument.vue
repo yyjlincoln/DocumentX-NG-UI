@@ -7,7 +7,12 @@
       novalidate
       class="md-layout"
       @submit.prevent="validateUser"
-      style="width: 100%; position: relative; display:flex; justify-content: center;"
+      style="
+        width: 100%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+      "
     >
       <md-card class="md-layout-item md-size-50 md-small-size-100">
         <!-- <md-card-header>
@@ -26,8 +31,12 @@
                   v-model="form.name"
                   :disabled="sending"
                 />
-                <span class="md-error" v-if="!$v.form.name.required">Document Name is required</span>
-                <span class="md-error" v-else-if="!$v.form.name.minlength">This field is invalid.</span>
+                <span class="md-error" v-if="!$v.form.name.required"
+                  >Document Name is required</span
+                >
+                <span class="md-error" v-else-if="!$v.form.name.minlength"
+                  >This field is invalid.</span
+                >
               </md-field>
             </div>
 
@@ -41,35 +50,55 @@
                   v-model="form.subject"
                   :disabled="sending"
                 />
-                <span class="md-error" v-if="!$v.form.subject.required">Subject is required</span>
-                <span class="md-error" v-else-if="!$v.form.subject.minlength">This field is invalid</span>
+                <span class="md-error" v-if="!$v.form.subject.required"
+                  >Subject is required</span
+                >
+                <span class="md-error" v-else-if="!$v.form.subject.minlength"
+                  >This field is invalid</span
+                >
               </md-field>
             </div>
           </div>
 
           <md-field :class="getValidationClass('desc')">
             <label for="desc">Description</label>
-            <md-textarea name="desc" id="desc" v-model="form.desc" :disabled="sending" />
+            <md-textarea
+              name="desc"
+              id="desc"
+              v-model="form.desc"
+              :disabled="sending"
+            />
           </md-field>
           <md-field :class="getValidationClass('comments')">
             <label for="comments">Comments</label>
-            <md-textarea name="comments" id="comments" v-model="form.comments" :disabled="sending" />
+            <md-textarea
+              name="comments"
+              id="comments"
+              v-model="form.comments"
+              :disabled="sending"
+            />
           </md-field>
           <md-field :class="getValidationClass('file')">
-              <label for="file">Pick a file...</label>
+            <label for="file">Pick a file...</label>
             <md-file v-model="form.file" name="file" />
-            <span class="md-error" v-if="!$v.form.file.required">A file is required</span>
+            <span class="md-error" v-if="!$v.form.file.required"
+              >A file is required</span
+            >
           </md-field>
         </md-card-content>
 
         <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
         <md-card-actions>
-          <md-button type="submit" class="md-primary" :disabled="sending">Upload</md-button>
+          <md-button type="submit" class="md-primary" :disabled="sending"
+            >Upload</md-button
+          >
         </md-card-actions>
       </md-card>
 
-      <md-snackbar :md-active.sync="showSnackBar">{{snackBarText}}</md-snackbar>
+      <md-snackbar :md-active.sync="showSnackBar">{{
+        snackBarText
+      }}</md-snackbar>
     </form>
     <!-- Form End -->
     <!-- </div> -->
@@ -104,9 +133,9 @@ export default {
       subject: {
         required,
       },
-      file:{
+      file: {
         required,
-      }
+      },
     },
   },
   methods: {
@@ -138,25 +167,29 @@ export default {
       formData.append("comments", this.form.comments ? this.form.comments : "");
       formData.append("file", e.target[5].files[0], this.form.file);
 
-      this.$Global.postURI("https://apis.mcsrv.icu/uploadDocument", formData, {
+      this.$Global
+        .postURI("https://apis.mcsrv.icu/uploadDocument", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then((res) => {
-          this.snackBarText =
-            res.data.message + " (" + String(res.data.code) + ")";
           if (res.data.code >= 0) {
             this.snackBarText =
               "Successfully uploaded file (#" + res.data.docID + ")";
             this.clearForm();
+            this.showSnackBar = true;
+          } else {
+            this.$Global.alert.pushAlert(
+              "An error occured",
+              res.data.message + " (" + String(res.data.code) + ")"
+            );
           }
         })
         .catch(() => {
           this.snackBarText = "Failed to complete the request.";
         })
         .then(() => {
-          this.showSnackBar = true;
           this.sending = false;
         });
     },

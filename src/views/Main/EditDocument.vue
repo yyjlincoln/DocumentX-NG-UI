@@ -3,22 +3,40 @@
     novalidate
     class="md-layout"
     @submit.prevent="validateUser"
-    style="width: 100%; position: relative; display:flex; justify-content: center;"
+    style="
+      width: 100%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    "
   >
-    <md-card class="md-layout-item md-size-50 md-small-size-100" style="height: fit-content">
+    <md-card
+      class="md-layout-item md-size-50 md-small-size-100"
+      style="height: fit-content"
+    >
       <!-- <md-card-header>
           <div class="md-title">Add a document</div>
       </md-card-header>-->
 
       <md-card-content>
-        <p>Editing Document #{{this.docID}}</p>
+        <p>Editing Document #{{ this.docID }}</p>
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-small-size-100">
             <md-field :class="getValidationClass('name')">
               <label for="name">Name</label>
-              <md-input name="name" id="name" autocomplete v-model="form.name" :disabled="sending" />
-              <span class="md-error" v-if="!$v.form.name.required">Document Name is required</span>
-              <span class="md-error" v-else-if="!$v.form.name.minlength">This field is invalid.</span>
+              <md-input
+                name="name"
+                id="name"
+                autocomplete
+                v-model="form.name"
+                :disabled="sending"
+              />
+              <span class="md-error" v-if="!$v.form.name.required"
+                >Document Name is required</span
+              >
+              <span class="md-error" v-else-if="!$v.form.name.minlength"
+                >This field is invalid.</span
+              >
             </md-field>
           </div>
         </div>
@@ -33,8 +51,12 @@
                 v-model="form.docID"
                 :disabled="sending"
               />
-              <span class="md-error" v-if="!$v.form.docID.required">DocID is required</span>
-              <span class="md-error" v-else-if="!$v.form.docID.minlength">This field is invalid.</span>
+              <span class="md-error" v-if="!$v.form.docID.required"
+                >DocID is required</span
+              >
+              <span class="md-error" v-else-if="!$v.form.docID.minlength"
+                >This field is invalid.</span
+              >
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100">
@@ -59,8 +81,12 @@
                 v-model="form.subject"
                 :disabled="sending"
               />
-              <span class="md-error" v-if="!$v.form.subject.required">Subject is required</span>
-              <span class="md-error" v-else-if="!$v.form.subject.minlength">This field is invalid</span>
+              <span class="md-error" v-if="!$v.form.subject.required"
+                >Subject is required</span
+              >
+              <span class="md-error" v-else-if="!$v.form.subject.minlength"
+                >This field is invalid</span
+              >
             </md-field>
           </div>
         </div>
@@ -104,22 +130,36 @@
         </div>
         <md-field :class="getValidationClass('desc')">
           <label for="desc">Description</label>
-          <md-textarea name="desc" id="desc" v-model="form.desc" :disabled="sending" />
+          <md-textarea
+            name="desc"
+            id="desc"
+            v-model="form.desc"
+            :disabled="sending"
+          />
         </md-field>
         <md-field :class="getValidationClass('comments')">
           <label for="comments">Comments</label>
-          <md-textarea name="comments" id="comments" v-model="form.comments" :disabled="sending" />
+          <md-textarea
+            name="comments"
+            id="comments"
+            v-model="form.comments"
+            :disabled="sending"
+          />
         </md-field>
       </md-card-content>
 
       <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
       <md-card-actions>
-        <md-button type="submit" class="md-primary" :disabled="sending">Update</md-button>
+        <md-button type="submit" class="md-primary" :disabled="sending"
+          >Update</md-button
+        >
       </md-card-actions>
     </md-card>
 
-    <md-snackbar :md-active.sync="showSnackBar" :md-persistent="true">{{snackBarText}}</md-snackbar>
+    <md-snackbar :md-active.sync="showSnackBar" :md-persistent="true">{{
+      snackBarText
+    }}</md-snackbar>
   </form>
 </template>
 <script>
@@ -141,7 +181,7 @@ export default {
       status: null,
       fileName: null,
       owner: null,
-      archived: null
+      archived: null,
     },
     sending: true,
     showSnackBar: false,
@@ -182,7 +222,7 @@ export default {
       this.form.accessLevel = null;
       this.form.owner = null;
       this.form.fileName = null;
-      this.form.archived=null;
+      this.form.archived = null;
     },
     confirmRequest: function () {
       this.sending = true;
@@ -203,29 +243,33 @@ export default {
               status: this.form.status,
               accessLevel: this.form.accessLevel,
               owner: this.form.owner,
-              archived: this.form.archived
+              archived: this.form.archived,
             }),
           },
         })
         .then((res) => {
-          this.snackBarText =
-            res.data.message + " (" + String(res.data.code) + ")";
           if (res.data.code >= 0) {
             this.snackBarText =
               "Successfully updated file (#" + this.docID + ")";
             this.showSnackBar = true;
             this.clearForm();
             this.$router.go(-1);
+            this.sending = false;
+          } else {
+            this.$Global.alert.pushAlert(
+              "An error occured",
+              res.data.message + " (" + String(res.data.code) + ")"
+            );
+            this.sending = false;
           }
         })
         .catch(() => {
-          this.$Global.pushAlert("Failed to complete the request.", "Please check your connection and try again.")
+          this.$Global.alert.pushAlert(
+            "Failed to complete the request.",
+            "Please check your connection and try again."
+          );
           // this.snackBarText = "Failed to complete the request.";
         })
-        .then(() => {
-          this.showSnackBar = true;
-          this.sending = false;
-        });
     },
     validateUser: function (e) {
       this.$v.$touch();
@@ -236,7 +280,10 @@ export default {
     loadData: function () {
       if (this.docID == null) {
         // this.snackBarText = "No DocID is provided!";
-        this.$Global.pushAlert("An error occured", "No DocID was provided.")
+        this.$Global.alert.pushAlert(
+          "An error occured",
+          "No DocID was provided."
+        );
         // this.showSnackBar = true;
         window.history.back();
         return;
