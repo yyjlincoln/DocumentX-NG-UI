@@ -184,6 +184,7 @@ Vue.prototype.$Global = {
     }
   }
 }
+
 window.$Global = Vue.prototype.$Global
 
 new Vue({
