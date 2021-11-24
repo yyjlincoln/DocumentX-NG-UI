@@ -354,7 +354,7 @@ export default {
         this.$Global.alert.popAlert(identifier);
         if (link) {
           this.$Global.alert
-            .pushAlert("Preview...", "Please check your browser.", [
+            .pushAlert("We've opened the document in another window", "Please check your browser.", [
               {
                 title: "Done",
                 type: "cancel",

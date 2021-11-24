@@ -23,7 +23,8 @@
             width: 350px;
             border-radius: 1em;
             overflow: hidden;
-            filter: drop-shadow(0px 0px 5em gray);
+            filter: drop-shadow(0px 0px 1em rgba(0, 0, 0, 0.2));
+            opacity: 1;
             font-size: 1.3em;
           "
         >
@@ -48,7 +49,18 @@
             <div
               v-for="(action, index) in alert.actions"
               :key="index"
-              style="position: relative; flex-grow: 1; max-width: 100%"
+              style="
+                position: relative;
+                flex-grow: 1;
+                max-width: 100%;
+                min-width: 50%;
+                overflow: hidden;
+              "
+              :style="
+                ((index == alert.actions.length - 1 && alert.actions.length != 2)
+                  ? 'border-radius: 0 1em 1em 0;'
+                  : '')
+              "
               class="alertAction"
             >
               <div
@@ -68,8 +80,8 @@
                   "
                   :style="
                     alert.actions.length == 2
-                      ? 'border-left: 0.1px solid rgba(0, 0, 0, 0.1);'
-                      : ''
+                      ? 'border-left: 0.1px solid rgba(0, 0, 0, 0.1); '
+                      : ' '
                   "
                   :class="
                     getActionStyleClassess(action.type, identifier, index)
@@ -249,7 +261,7 @@ export default {
     },
     handlerProxy(identifier, actionIndex) {
       this.alerts[identifier].actions[actionIndex].handler(identifier);
-      this.popAlert(identifier)
+      this.popAlert(identifier);
     },
     getCancelAction(actions) {
       let decidedAction = null;

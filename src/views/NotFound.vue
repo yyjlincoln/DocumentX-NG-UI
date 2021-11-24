@@ -16,33 +16,40 @@
 <script>
 export default {
   mounted() {
-    this.$Global.alert.pushAlert(
-      "An error occured.",
-      'Page "' + this.$route.path + '" was not found on our system.',
-      [
-        {
-          title: "Back to the previous page",
-          type: "normal",
-          handler: () => {
-            this.$router.go(-1);
+    this.showAlert();
+  },
+  methods: {
+    showAlert() {
+      this.$Global.alert.pushAlert(
+        "An error occured.",
+        'Page "' + this.$route.path + '" was not found on our system.',
+        [
+          {
+            title: "Back to the previous page",
+            type: "normal",
+            handler: () => {
+              this.$router.go(-1);
+            },
           },
-        },
-        {
-          title: "Home",
-          type: "normal",
-          handler: () => {
-            this.$router.replace('/');
+          {
+            title: "Home",
+            type: "normal",
+            handler: () => {
+              this.$router.replace("/");
+            },
           },
-        },
-        {
-          title: "Contact us",
-          type: "destructive",
-          handler: () => {
-            window.location = "mailto:lincoln@yyjlincoln.com"
+          {
+            title: "Contact us",
+            type: "destructive",
+            handler: () => {
+              // window.location = "mailto:lincoln@yyjlincoln.com";
+              this.showAlert();
+            },
           },
-        },
-      ], 0
-    );
+        ],
+        0
+      );
+    },
   },
 };
 </script>

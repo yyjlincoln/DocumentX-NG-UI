@@ -49,10 +49,13 @@ export default {
     },
   },
   async mounted() {
-    let res = await this.$Global.getAuthStatus();
-    if (res) {
-      this.$router.replace("/app");
-    }
+    this.$router.replace("/auth");
+    // let res = await this.$Global.getAuthStatus();
+    // if (res) {
+    //   this.$router.replace("/app");
+    // } else {
+    //   this.$router.replace("/auth");
+    // }
   },
 };
 </script>

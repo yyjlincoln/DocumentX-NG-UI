@@ -10,6 +10,8 @@ Vue.config.productionTip = false
 
 const axios = require("axios")
 
+let IgnoredCode = []
+
 
 Vue.prototype.$Global = {
   that: null,
@@ -31,11 +33,25 @@ Vue.prototype.$Global = {
     let data = response.data
     let code = data.code
     let message = data.message
-  
+
     if (code < 0) {
       if (this.config.debug) {
         console.error("[processResponse] API returned an error: " + message + " (" + String(code) + ").")
-        this.that.$Global.alert.pushAlert("[Developer] API Error", "API returned an error: " + message + " (" + String(code) + ").")
+        if (!(IgnoredCode.includes(code))) {
+          this.that.$Global.alert.pushAlert("[Developer] API Error", "API returned an error: " + message + " (" + String(code) + ").", [{
+            title: "Dismiss",
+            type: "cancel"
+          },
+          {
+            title: "Silence \"" + code + "\" until next refresh",
+            type: "destructive",
+            handler: () => {
+              IgnoredCode.push(code)
+            }
+          }])
+        } else {
+          console.info("[processResponse] Code " + String(code) + " was silenced.")
+        }
       }
     } else {
       switch (code) {
