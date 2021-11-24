@@ -51,14 +51,18 @@
               style="position: relative; flex-grow: 1; max-width: 100%"
               class="alertAction"
             >
-              <div v-if="action.type == 'cancel'">
+              <div
+                v-if="
+                  action.type == 'normal' ||
+                  action.type == 'cancel' ||
+                  action.type == 'destructive'
+                "
+              >
                 <div
                   style="
                     padding: 0.7em 0.7em 0.7em 0.7em;
                     border-top: 0.1px solid rgba(0, 0, 0, 0.1);
-                    font-weight: bold;
                     cursor: pointer;
-                    color: #2364aa;
                     overflow-wrap: break-word;
                     text-align: center;
                   "
@@ -67,47 +71,8 @@
                       ? 'border-left: 0.1px solid rgba(0, 0, 0, 0.1);'
                       : ''
                   "
-                  @click="popAlertInline(identifier)"
-                >
-                  {{ action.title }}
-                </div>
-              </div>
-              <div v-if="action.type == 'normal'">
-                <div
-                  style="
-                    padding: 0.7em 0.7em 0.7em 0.7em;
-                    border-top: 0.1px solid rgba(0, 0, 0, 0.1);
-                    font-weight: bold;
-                    cursor: pointer;
-                    color: #2364aa;
-                    overflow-wrap: break-word;
-                    text-align: center;
-                  "
-                  :style="
-                    alert.actions.length == 2
-                      ? 'border-left: 0.1px solid rgba(0, 0, 0, 0.1);'
-                      : ''
-                  "
-                  @click="handlerProxy(identifier, index)"
-                >
-                  {{ action.title }}
-                </div>
-              </div>
-              <div v-if="action.type == 'destructive'">
-                <div
-                  style="
-                    padding: 0.7em 0.7em 0.7em 0.7em;
-                    border-top: 0.1px solid rgba(0, 0, 0, 0.1);
-                    font-weight: bold;
-                    cursor: pointer;
-                    color: #f34213;
-                    overflow-wrap: break-word;
-                    text-align: center;
-                  "
-                  :style="
-                    alert.actions.length == 2
-                      ? 'border-left: 0.1px solid rgba(0, 0, 0, 0.1);'
-                      : ''
+                  :class="
+                    getActionStyleClassess(action.type, identifier, index)
                   "
                   @click="handlerProxy(identifier, index)"
                 >
@@ -139,6 +104,48 @@ export default {
   },
   mounted() {
     this.$Global.alert = this;
+    window.addEventListener(
+      "keydown",
+      ((that) => {
+        return (event) => {
+          if (Object.keys(that.alerts).length != 0) {
+            let currentAlert =
+              that.alerts[that.alertStack[that.alertStack.length - 1]];
+            if (
+              event.keyCode === 13 &&
+              event.ctrlKey === false &&
+              event.altKey === false &&
+              event.shiftKey === false
+            ) {
+              // Trigger default action
+              if (currentAlert.defaultAction != null) {
+                that.handlerProxy(
+                  currentAlert.identifier,
+                  currentAlert.defaultAction
+                );
+              }
+              event.preventDefault();
+              return false;
+            } else if (
+              event.keyCode === 27 &&
+              event.ctrlKey === false &&
+              event.altKey === false &&
+              event.shiftKey === false
+            ) {
+              let cancelIndex = this.getCancelAction(currentAlert.actions);
+              if (cancelIndex != null) {
+                this.handlerProxy(currentAlert.identifier, cancelIndex);
+              }
+            } else {
+              if (currentAlert.preventKeyboard === true) {
+                event.preventDefault();
+                return false;
+              }
+            }
+          }
+        };
+      })(this)
+    );
   },
   methods: {
     async pushAlert(
@@ -151,26 +158,39 @@ export default {
           handler: null, // This is useless for type cancel.
           type: "cancel",
         },
-      ]
+      ],
+      defaultAction = null, // If defaultAction is null and a cancel action is present, then that first cancel action becomes the default. Otherwise, the alert can not be dismissed via keyboard.
+      preventKeyboard = true
     ) {
       let prom = new Promise((resolve) => {
         let identifier = Math.floor(Math.random() * 10000000);
         this.alertQueue.queue(
           ((that) => {
             return () => {
+              for (var i = 0; i < actions.length; i++) {
+                if (actions[i].type == "cancel") {
+                  actions[i].handler = () => {
+                    that.popAlertInline(identifier);
+                  };
+                }
+              }
               Vue.set(that.alerts, identifier, {
                 identifier: identifier,
                 title: title,
                 message: message,
                 stackLevel: this.alertStack.length,
                 actions: actions,
+                defaultAction:
+                  defaultAction != null
+                    ? defaultAction
+                    : this.getCancelAction(actions),
+                preventKeyboard: preventKeyboard,
               });
               that.alertStack.push(identifier);
               Vue.nextTick(function () {
                 that.$refs["alert_" + identifier][0].focus();
               }, that);
               that.alertQueue.dequeue();
-
               resolve(identifier);
             };
           })(this)
@@ -213,9 +233,33 @@ export default {
       this.popAlert(identifier);
       // };
     },
+    getActionStyleClassess(type, identifier, actionIndex) {
+      let ActionStyles = {
+        normal: ["normal"],
+        cancel: ["normal"],
+        destructive: ["destructive"],
+      };
+      let classess = ActionStyles[type];
+      if (this.alerts[identifier].defaultAction === actionIndex) {
+        classess.push("defaultAction");
+      } else {
+        classess.push("normalAction");
+      }
+      return classess;
+    },
     handlerProxy(identifier, actionIndex) {
       this.alerts[identifier].actions[actionIndex].handler(identifier);
-      this.popAlert(identifier);
+      this.popAlert(identifier)
+    },
+    getCancelAction(actions) {
+      let decidedAction = null;
+      for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
+        if (actions[actionIndex].type == "cancel") {
+          decidedAction = actionIndex;
+          break;
+        }
+      }
+      return decidedAction;
     },
   },
 };
@@ -239,5 +283,17 @@ export default {
 }
 .alertTransition-leave-to {
   opacity: 0;
+}
+.destructive {
+  color: #f34213;
+}
+.normal {
+  color: #2364aa;
+}
+.defaultAction {
+  font-weight: 900;
+}
+.normalAction {
+  font-weight: 500;
 }
 </style>

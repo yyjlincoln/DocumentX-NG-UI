@@ -154,7 +154,7 @@ export default {
             this.$router.replace("/");
           },
         },
-      ]);
+      ], 1);
     },
     toggleDebug: function () {
       this.$Global.toggleDebug();
