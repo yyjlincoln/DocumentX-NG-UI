@@ -3,7 +3,7 @@
     <transition-group name="alertTransition" tag="div">
       <div
         v-for="(alert, identifier) in alerts"
-        :key="identifier"
+        :key="alert.identifier"
         :style="
           'position: fixed; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; z-index: ' +
           String(100000000 + (alert.stackLevel ? alert.stackLevel : 0)) +

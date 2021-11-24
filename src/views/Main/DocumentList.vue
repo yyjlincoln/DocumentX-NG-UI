@@ -32,7 +32,10 @@ documents: Param, only effective when details is null.
       <md-table-row slot="md-table-row" slot-scope="{ item }">
         <md-table-cell md-label="Name" md-sort-by="name">
           <a
-            @click.prevent="PreviewDocument"
+            @click.shift.prevent.exact="DownloadDocument"
+            @click.alt.prevent.exact="PreviewDocumentInNewWindow"
+            @click.exact.prevent="PreviewDocument"
+            @click.ctrl.exact="PreviewDocumentInNewWindow"
             :data-docid="item.docID"
             :href="'https://mcsrv.icu/view?docID=' + item.docID"
             >{{ item.name }}</a
@@ -60,7 +63,7 @@ documents: Param, only effective when details is null.
               <md-icon>more_vert</md-icon>
             </md-button>
             <md-menu-content>
-              <md-menu-item @click="DownloadPopUp" :data-docid="item.docID"
+              <md-menu-item @click="PreviewDocument" :data-docid="item.docID"
                 >Download</md-menu-item
               >
               <md-menu-item @click="openInApp" :data-docid="item.docID"
@@ -250,11 +253,28 @@ export default {
         this.loading = false;
       }
     },
-    DownloadPopUp: function (e) {
+    DownloadDocument: async function (e) {
       var data = e.currentTarget.dataset;
+      var cancelled = false
+      let identifier = await this.$Global.alert.pushAlert(
+        "Getting Download Link...",
+        "Please wait.",
+        [
+          {
+            title: "Cancel",
+            type: "normal",
+            handler: (() => {
+              return () => {
+                cancelled = true;
+              };
+            })(cancelled),
+          },
+        ]
+      );
       this.GetDownloadLink(data.docid).then((link) => {
         // window.open(link);
         // This fixes the problem with Safari
+        this.$Global.alert.popAlert(identifier);
         if (link) {
           window.location = link;
         }
@@ -266,18 +286,32 @@ export default {
     },
     PreviewDocument: async function (e) {
       var data = e.currentTarget.dataset;
+      var cancelled = false;
       let identifier = await this.$Global.alert.pushAlert(
-        "Loading document information...",
+        "Getting Preview Link...",
         "Please wait.",
-        []
+        [
+          {
+            title: "Cancel",
+            type: "normal",
+            handler: (() => {
+              return () => {
+                cancelled = true;
+              };
+            })(cancelled),
+          },
+        ]
       );
       this.GetPreviewLink(data.docid).then((link) => {
         // window.open(link);
         // This fixes the problem with Safari
+        if (cancelled) {
+          return;
+        }
         this.$Global.alert.popAlert(identifier);
         if (link) {
           this.$Global.alert
-            .pushAlert("Downloading...", "Please check your browser.", [
+            .pushAlert("Opening Document", "Please check your browser.", [
               {
                 title: "Done",
                 type: "cancel",
@@ -286,9 +320,52 @@ export default {
             .then((identifier) => {
               setTimeout(() => {
                 this.$Global.alert.popAlert(identifier);
-              }, 3000);
+              }, 5000);
             });
-          window.location = link;
+            // window.open(link, "_blank", "width=auto,height=auto");
+            window.location = link;
+        }
+      });
+    },
+    PreviewDocumentInNewWindow: async function (e) {
+      var data = e.currentTarget.dataset;
+      var cancelled = false;
+      let identifier = await this.$Global.alert.pushAlert(
+        "Getting Preview Link...",
+        "Please wait.",
+        [
+          {
+            title: "Cancel",
+            type: "normal",
+            handler: (() => {
+              return () => {
+                cancelled = true;
+              };
+            })(cancelled),
+          },
+        ]
+      );
+      this.GetPreviewLink(data.docid).then((link) => {
+        // window.open(link);
+        // This fixes the problem with Safari
+        if (cancelled) {
+          return;
+        }
+        this.$Global.alert.popAlert(identifier);
+        if (link) {
+          this.$Global.alert
+            .pushAlert("Preview...", "Please check your browser.", [
+              {
+                title: "Done",
+                type: "cancel",
+              },
+            ])
+            .then((identifier) => {
+              setTimeout(() => {
+                this.$Global.alert.popAlert(identifier);
+              }, 5000);
+            });
+            window.open(link, "_blank", "width=auto,height=auto");
         }
       });
     },
