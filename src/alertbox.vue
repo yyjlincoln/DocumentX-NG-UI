@@ -137,8 +137,8 @@ export default {
       required: true,
     },
   },
-  mounted(){
-      this.$Global.alert = this
+  mounted() {
+    this.$Global.alert = this;
   },
   methods: {
     async pushAlert(
@@ -179,13 +179,13 @@ export default {
       return prom;
     },
     async popAlert(identifier = null) {
-      if (identifier == null) {
-        identifier = this.alertStack[this.alertStack.length - 1];
-      }
       let prom = new Promise((resolve) => {
         this.alertQueue.queue(
           ((that) => {
             return () => {
+              if (identifier == null) {
+                identifier = this.alertStack[this.alertStack.length - 1];
+              }
               if (that.alerts[identifier] == undefined) {
                 that.alertQueue.dequeue();
                 resolve(false);
@@ -194,12 +194,14 @@ export default {
               Vue.delete(that.alerts, identifier);
               // delete this.alerts[identifier];
               that.alertStack.splice(that.alertStack.indexOf(identifier), 1);
-              setTimeout(() => {
-                // if (this.alertQueue[0] == alertProgressIdentifier) {
-                that.alertQueue.dequeue();
-                resolve(true);
-                // }
-              }, 300);
+              Vue.nextTick(() => {
+                setTimeout(() => {
+                  // if (this.alertQueue[0] == alertProgressIdentifier) {
+                  that.alertQueue.dequeue();
+                  resolve(true);
+                  // }
+                }, 300);
+              });
             };
           })(this)
         );
