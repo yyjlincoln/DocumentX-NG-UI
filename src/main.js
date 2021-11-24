@@ -40,7 +40,7 @@ Vue.prototype.$Global = {
     } else {
       switch (code) {
         case 1200:
-          this.that.$Global.alert.pushAlert(data.title, data.message)
+          this.that.$Global.alert.pushAlert(data.alert.title, data.alert.message)
       }
     }
     return response
