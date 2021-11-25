@@ -35,7 +35,7 @@ export default {
             title: "Contact us",
             type: "destructive",
             handler: () => {
-              // window.location = "mailto:lincoln@yyjlincoln.com";
+              window.location = "mailto:lincoln@yyjlincoln.com";
               this.postEmailLaunch();
             },
           },
@@ -59,7 +59,7 @@ export default {
             title: "Try again",
             type: "normal",
             handler: () => {
-              // window.location = "mailto:lincoln@yyjlincoln.com";
+              window.location = "mailto:lincoln@yyjlincoln.com";
               this.postEmailLaunch();
             },
           },
