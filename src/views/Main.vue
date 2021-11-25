@@ -141,13 +141,13 @@ export default {
       this.$router.push(root + location + "");
     },
     async logout() {
-      this.$Global.alert.pushAlert("Do you want to log out?", "", [
+      this.$Global.alert.pushAlert("Log out", "Do you want to log out?", [
         {
           title: "Cancel",
           type: "cancel",
         },
         {
-          title: "Logout",
+          title: "Log out",
           type: "destructive",
           handler: async () => {
             await this.$Global.logout();

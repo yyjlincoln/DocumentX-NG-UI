@@ -115,6 +115,7 @@ export default {
     alerts: {},
     alertStack: [],
     alertQueue: new window.Queue(),
+    stackLevel: 0,
   }),
   props: {
     vm: {
@@ -194,11 +195,12 @@ export default {
                   };
                 }
               }
+              this.stackLevel = this.stackLevel + 1; // increment the stack level
               Vue.set(that.alerts, identifier, {
                 identifier: identifier,
                 title: title,
                 message: message,
-                stackLevel: this.alertStack.length,
+                stackLevel: this.stackLevel,
                 actions: actions,
                 defaultAction:
                   defaultAction != null
@@ -241,6 +243,11 @@ export default {
                   resolve(true);
                 }, 300);
               });
+              // Checks if the stackLevel can be resetted.
+              if (Object.keys(that.alerts).length == 0) {
+                // Resets the stackLevel when there is no more active alerts
+                this.stackLevel = 0;
+              }
             };
           })(this)
         );
@@ -268,12 +275,21 @@ export default {
     },
     handlerProxy(identifier, actionIndex) {
       let currentAlert = this.alerts[identifier];
+      if (!currentAlert) {
+        return;
+      }
       if (currentAlert.preventHandlerCalls === true) {
         return;
       }
       currentAlert.preventHandlerCalls = true;
       try {
-        currentAlert.actions[actionIndex].handler(identifier);
+        let res = currentAlert.actions[actionIndex].handler(identifier);
+        if (res === false) {
+          // Don't dismiss and allow further options
+          currentAlert.preventHandlerCalls = false;
+        } else {
+          this.popAlert(identifier);
+        }
       } catch (e) {
         console.log(e);
         if (this.$Global.config.debug) {
@@ -291,8 +307,8 @@ export default {
               e
           );
         }
+        this.popAlert(identifier);
       }
-      this.popAlert(identifier);
     },
     getCancelAction(actions) {
       let decidedAction = null;

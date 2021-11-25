@@ -11,6 +11,7 @@ Vue.config.productionTip = false
 const axios = require("axios")
 
 let IgnoredCode = []
+let APIErrorWarnings = true
 
 
 Vue.prototype.$Global = {
@@ -37,18 +38,49 @@ Vue.prototype.$Global = {
     if (code < 0) {
       if (this.config.debug) {
         console.error("[processResponse] API returned an error: " + message + " (" + String(code) + ").")
-        if (!(IgnoredCode.includes(code))) {
+        if (!(IgnoredCode.includes(code)) && APIErrorWarnings) {
           this.that.$Global.alert.pushAlert("[Developer] API Error", "API returned an error: " + message + " (" + String(code) + ").", [{
             title: "Dismiss",
             type: "cancel"
           },
           {
-            title: "Silence \"" + code + "\" until next refresh",
+            title: "Silence...",
             type: "destructive",
-            handler: () => {
-              IgnoredCode.push(code)
+            handler: (identifier) => {
+              this.that.$Global.alert.pushAlert("Silence Options...", "Silencing API Error Warnings", [
+                {
+                  title: "Silence \"" + code + "\" until next refresh",
+                  type: "destructive",
+                  handler: () => {
+                    IgnoredCode.push(code)
+                    this.that.$Global.alert.popAlert(identifier)
+                  }
+                },
+                {
+                  title: "Silence all API Errors",
+                  type: "destructive",
+                  handler: () => {
+                    APIErrorWarnings = false
+                    this.that.$Global.alert.popAlert(identifier)
+                  }
+                },
+                {
+                  title: "Reset all warnings",
+                  type: "destructive",
+                  handler: () => {
+                    IgnoredCode = []
+                    APIErrorWarnings = true
+                  }
+                },
+                {
+                  title: "Cancel",
+                  type: "cancel"
+                }
+              ])
+              return false // Do not dismiss the previous alert. We'll handle it here manually through popAlert
             }
-          }])
+          }
+          ])
         } else {
           console.info("[processResponse] Code " + String(code) + " was silenced.")
         }
