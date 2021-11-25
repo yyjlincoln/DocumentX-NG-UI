@@ -13,7 +13,7 @@ export default {
   },
   methods: {
     showAlert() {
-      this.$Global.alert.pushAlert(
+      this.$alert.present(
         "An error occured.",
         'Page "' + this.$route.path + '" was not found on our system.',
         [
@@ -44,7 +44,7 @@ export default {
       );
     },
     postEmailLaunch() {
-      this.$Global.alert.pushAlert(
+      this.$alert.present(
         "We've launched your email application.",
         "Didn't work? You can try again or enter the email address manually: lincoln@yyjlincoln.com",
         [

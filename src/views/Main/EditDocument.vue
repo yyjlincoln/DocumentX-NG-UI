@@ -256,7 +256,7 @@ export default {
             this.$router.go(-1);
             this.sending = false;
           } else {
-            this.$Global.alert.pushAlert(
+            this.$alert.present(
               "An error occured",
               res.data.message + " (" + String(res.data.code) + ")"
             );
@@ -264,7 +264,7 @@ export default {
           }
         })
         .catch(() => {
-          this.$Global.alert.pushAlert(
+          this.$alert.present(
             "Failed to complete the request.",
             "Please check your connection and try again."
           );
@@ -280,7 +280,7 @@ export default {
     loadData: function () {
       if (this.docID == null) {
         // this.snackBarText = "No DocID is provided!";
-        this.$Global.alert.pushAlert(
+        this.$alert.present(
           "An error occured",
           "No DocID was provided."
         );

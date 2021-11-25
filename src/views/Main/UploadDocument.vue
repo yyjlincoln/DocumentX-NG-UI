@@ -180,7 +180,7 @@ export default {
             this.clearForm();
             this.showSnackBar = true;
           } else {
-            this.$Global.alert.pushAlert(
+            this.$alert.present(
               "An error occured",
               res.data.message + " (" + String(res.data.code) + ")"
             );

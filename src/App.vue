@@ -91,7 +91,7 @@ export default {
     },
   },
   created() {
-    this.$Global.that = this;
+    // this.$Global.that = this;
     if (this.$Global.config.debug) {
       console.log("Initiating...");
     }

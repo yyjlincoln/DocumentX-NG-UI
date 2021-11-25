@@ -189,7 +189,7 @@ export default {
         this.redirect();
         // }, 1000);
       } else {
-        this.$Global.alert.pushAlert(
+        this.$alert.present(
           "Unable to authenticate",
           res.message + " (" + String(res.code) + ")"
         );
@@ -272,7 +272,7 @@ export default {
               "The login request has expired or been rejected. Please try again.";
             this.authResult = r.data.message;
             this.showSnackbar = true;
-            this.$Global.alert.pushAlert(
+            this.$alert.present(
               "Login failed.",
               "The login request has either expired or been rejected.",
               [

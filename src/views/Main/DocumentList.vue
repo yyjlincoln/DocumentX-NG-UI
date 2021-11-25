@@ -256,7 +256,7 @@ export default {
     DownloadDocument: async function (e) {
       var data = e.currentTarget.dataset;
       var cancelled = false
-      let identifier = await this.$Global.alert.pushAlert(
+      let identifier = await this.$alert.present(
         "Getting Download Link...",
         "Please wait.",
         [
@@ -274,7 +274,7 @@ export default {
       this.GetDownloadLink(data.docid).then((link) => {
         // window.open(link);
         // This fixes the problem with Safari
-        this.$Global.alert.popAlert(identifier);
+        this.$alert.dismiss(identifier);
         if (link) {
           window.location = link;
         }
@@ -287,7 +287,7 @@ export default {
     PreviewDocument: async function (e) {
       var data = e.currentTarget.dataset;
       var cancelled = false;
-      let identifier = await this.$Global.alert.pushAlert(
+      let identifier = await this.$alert.present(
         "Getting Preview Link...",
         "Please wait.",
         [
@@ -308,10 +308,10 @@ export default {
         if (cancelled) {
           return;
         }
-        this.$Global.alert.popAlert(identifier);
+        this.$alert.dismiss(identifier);
         if (link) {
-          this.$Global.alert
-            .pushAlert("Opening Document", "Please check your browser.", [
+          this.$alert
+            .present("Opening Document", "Please check your browser.", [
               {
                 title: "Done",
                 type: "cancel",
@@ -319,7 +319,7 @@ export default {
             ])
             .then((identifier) => {
               setTimeout(() => {
-                this.$Global.alert.popAlert(identifier);
+                this.$alert.dismiss(identifier);
               }, 5000);
             });
             // window.open(link, "_blank", "width=auto,height=auto");
@@ -330,7 +330,7 @@ export default {
     PreviewDocumentInNewWindow: async function (e) {
       var data = e.currentTarget.dataset;
       var cancelled = false;
-      let identifier = await this.$Global.alert.pushAlert(
+      let identifier = await this.$alert.present(
         "Getting Preview Link...",
         "Please wait.",
         [
@@ -351,10 +351,10 @@ export default {
         if (cancelled) {
           return;
         }
-        this.$Global.alert.popAlert(identifier);
+        this.$alert.dismiss(identifier);
         if (link) {
-          this.$Global.alert
-            .pushAlert("We've opened the document in another window", "Please check your browser.", [
+          this.$alert
+            .present("We've opened the document in another window", "Please check your browser.", [
               {
                 title: "Done",
                 type: "cancel",
@@ -362,7 +362,7 @@ export default {
             ])
             .then((identifier) => {
               setTimeout(() => {
-                this.$Global.alert.popAlert(identifier);
+                this.$alert.dismiss(identifier);
               }, 5000);
             });
             window.open(link, "_blank", "width=auto,height=auto");
@@ -402,7 +402,7 @@ export default {
             },
           ];
         }
-        this.$Global.alert.pushAlert(
+        this.$alert.present(
           "An error occured.",
           res.data.message + " (" + String(res.data.code) + ")",
           action
@@ -421,7 +421,7 @@ export default {
       if (res.data.code >= 0) {
         return "https://apis.mcsrv.icu" + res.data.link;
       } else {
-        this.$Global.alert.pushAlert(
+        this.$alert.present(
           "An error occured.",
           res.data.message + " (" + String(res.data.code) + ")",
           [
@@ -583,14 +583,14 @@ export default {
             this.reloadData();
             this.showSnackbar = true;
           } else {
-            this.$Global.alert.pushAlert(
+            this.$alert.present(
               "Could not delete the document",
               res.data.message + " (" + String(res.data.code) + ")"
             );
           }
         })
         .catch((err) => {
-          this.$Global.alert.pushAlert(
+          this.$alert.present(
             "Could not delete the document",
             String(err)
           );

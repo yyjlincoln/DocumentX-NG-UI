@@ -39,7 +39,7 @@ Vue.prototype.$Global = {
       if (this.config.debug) {
         console.error("[processResponse] API returned an error: " + message + " (" + String(code) + ").")
         if (!(IgnoredCode.includes(code)) && APIErrorWarnings) {
-          this.that.$Global.alert.pushAlert("[Developer] API Error", "API returned an error: " + message + " (" + String(code) + ").", [{
+          this.that.$alert.present("[Developer] API Error", "API returned an error: " + message + " (" + String(code) + ").", [{
             title: "Dismiss",
             type: "cancel"
           },
@@ -47,13 +47,13 @@ Vue.prototype.$Global = {
             title: "Silence...",
             type: "destructive",
             handler: (identifier) => {
-              this.that.$Global.alert.pushAlert("Silence Options...", "Silencing API Error Warnings", [
+              this.that.$alert.present("Silence Options...", "Silencing API Error Warnings", [
                 {
                   title: "Silence \"" + code + "\" until next refresh",
                   type: "destructive",
                   handler: () => {
                     IgnoredCode.push(code)
-                    this.that.$Global.alert.popAlert(identifier)
+                    this.that.$alert.dismiss(identifier)
                   }
                 },
                 {
@@ -61,7 +61,7 @@ Vue.prototype.$Global = {
                   type: "destructive",
                   handler: () => {
                     APIErrorWarnings = false
-                    this.that.$Global.alert.popAlert(identifier)
+                    this.that.$alert.dismiss(identifier)
                   }
                 },
                 {
@@ -77,7 +77,7 @@ Vue.prototype.$Global = {
                   type: "cancel"
                 }
               ])
-              return false // Do not dismiss the previous alert. We'll handle it here manually through popAlert
+              return false // Do not dismiss the previous alert. We'll handle it here manually through dismiss
             }
           }
           ])
@@ -88,7 +88,7 @@ Vue.prototype.$Global = {
     } else {
       switch (code) {
         case 1200:
-          this.that.$Global.alert.pushAlert(data.alert.title, data.alert.message)
+          this.that.$alert.present(data.alert.title, data.alert.message)
       }
     }
     return response
@@ -113,7 +113,7 @@ Vue.prototype.$Global = {
       let response = await axios.get(...args)
       return this.processResponse(response)
     } catch (err) {
-      this.that.$Global.alert.pushAlert('Network Error', "Please check your connection and try again.")
+      this.that.$alert.present('Network Error', "Please check your connection and try again.")
     }
   },
   postURI: async function (...args) {
@@ -134,7 +134,7 @@ Vue.prototype.$Global = {
       let response = await axios.post(...args)
       return this.processResponse(response)
     } catch (err) {
-      this.that.$Global.alert.pushAlert('Network Error', "Please check your connection and try again.")
+      this.that.$alert.present('Network Error', "Please check your connection and try again.")
     }
 
 
@@ -160,7 +160,7 @@ Vue.prototype.$Global = {
         name: res.data.name
       }
     } catch {
-      // this.that.$Global.alert.pushAlert("Could not authenticate", "Network Error")
+      // this.that.$alert.present("Could not authenticate", "Network Error")
       return {
         code: -1,
         message: "Network Error"

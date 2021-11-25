@@ -125,7 +125,7 @@ export default {
   },
   mounted() {
     this.$alert.instance = this;
-    console.log(this.$alert)
+    console.log(this.$alert);
     window.addEventListener(
       "keydown",
       ((that) => {
@@ -154,7 +154,7 @@ export default {
               event.altKey === false &&
               event.shiftKey === false
             ) {
-              let cancelIndex = this.getCancelAction(currentAlert.actions);
+              let cancelIndex = currentAlert.defaultEscapeAction;
               if (cancelIndex != null) {
                 this.handlerProxy(currentAlert.identifier, cancelIndex);
               }
@@ -170,7 +170,7 @@ export default {
     );
   },
   methods: {
-    async pushAlert(
+    async present(
       title,
       message,
       // type supports destructive, normal and cancel
@@ -181,8 +181,12 @@ export default {
           type: "cancel",
         },
       ],
-      defaultAction = null, // If defaultAction is null and a cancel action is present, then that first cancel action becomes the default. Otherwise, the alert can not be dismissed via keyboard.
-      preventKeyboard = true
+      {
+        defaultAction = null, // If defaultAction is null and a cancel action is present, then that first cancel action becomes the default. Otherwise, the alert can not be dismissed via enter.
+        defaultEscapeAction = null, // If null and a cancel action is present, then that first cancel action becomes the default. Otherwise, the alert can not be dismissed via esc.
+        preventKeyboard = true,
+        allowMultipleClicks = false,
+      } = {}
     ) {
       let prom = new Promise((resolve) => {
         let identifier = Math.floor(Math.random() * 10000000);
@@ -192,7 +196,7 @@ export default {
               for (var i = 0; i < actions.length; i++) {
                 if (actions[i].type == "cancel") {
                   actions[i].handler = () => {
-                    that.popAlertInline(identifier);
+                    that.dismissInline(identifier);
                   };
                 }
               }
@@ -207,8 +211,12 @@ export default {
                   defaultAction != null
                     ? defaultAction
                     : this.getCancelAction(actions),
+                defaultEscapeAction: defaultEscapeAction
+                  ? defaultEscapeAction
+                  : this.getCancelAction(actions),
                 preventKeyboard: preventKeyboard,
                 preventHandlerCalls: false,
+                allowMultipleClicks: allowMultipleClicks,
               });
               that.alertStack.push(identifier);
               Vue.nextTick(function () {
@@ -222,7 +230,7 @@ export default {
       });
       return prom;
     },
-    async popAlert(identifier = null) {
+    async dismiss(identifier = null) {
       let prom = new Promise((resolve) => {
         this.alertQueue.queue(
           ((that) => {
@@ -255,9 +263,9 @@ export default {
       });
       return prom;
     },
-    popAlertInline(identifier) {
+    dismissInline(identifier) {
       // return function () {
-      this.popAlert(identifier);
+      this.dismiss(identifier);
       // };
     },
     getActionStyleClassess(type, identifier, actionIndex) {
@@ -282,19 +290,21 @@ export default {
       if (currentAlert.preventHandlerCalls === true) {
         return;
       }
-      currentAlert.preventHandlerCalls = true;
+      if (currentAlert.allowMultipleClicks === false) {
+        currentAlert.preventHandlerCalls = true;
+      }
       try {
         let res = currentAlert.actions[actionIndex].handler(identifier);
         if (res === false) {
           // Don't dismiss and allow further options
           currentAlert.preventHandlerCalls = false;
         } else {
-          this.popAlert(identifier);
+          this.dismiss(identifier);
         }
       } catch (e) {
         console.log(e);
         if (this.$Global.config.debug) {
-          this.pushAlert(
+          this.present(
             "[Developer] An internal error occured with the alertbox handler.",
             "While executing the handler for alert with: \nidentifier: " +
               currentAlert.identifier +
@@ -308,7 +318,7 @@ export default {
               e
           );
         }
-        this.popAlert(identifier);
+        this.dismiss(identifier);
       }
     },
     getCancelAction(actions) {

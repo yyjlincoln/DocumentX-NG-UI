@@ -141,20 +141,27 @@ export default {
       this.$router.push(root + location + "");
     },
     async logout() {
-      this.$Global.alert.pushAlert("Log out", "Do you want to log out?", [
-        {
-          title: "Cancel",
-          type: "cancel",
-        },
-        {
-          title: "Log out",
-          type: "destructive",
-          handler: async () => {
-            await this.$Global.logout();
-            this.$router.replace("/");
+      this.$alert.present(
+        "Log out",
+        "Do you want to log out?",
+        [
+          {
+            title: "Cancel",
+            type: "cancel",
           },
-        },
-      ], 1);
+          {
+            title: "Log out",
+            type: "destructive",
+            handler: async () => {
+              await this.$Global.logout();
+              this.$router.replace("/");
+            },
+          },
+        ],
+        {
+          defaultAction: 1,
+        }
+      );
     },
     toggleDebug: function () {
       this.$Global.toggleDebug();

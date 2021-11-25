@@ -67,7 +67,7 @@ export default {
       if (res.data.code >= 0) {
         this.status = "Approved.";
       } else {
-        this.$Global.alert.pushAlert("Error", res.data.message)
+        this.$alert.present("Error", res.data.message)
         this.status = "Error: " + res.data.message;
       }
     },
