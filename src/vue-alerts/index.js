@@ -1,4 +1,5 @@
 import alertBox from './alert-box.vue'
+let options = {}
 
 const instanceProxy = new Proxy({}, {
     proxiedInstance: null,
@@ -15,6 +16,9 @@ const instanceProxy = new Proxy({}, {
     set(target, name, value) {
         if (name === 'instance') {
             this.proxiedInstance = value
+            for (let key in options) {
+                this.proxiedInstance[key] = options[key]
+            }
             return true
         } else {
             console.error("[vue-alerts] Cannot set property '" + name + "' on the protected alert instance.")
@@ -23,9 +27,10 @@ const instanceProxy = new Proxy({}, {
     }
 })
 
-function performInstall(Vue) {
+function performInstall(Vue, instanceOptions) {
     Vue.component('alert', alertBox)
     Vue.prototype.$alert = instanceProxy
+    options = instanceOptions
 }
 
 export default {

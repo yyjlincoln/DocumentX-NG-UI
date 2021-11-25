@@ -5,7 +5,7 @@
         v-for="(alert, identifier) in alerts"
         :key="alert.identifier"
         :style="
-          'position: fixed; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; z-index: ' +
+          'position: fixed; width: 100%; height: 100%; top: 0px; left: 0px; display: flex; flex-direction: column; justify-content: center; z-index: ' +
           String(100000000 + (alert.stackLevel ? alert.stackLevel : 0)) +
           '; background: transparent; background-color: rgba(0, 0, 0, 0.3);'
         "
@@ -22,10 +22,12 @@
             text-align: center;
             width: 350px;
             border-radius: 1em;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            max-height: 80%;
             filter: drop-shadow(0px 0px 1em rgba(0, 0, 0, 0.2));
             opacity: 1;
-            font-size: 1.3em;
+            font-size: 1.2em;
             overflow-wrap: break-word;
           "
         >
@@ -46,7 +48,12 @@
             </div>
           </div>
           <div
-            style="margin: 1em 0em 0em 0em; display: flex; overflow: hidden"
+            style="
+              margin: 1em 0em 0em 0em;
+              display: flex;
+              overflow-x: hidden;
+              overflow-y: scroll;
+            "
             :style="
               alert.actions.length == 2
                 ? 'flex-direction: row; justify-content: space-evenly; flex-wrap: wrap;'
@@ -61,7 +68,6 @@
                 flex-grow: 1;
                 max-width: 100%;
                 min-width: 50%;
-                overflow: hidden;
               "
               :style="
                 index == alert.actions.length - 1 && alert.actions.length != 2
@@ -109,20 +115,42 @@
 </template>
 
 <script>
+class Queue {
+  constructor() {
+    this.internal_queue = [];
+    this.autoDequeue = true;
+  }
+  queue(callback) {
+    // console.log('queue', this.internal_queue);
+    this.internal_queue.push(callback);
+    if (this.autoDequeue) {
+      // console.log('above autoDequeue');
+      this.autoDequeue = false;
+      this.dequeue();
+    }
+  }
+  dequeue() {
+    // console.log('dequeue', this.internal_queue);
+    if (this.internal_queue.length > 0) {
+      let item = this.internal_queue.shift();
+      item();
+    } else {
+      this.autoDequeue = true;
+    }
+  }
+}
+window.Queue = Queue;
 import Vue from "vue";
 export default {
   data: () => ({
     alerts: {},
     alertStack: [],
-    alertQueue: new window.Queue(),
+    alertQueue: new Queue(),
     stackLevel: 0,
+    developerMode: false,
+    presentBlockTime: 100,
+    dismissBlockTime: 300, // 300 ms is the time taken for the transition to finish
   }),
-  props: {
-    // vm: {
-    //   type: Object,
-    //   required: true,
-    // },
-  },
   mounted() {
     this.$alert.instance = this;
     console.log(this.$alert);
@@ -156,7 +184,7 @@ export default {
             ) {
               let cancelIndex = currentAlert.defaultEscapeAction;
               if (cancelIndex != null) {
-                this.handlerProxy(currentAlert.identifier, cancelIndex);
+                that.handlerProxy(currentAlert.identifier, cancelIndex);
               }
             } else {
               if (currentAlert.preventKeyboard === true) {
@@ -177,7 +205,7 @@ export default {
       actions = [
         {
           title: "OK",
-          handler: null, // This is useless for type cancel.
+          handler: null,
           type: "cancel",
         },
       ],
@@ -222,8 +250,10 @@ export default {
               Vue.nextTick(function () {
                 that.$refs["alert_" + identifier][0].focus();
               }, that);
-              that.alertQueue.dequeue();
-              resolve(identifier);
+              setTimeout(() => {
+                that.alertQueue.dequeue();
+                resolve(identifier);
+              }, that.presentBlockTime);
             };
           })(this)
         );
@@ -250,7 +280,7 @@ export default {
                 setTimeout(() => {
                   that.alertQueue.dequeue();
                   resolve(true);
-                }, 300);
+                }, that.dismissBlockTime);
               });
               // Checks if the stackLevel can be resetted.
               if (Object.keys(that.alerts).length == 0) {
@@ -294,7 +324,10 @@ export default {
         currentAlert.preventHandlerCalls = true;
       }
       try {
-        let res = currentAlert.actions[actionIndex].handler(identifier);
+        let res = currentAlert.actions[actionIndex].handler(
+          identifier,
+          actionIndex
+        );
         if (res === false) {
           // Don't dismiss and allow further options
           currentAlert.preventHandlerCalls = false;
@@ -303,7 +336,7 @@ export default {
         }
       } catch (e) {
         console.log(e);
-        if (this.$Global.config.debug) {
+        if (this.developerMode) {
           this.present(
             "[Developer] An internal error occured with the alertbox handler.",
             "While executing the handler for alert with: \nidentifier: " +
@@ -361,9 +394,9 @@ export default {
   color: #2364aa;
 }
 .defaultAction {
-  font-weight: 900;
+  font-weight: bolder;
 }
 .normalAction {
-  font-weight: 500;
+  font-weight: 600;
 }
 </style>
