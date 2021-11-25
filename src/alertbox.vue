@@ -26,14 +26,21 @@
             filter: drop-shadow(0px 0px 1em rgba(0, 0, 0, 0.2));
             opacity: 1;
             font-size: 1.3em;
+            overflow-wrap: break-word;
           "
         >
           <div style="padding: 1.5em 1.5em 0em 1.5em">
-            <div style="font-weight: bold">
+            <div style="font-weight: bold; white-space: pre-wrap">
               <!-- Title -->
               {{ alert.title }}
             </div>
-            <div style="font-weight: plain; margin-top: 0.5em">
+            <div
+              style="
+                font-weight: plain;
+                margin-top: 0.5em;
+                white-space: pre-wrap;
+              "
+            >
               <!-- Title -->
               {{ alert.message }}
             </div>
@@ -198,6 +205,7 @@ export default {
                     ? defaultAction
                     : this.getCancelAction(actions),
                 preventKeyboard: preventKeyboard,
+                preventHandlerCalls: false,
               });
               that.alertStack.push(identifier);
               Vue.nextTick(function () {
@@ -224,15 +232,13 @@ export default {
                 resolve(false);
                 return;
               }
+              identifier = parseInt(identifier, 10);
               Vue.delete(that.alerts, identifier);
-              // delete this.alerts[identifier];
               that.alertStack.splice(that.alertStack.indexOf(identifier), 1);
               Vue.nextTick(() => {
                 setTimeout(() => {
-                  // if (this.alertQueue[0] == alertProgressIdentifier) {
                   that.alertQueue.dequeue();
                   resolve(true);
-                  // }
                 }, 300);
               });
             };
@@ -261,7 +267,31 @@ export default {
       return classess;
     },
     handlerProxy(identifier, actionIndex) {
-      this.alerts[identifier].actions[actionIndex].handler(identifier);
+      let currentAlert = this.alerts[identifier];
+      if (currentAlert.preventHandlerCalls === true) {
+        return;
+      }
+      currentAlert.preventHandlerCalls = true;
+      try {
+        currentAlert.actions[actionIndex].handler(identifier);
+      } catch (e) {
+        console.log(e);
+        if (this.$Global.config.debug) {
+          this.pushAlert(
+            "[Developer] An internal error occured with the alertbox handler.",
+            "While executing the handler for alert with: \nidentifier: " +
+              currentAlert.identifier +
+              "\ntitle: " +
+              currentAlert.title +
+              "\nmessage: " +
+              currentAlert.message +
+              "\nactionIndex: " +
+              actionIndex +
+              "\n\n" +
+              e
+          );
+        }
+      }
       this.popAlert(identifier);
     },
     getCancelAction(actions) {

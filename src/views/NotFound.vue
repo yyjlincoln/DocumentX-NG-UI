@@ -2,14 +2,7 @@
   <div class="home">
     <div>
       <img alt="DocumentX Logo" src="../assets/logo.png" />
-      <!-- <div style="padding-top: 20px;">
-        <h1>We could not find the requested URL.</h1>
-        <p>Please double check your URL.</p>
-        <md-button class="" @click="$router.go(-1)">Go back</md-button>
-      </div> -->
     </div>
-
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
   </div>
 </template>
 
@@ -43,11 +36,35 @@ export default {
             type: "destructive",
             handler: () => {
               // window.location = "mailto:lincoln@yyjlincoln.com";
-              this.showAlert();
+              this.postEmailLaunch();
             },
           },
         ],
         0
+      );
+    },
+    postEmailLaunch() {
+      this.$Global.alert.pushAlert(
+        "We've launched your email application.",
+        "Didn't work? You can try again or enter the email address manually: lincoln@yyjlincoln.com",
+        [
+          {
+            title: "Other Options...",
+            type: "normal",
+            handler: () => {
+              this.showAlert();
+            },
+          },
+          {
+            title: "Try again",
+            type: "normal",
+            handler: () => {
+              // window.location = "mailto:lincoln@yyjlincoln.com";
+              this.postEmailLaunch();
+            },
+          },
+        ],
+        1
       );
     },
   },
