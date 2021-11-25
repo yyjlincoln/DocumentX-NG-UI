@@ -4,9 +4,10 @@
   <div id="app">
     <!-- <div id="nav"></div> -->
     <div>
-      <alertbox :vm="this">
+      <alert></alert>
+      <!-- <alertbox :vm="this">
 
-      </alertbox>
+      </alertbox> -->
     </div>
     <div
       v-if="!loaded"
@@ -50,7 +51,7 @@
 <script>
 // import Vue from "vue";
 import "@/Queue.js";
-import Alertbox from './alertbox.vue';
+// import Alertbox from './alertbox.vue';
 export default {
   data: () => ({
     transitionName: "",
@@ -63,10 +64,9 @@ export default {
     },
   }),
   components: {
-    Alertbox,
+    // Alertbox,
   },
-  methods: {
-  },
+  methods: {},
   watch: {
     $route(to, from) {
       // const toDepth = to.path.split("/").length;
@@ -192,5 +192,4 @@ body {
     opacity: 0.5;
   }
 }
-
 </style>

@@ -233,6 +233,8 @@ Vue.prototype.$Global = {
 }
 
 window.$Global = Vue.prototype.$Global
+import vueAlerts from './vue-alerts'
+Vue.use(vueAlerts)
 
 new Vue({
   router,
