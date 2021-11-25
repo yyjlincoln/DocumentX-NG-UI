@@ -57,9 +57,9 @@
                 overflow: hidden;
               "
               :style="
-                ((index == alert.actions.length - 1 && alert.actions.length != 2)
-                  ? 'border-radius: 0 1em 1em 0;'
-                  : '')
+                index == alert.actions.length - 1 && alert.actions.length != 2
+                  ? 'border-radius: 0 0 1em 1em;'
+                  : ''
               "
               class="alertAction"
             >
@@ -77,6 +77,7 @@
                     cursor: pointer;
                     overflow-wrap: break-word;
                     text-align: center;
+                    user-select: none;
                   "
                   :style="
                     alert.actions.length == 2

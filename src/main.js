@@ -16,7 +16,7 @@ let IgnoredCode = []
 Vue.prototype.$Global = {
   that: null,
   config: {
-    version: 'build 20211123-web',
+    version: 'build 20211125-web',
     apiversion: 'web',
     debug: false,
   },
