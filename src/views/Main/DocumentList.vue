@@ -63,7 +63,7 @@ documents: Param, only effective when details is null.
               <md-icon>more_vert</md-icon>
             </md-button>
             <md-menu-content>
-              <md-menu-item @click="PreviewDocument" :data-docid="item.docID"
+              <md-menu-item @click="DownloadDocument" :data-docid="item.docID"
                 >Download</md-menu-item
               >
               <md-menu-item @click="openInApp" :data-docid="item.docID"
@@ -254,10 +254,13 @@ export default {
       }
     },
     DownloadDocument: async function (e) {
-      var data = e.currentTarget.dataset;
-      var cancelled = false
+      var docID = e.currentTarget.dataset.docid;
+      this.checkList[docID] = true;
+      var cancelled = false;
       let identifier = await this.$alert.present(
-        "Getting Download Link...",
+        "Getting Download Link for " +
+          String(Object.keys(this.checkList).length) +
+          " Documents...",
         "Please wait.",
         [
           {
@@ -271,14 +274,52 @@ export default {
           },
         ]
       );
-      this.GetDownloadLink(data.docid).then((link) => {
-        // window.open(link);
-        // This fixes the problem with Safari
-        this.$alert.dismiss(identifier);
-        if (link) {
-          window.location = link;
-        }
-      });
+
+      var Request = [];
+
+      for (var x in Object.keys(this.checkList)) {
+        Request.push({
+          route: "/getDownloadLink",
+          data: {
+            docID: Object.keys(this.checkList)[x],
+            uID: this.$Global.user.uID,
+            token: this.$Global.user.token,
+          },
+        });
+      }
+      var Form = new FormData();
+      Form.append("batch", JSON.stringify(Request));
+      var links = [];
+      this.$Global
+        .postURI("https://apis.mcsrv.icu/batch", Form, {})
+        .then((res) => {
+          this.$alert.dismiss(identifier);
+          var success = 0;
+          var failed = 0;
+          for (var x = 0; x < res.data.batch.length; x++) {
+            // console.log(res.data.batch[x]);
+            if (res.data.batch[x].code >= 0) {
+              success += 1;
+              console.log(res.data.batch[x].link);
+              links.push("https://apis.mcsrv.icu" + res.data.batch[x].link);
+            } else {
+              failed += 1;
+              console.log("Error from API: " + res.data.batch[x].message);
+            }
+          }
+          this.checkList = [];
+          this.$alert.present(
+            "Downloading...",
+            "Downloading " +
+              String(success) +
+              " file(s). We could not download " +
+              String(failed) +
+              " documents. You might want to unblock pop-up windows to download multiple files."
+          );
+          for (var i = 0; i < links.length; i++) {
+            window.open(links[i]);
+          }
+        });
     },
     openInApp: function (e) {
       var data = e.currentTarget.dataset;
@@ -322,8 +363,8 @@ export default {
                 this.$alert.dismiss(identifier);
               }, 5000);
             });
-            // window.open(link, "_blank", "width=auto,height=auto");
-            window.location = link;
+          // window.open(link, "_blank", "width=auto,height=auto");
+          window.location = link;
         }
       });
     },
@@ -354,18 +395,22 @@ export default {
         this.$alert.dismiss(identifier);
         if (link) {
           this.$alert
-            .present("We've opened the document in another window", "Please check your browser.", [
-              {
-                title: "Done",
-                type: "cancel",
-              },
-            ])
+            .present(
+              "We've opened the document in another window",
+              "Please check your browser.",
+              [
+                {
+                  title: "Done",
+                  type: "cancel",
+                },
+              ]
+            )
             .then((identifier) => {
               setTimeout(() => {
                 this.$alert.dismiss(identifier);
               }, 5000);
             });
-            window.open(link, "_blank", "width=auto,height=auto");
+          window.open(link, "_blank", "width=auto,height=auto");
         }
       });
     },
@@ -590,10 +635,7 @@ export default {
           }
         })
         .catch((err) => {
-          this.$alert.present(
-            "Could not delete the document",
-            String(err)
-          );
+          this.$alert.present("Could not delete the document", String(err));
           // this.snack = "Error: " + String(err);
         });
     },
