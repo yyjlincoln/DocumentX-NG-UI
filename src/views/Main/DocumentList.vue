@@ -562,10 +562,11 @@ export default {
           }
           this.$alert.present(
             "Archive...",
-            "Successfully archived " + String(success)
-          ) +
-            " documents. Failed: " +
-            String(failed);
+            "Successfully archived " +
+              String(success) +
+              " documents. Failed: " +
+              String(failed)
+          );
           this.loading = true;
           this.checkList = [];
           this.reloadData();
@@ -609,10 +610,11 @@ export default {
           }
           this.$alert.present(
             "Unarchive...",
-            "Successfully unarchived " + String(success)
-          ) +
-            " documents. Failed: " +
-            String(failed);
+            "Successfully unarchived " +
+              String(success) +
+              " documents. Failed: " +
+              String(failed)
+          );
           this.loading = true;
           this.checkList = [];
           this.reloadData();
