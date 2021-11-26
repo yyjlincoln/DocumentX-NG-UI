@@ -63,7 +63,7 @@ documents: Param, only effective when details is null.
               <md-icon>more_vert</md-icon>
             </md-button>
             <md-menu-content>
-              <md-menu-item @click="DownloadDocument" :data-docid="item.docID"
+              <md-menu-item @click="BatchDownload" :data-docid="item.docID"
                 >Download</md-menu-item
               >
               <md-menu-item @click="openInApp" :data-docid="item.docID"
@@ -254,6 +254,33 @@ export default {
       }
     },
     DownloadDocument: async function (e) {
+      var data = e.currentTarget.dataset;
+      var cancelled = false;
+      let identifier = await this.$alert.present(
+        "Getting Download Link...",
+        "Please wait.",
+        [
+          {
+            title: "Cancel",
+            type: "normal",
+            handler: (() => {
+              return () => {
+                cancelled = true;
+              };
+            })(cancelled),
+          },
+        ]
+      );
+      this.GetDownloadLink(data.docid).then((link) => {
+        // window.open(link);
+        // This fixes the problem with Safari
+        this.$alert.dismiss(identifier);
+        if (link) {
+          window.location = link;
+        }
+      });
+    },
+    BatchDownload: async function (e) {
       var docID = e.currentTarget.dataset.docid;
       this.checkList[docID] = true;
       var cancelled = false;
