@@ -560,12 +560,12 @@ export default {
               console.log("Error from API: " + res.data.batch[x].message);
             }
           }
-          this.snack =
-            "Successfully archived " +
-            success +
-            " documents, failed: " +
-            failed;
-          this.showSnackbar = true;
+          this.$alert.present(
+            "Archive...",
+            "Successfully archived " + String(success)
+          ) +
+            " documents. Failed: " +
+            String(failed);
           this.loading = true;
           this.checkList = [];
           this.reloadData();
@@ -607,12 +607,12 @@ export default {
               console.log("Error from API: " + res.data.batch[x].message);
             }
           }
-          this.snack =
-            "Successfully unarchived " +
-            success +
-            " documents, failed: " +
-            failed;
-          this.showSnackbar = true;
+          this.$alert.present(
+            "Unarchive...",
+            "Successfully unarchived " + String(success)
+          ) +
+            " documents. Failed: " +
+            String(failed);
           this.loading = true;
           this.checkList = [];
           this.reloadData();
