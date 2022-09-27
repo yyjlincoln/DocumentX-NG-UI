@@ -75,6 +75,9 @@ documents: Param, only effective when details is null.
               <md-menu-item @click="CopyLink" :data-docid="item.docID"
                 >Copy Link</md-menu-item
               >
+              <md-menu-item @click="sendToApp" :data-docid="item.docID"
+                >Send to App</md-menu-item
+              >
               <md-menu-item @click="CopyAppLink" :data-docid="item.docID"
                 >Copy App Link</md-menu-item
               >
@@ -351,6 +354,26 @@ export default {
     openInApp: function (e) {
       var data = e.currentTarget.dataset;
       window.location = "documentx://view/" + data.docid;
+    },
+    sendToApp: async function (e) {
+      const { docid } = e.currentTarget.dataset;
+      let res = await this.$Global.getURI("https://apis.mcsrv.icu/sendToApp", {
+        params: {
+          docID: docid,
+        },
+      });
+      if (res.data.code < 0) {
+        this.$alert.present(
+          "An error occured.",
+          res.data.message + " (" + String(res.data.code) + ")",
+          [
+            {
+              type: "cancel",
+              title: "OK",
+            },
+          ]
+        );
+      }
     },
     PreviewDocument: async function (e) {
       var data = e.currentTarget.dataset;
