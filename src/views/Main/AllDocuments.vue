@@ -37,7 +37,7 @@ export default {
       this.allLoaded = false;
       this.limit = [0, 50];
       this.$Global
-        .getURI("https://apis.mcsrv.icu/getDocuments", {
+        .getURI("https://apis-documentx.yyjlincoln.com/getDocuments", {
           params: {
             status: this.documentStatus,
             start: this.limit[0],
@@ -52,7 +52,7 @@ export default {
     },
     getData: function (callback) {
       this.$Global
-        .getURI("https://apis.mcsrv.icu/getDocuments", {
+        .getURI("https://apis-documentx.yyjlincoln.com/getDocuments", {
           params: {
             status: this.documentStatus,
             start: this.limit[0],

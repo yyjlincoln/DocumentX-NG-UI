@@ -168,7 +168,7 @@ export default {
       formData.append("file", e.target[5].files[0], this.form.file);
 
       this.$Global
-        .postURI("https://apis.mcsrv.icu/uploadDocument", formData, {
+        .postURI("https://apis-documentx.yyjlincoln.com/uploadDocument", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

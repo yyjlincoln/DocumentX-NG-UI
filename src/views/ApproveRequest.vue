@@ -40,7 +40,7 @@ export default {
   methods: {
     async cancel() {
       let res = await this.$Global.getURI(
-        "https://apis.mcsrv.icu/rejectRemoteLogin",
+        "https://apis-documentx.yyjlincoln.com/rejectRemoteLogin",
         {
           params: {
             rID: this.rID,
@@ -56,7 +56,7 @@ export default {
     },
     async approve() {
       let res = await this.$Global.getURI(
-        "https://apis.mcsrv.icu/approveRemoteLogin",
+        "https://apis-documentx.yyjlincoln.com/approveRemoteLogin",
         {
           params: {
             rID: this.rID,
@@ -82,7 +82,7 @@ export default {
     this.status = "Validating request...";
     // Validate Request
     let res = await this.$Global.getURI(
-      "https://apis.mcsrv.icu/validateRemoteLogin",
+      "https://apis-documentx.yyjlincoln.com/validateRemoteLogin",
       {
         params: {
           rID: this.rID,

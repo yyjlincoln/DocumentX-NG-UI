@@ -232,21 +232,21 @@ export default {
 
     if (this.remote) {
       var res = await this.$Global.getURI(
-        "https://apis.mcsrv.icu/remoteLogin",
+        "https://apis-documentx.yyjlincoln.com/remoteLogin",
         {}
       );
       // console.log(res)
       if (res.data.code >= 0) {
         this.qrcode =
-          "https://apis.mcsrv.icu/qr?urlEncoded=" +
-          btoa("https://mcsrv.icu/approve_request?rID=" + res.data.rID);
+          "https://apis-documentx.yyjlincoln.com/qr?urlEncoded=" +
+          btoa("https://documentx.yyjlincoln.com/approve_request?rID=" + res.data.rID);
         this.qrstatus = "Please scan this code above to log in.";
         var interv = setInterval(async () => {
           if (this.$Global.debug) {
             console.log("RemoteLogin: rID = ", res.data.rID);
           }
           let r = await this.$Global.getURI(
-            "https://apis.mcsrv.icu/refreshRemoteLogin",
+            "https://apis-documentx.yyjlincoln.com/refreshRemoteLogin",
             {
               params: {
                 rID: res.data.rID,

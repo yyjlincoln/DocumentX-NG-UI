@@ -80,7 +80,7 @@ export default {
       // Search By Name
       this.searchByName.loading = true;
       this.$Global
-        .getURI("https://apis.mcsrv.icu/searchDocumentsByName", {
+        .getURI("https://apis-documentx.yyjlincoln.com/searchDocumentsByName", {
           params: {
             name: this.searchContent,
             start: this.searchByName.limit[0],
@@ -98,7 +98,7 @@ export default {
       // Search By ID
       this.searchByID.loading = true;
       this.$Global
-        .getURI("https://apis.mcsrv.icu/searchDocumentsByID", {
+        .getURI("https://apis-documentx.yyjlincoln.com/searchDocumentsByID", {
           params: {
             docID: this.searchContent,
             start: this.searchByID.limit[0],
@@ -120,7 +120,7 @@ export default {
       ];
       this.searchByName.loading = true;
       this.$Global
-        .getURI("https://apis.mcsrv.icu/searchDocumentsByName", {
+        .getURI("https://apis-documentx.yyjlincoln.com/searchDocumentsByName", {
           params: {
             name: this.searchContent,
             start: this.searchByName.limit[0],
@@ -150,7 +150,7 @@ export default {
       ];
       this.searchByID.loading = true;
       this.$Global
-        .getURI("https://apis.mcsrv.icu/searchDocumentsByID", {
+        .getURI("https://apis-documentx.yyjlincoln.com/searchDocumentsByID", {
           params: {
             docID: this.searchContent,
             start: this.searchByID.limit[0],

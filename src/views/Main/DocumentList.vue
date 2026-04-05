@@ -37,7 +37,7 @@ documents: Param, only effective when details is null.
             @click.exact.prevent="PreviewDocument"
             @click.ctrl.exact="PreviewDocumentInNewWindow"
             :data-docid="item.docID"
-            :href="'https://mcsrv.icu/view?docID=' + item.docID"
+            :href="'https://documentx.yyjlincoln.com/view?docID=' + item.docID"
             >{{ item.name }}</a
           >
         </md-table-cell>
@@ -225,7 +225,7 @@ export default {
 
           // try {
           //   let r = await this.$Global.getURI(
-          //     "https://apis.mcsrv.icu/getDocumentByID",
+          //     "https://apis-documentx.yyjlincoln.com/getDocumentByID",
           //     {
           //       params: {
           //         docID: this.documents[x],
@@ -241,7 +241,7 @@ export default {
         let f = new FormData();
         f.append("batch", JSON.stringify(request));
         let r = await this.$Global.postURI(
-          "https://apis.mcsrv.icu/batch",
+          "https://apis-documentx.yyjlincoln.com/batch",
           f,
           {}
         );
@@ -321,7 +321,7 @@ export default {
       Form.append("batch", JSON.stringify(Request));
       var links = [];
       this.$Global
-        .postURI("https://apis.mcsrv.icu/batch", Form, {})
+        .postURI("https://apis-documentx.yyjlincoln.com/batch", Form, {})
         .then((res) => {
           this.$alert.dismiss(identifier);
           var success = 0;
@@ -331,7 +331,7 @@ export default {
             if (res.data.batch[x].code >= 0) {
               success += 1;
               console.log(res.data.batch[x].link);
-              links.push("https://apis.mcsrv.icu" + res.data.batch[x].link);
+              links.push("https://apis-documentx.yyjlincoln.com" + res.data.batch[x].link);
             } else {
               failed += 1;
               console.log("Error from API: " + res.data.batch[x].message);
@@ -357,7 +357,7 @@ export default {
     },
     sendToApp: async function (e) {
       const { docid } = e.currentTarget.dataset;
-      let res = await this.$Global.getURI("https://apis.mcsrv.icu/sendToApp", {
+      let res = await this.$Global.getURI("https://apis-documentx.yyjlincoln.com/sendToApp", {
         params: {
           docID: docid,
         },
@@ -466,7 +466,7 @@ export default {
     },
     GetDownloadLink: async function (docID) {
       let res = await this.$Global.getURI(
-        "https://apis.mcsrv.icu/getDownloadLink",
+        "https://apis-documentx.yyjlincoln.com/getDownloadLink",
         {
           params: {
             docID: docID,
@@ -474,7 +474,7 @@ export default {
         }
       );
       if (res.data.code >= 0) {
-        return "https://apis.mcsrv.icu" + res.data.link;
+        return "https://apis-documentx.yyjlincoln.com" + res.data.link;
       } else {
         let action = [
           {
@@ -506,7 +506,7 @@ export default {
     },
     GetPreviewLink: async function (docID) {
       let res = await this.$Global.getURI(
-        "https://apis.mcsrv.icu/getPreviewLink",
+        "https://apis-documentx.yyjlincoln.com/getPreviewLink",
         {
           params: {
             docID: docID,
@@ -514,7 +514,7 @@ export default {
         }
       );
       if (res.data.code >= 0) {
-        return "https://apis.mcsrv.icu" + res.data.link;
+        return "https://apis-documentx.yyjlincoln.com" + res.data.link;
       } else {
         this.$alert.present(
           "An error occured.",
@@ -570,7 +570,7 @@ export default {
       Form.append("batch", JSON.stringify(Request));
 
       this.$Global
-        .postURI("https://apis.mcsrv.icu/batch", Form, {})
+        .postURI("https://apis-documentx.yyjlincoln.com/batch", Form, {})
         .then((res) => {
           var success = 0;
           var failed = 0;
@@ -618,7 +618,7 @@ export default {
       Form.append("batch", JSON.stringify(Request));
 
       this.$Global
-        .postURI("https://apis.mcsrv.icu/batch", Form, {})
+        .postURI("https://apis-documentx.yyjlincoln.com/batch", Form, {})
         .then((res) => {
           var success = 0;
           var failed = 0;
@@ -651,7 +651,7 @@ export default {
       var c = document.getElementById("CopyToClipboard");
       var docID = e.currentTarget.dataset.docid;
       // Temporary - Need to integrate getDocumentAccess api.
-      c.value = "https://mcsrv.icu/view?docID=" + docID;
+      c.value = "https://documentx.yyjlincoln.com/view?docID=" + docID;
       c.select();
       c.setSelectionRange(0, 99999);
       document.execCommand("copy");
@@ -672,7 +672,7 @@ export default {
     DeleteDoc: function (e) {
       var data = e.currentTarget.dataset;
       this.$Global
-        .getURI("https://apis.mcsrv.icu/deleteDocumentByID?docID=" + data.docid)
+        .getURI("https://apis-documentx.yyjlincoln.com/deleteDocumentByID?docID=" + data.docid)
         .then((res) => {
           if (res.data.code >= 0) {
             this.snack = "Successfully deleted document.";

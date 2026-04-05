@@ -24,7 +24,7 @@ export default {
   },
   async created() {
     let r = await this.$Global.getURI(
-      "https://apis.mcsrv.icu/getResourceGroups"
+      "https://apis-documentx.yyjlincoln.com/getResourceGroups"
     );
     this.ready = true;
     if (r.data.code == 0) {

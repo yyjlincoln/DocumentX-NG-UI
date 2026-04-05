@@ -147,7 +147,7 @@ Vue.prototype.$Global = {
     Formdata.append('uID', uID)
     Formdata.append('password', password === "" ? "" : _password)
     try {
-      let res = await axios.post('https://apis.mcsrv.icu/login', Formdata)
+      let res = await axios.post('https://apis-documentx.yyjlincoln.com/login', Formdata)
       if (res.data.code >= 0) {
         this.user.name = res.data.name
         this.user.token = res.data.token
@@ -178,7 +178,7 @@ Vue.prototype.$Global = {
   },
   async getAuthStatus() {
     try {
-      var res = await this.getURI('https://apis.mcsrv.icu/getAuthStatus')
+      var res = await this.getURI('https://apis-documentx.yyjlincoln.com/getAuthStatus')
       if (this.config.debug) {
         console.log('GetAuthStatus:', res.data)
       }
@@ -205,7 +205,7 @@ Vue.prototype.$Global = {
     localStorage.user = JSON.stringify(this.user)
   },
   async getDocumentByID(docID) {
-    let res = await this.getURI("https://apis.mcsrv.icu/getDocumentByID", {
+    let res = await this.getURI("https://apis-documentx.yyjlincoln.com/getDocumentByID", {
       params: {
         docID: docID,
       },

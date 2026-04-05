@@ -108,8 +108,8 @@ export default {
         if (res.code == 0 && res.result != undefined) {
           var r = res.result;
           r.qr =
-            "https://apis.mcsrv.icu/qr?urlEncoded=" +
-            btoa("https://mcsrv.icu/view?docID=" + res.result.docID);
+            "https://apis-documentx.yyjlincoln.com/qr?urlEncoded=" +
+            btoa("https://documentx.yyjlincoln.com/view?docID=" + res.result.docID);
           this.documents.push(r);
           this.ready = true;
         } else {

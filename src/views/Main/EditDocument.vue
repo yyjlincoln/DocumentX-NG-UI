@@ -231,7 +231,7 @@ export default {
 
       // axios
       this.$Global
-        .getURI("https://apis.mcsrv.icu/editDocumentByID", {
+        .getURI("https://apis-documentx.yyjlincoln.com/editDocumentByID", {
           params: {
             docID: this.docID,
             properties: JSON.stringify({

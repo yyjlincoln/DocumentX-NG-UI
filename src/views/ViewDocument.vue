@@ -29,7 +29,7 @@ export default {
     downloadManually: function () {
       console.log("Download");
       this.$Global
-        .getURI("https://apis.mcsrv.icu/getDownloadLink", {
+        .getURI("https://apis-documentx.yyjlincoln.com/getDownloadLink", {
           params: {
             docID: this.$route.query.docID,
             token: this.$route.query.token,
@@ -38,7 +38,7 @@ export default {
         })
         .then((res) => {
           if (res.data.code >= 0) {
-            window.location = "https://apis.mcsrv.icu" + res.data.link;
+            window.location = "https://apis-documentx.yyjlincoln.com" + res.data.link;
           } else {
             this.subtitle = res.data.message;
             this.title = "An error occured.";
@@ -65,7 +65,7 @@ export default {
     // Preview document
     try {
       this.$Global
-        .getURI("https://apis.mcsrv.icu/getPreviewLink", {
+        .getURI("https://apis-documentx.yyjlincoln.com/getPreviewLink", {
           params: {
             docID: this.$route.query.docID,
             token: this.$route.query.token,
@@ -77,8 +77,8 @@ export default {
           if (res.data.code >= 0) {
             this.title = "Starting download...";
             this.subtitle = "If the download did not start, try below:";
-            this.link = "https://apis.mcsrv.icu" + res.data.link;
-            window.location = "https://apis.mcsrv.icu" + res.data.link;
+            this.link = "https://apis-documentx.yyjlincoln.com" + res.data.link;
+            window.location = "https://apis-documentx.yyjlincoln.com" + res.data.link;
           } else {
             if (res.data.code == -301) {
               this.title = "Document not found.";

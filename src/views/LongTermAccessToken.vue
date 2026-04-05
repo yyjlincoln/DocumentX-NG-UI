@@ -163,7 +163,7 @@ export default {
       );
       if (res.code == 0) {
         let sens = await this.$Global.getURI(
-          "https://apis.mcsrv.icu/newToken",
+          "https://apis-documentx.yyjlincoln.com/newToken",
           {
             params: {
               password: sha256(this.login.password),

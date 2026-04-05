@@ -94,7 +94,7 @@
         <div>
           <a
             :href="
-              'https://apis.mcsrv.icu/getAuthStatus?uID=' +
+              'https://apis-documentx.yyjlincoln.com/getAuthStatus?uID=' +
               $Global.user.uID +
               '&token=' +
               $Global.user.token
